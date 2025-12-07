@@ -1,0 +1,213 @@
+
+rm -rf /root/aicloud-data/yoyo_image_gen_mbti/out_step1/*
+nohup python download_qwen_models.py > download_models.log 2>&1 &
+
+ollama serve > ~/logs/ollama.log 2>&1 &
+
+cd /root/aicloud-data/ComfyUI
+nohup python main.py --listen 0.0.0.0 --port 8000 --disable-auto-launch --input-directory /root/aicloud-data/yoyo_image_gen_mbti/out_step1 > ~/logs/comfyui.log 2>&1 &
+
+cd aicloud-data/yoyo_image_gen_mbti
+python create_promo_titles.py
+python create_promo_titles.py --model 32b
+
+MBTI 试验：指定 persona CSV 和实验名
+# ENFJ
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --mbti-mode inline \
+  --exp-name planA_enfj_32b
+# 不用traid
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --mbti-mode inline \
+  --exp-name planA_enfj_32b_notraid \
+  --disable-triad
+# concat 模型
+python create_categorical_prompts.py \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --mbti-mode inline \
+  --exp-name planA_enfj_7b
+
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --exp-name planA_enfj_32b
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan B \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --mbti-mode inline \
+  --exp-name planB_enfj_batch1
+# concat 模型
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan B \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ENFJ \
+  --exp-name planB_enfj_batch1
+
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA_enfj_32b.xlsx \
+  --out-dir out_step1
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA_enfj_32b_notraid.xlsx \
+  --out-dir out_step1
+
+如显存不足，可 pkill -9 ollama（目前仅 1×4090）(pkill -f ComfyUI)
+python render_with_comfyui.py \
+  --prompts-file out_step1/step1_prompts_planA_enfj_32b.xlsx \
+  --exp-name enfj_planA_32b_1125
+
+python render_with_comfyui.py
+  --prompts-file out_step1/step1_prompts_planB_enfj.xlsx \
+  --exp-name planB_batch1
+
+# 39:40 版（指定 prompts Excel + 渲染图目录 + 输出目录）
+python add_template_39_40.py \
+  --prompts-file out_step1/step1_prompts_planA_enfj_32b.xlsx \
+  --comfy-output out_step2/enfj_planA_32b_1125 \
+  --result-dir output_39_40/output_39_40_planA_enfj_32b_1125 \
+  --template template_39_40.png
+# 16:9 版
+python add_template_16_9.py \
+  --prompts-file out_step1/step1_prompts_planA_enfj.xlsx \
+  --comfy-output out_step2/planA_batch1 \
+  --result-dir output_16_9/output_16_9_planA_enfj \
+  --template template_16_9.png
+# 3:2 版
+python add_template_3_2.py \
+  --prompts-file out_step1/step1_prompts_planA_enfj.xlsx \
+  --comfy-output out_step2/planA_batch1 \
+  --result-dir output_3_2/output_3_2_planA_enfj \
+  --template template_3_2.png
+
+python merge_pairs.py \
+  --prompts-file out_step1/step1_prompts_planA_enfj_32b.xlsx \
+  --generated-dir out_step2/enfj_planA_32b_1125 \
+  --output-dir out_step3/enfj_planA_32b_1125
+
+
+# ISTP
+cd aicloud-data/yoyo_image_gen_mbti
+python create_promo_titles.py
+python create_promo_titles.py --model 32b
+
+# 不用traid
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ISTP \
+  --mbti-mode inline \
+  --exp-name planA_istp_32b_notraid \
+  --disable-triad
+
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA_istp_32b_notraid.xlsx \
+  --out-dir out_step1
+
+如显存不足，可 pkill -9 ollama（目前仅 1×4090）
+python render_with_comfyui.py \
+  --prompts-file out_step1/step1_prompts_planA_istp_32b_notraid.xlsx \
+  --exp-name istp_planA_32b_notraid
+
+# 39:40 版（指定 prompts Excel + 渲染图目录 + 输出目录）
+python add_template_39_40.py \
+  --prompts-file out_step1/step1_prompts_planA_istp_32b_notraid.xlsx \
+  --comfy-output out_step2/istp_planA_32b_notraid \
+  --result-dir output_39_40/output_39_40_planA_istp_32b_notraid \
+  --template template_39_40.png
+
+python merge_pairs.py \
+  --prompts-file out_step1/step1_prompts_planA_istp_32b_notraid.xlsx \
+  --generated-dir out_step2/istp_planA_32b_notraid \
+  --output-dir out_step3/istp_planA_32b_notraid_merged
+
+
+
+
+# ESTJ
+cd aicloud-data/yoyo_image_gen_mbti
+python create_promo_titles.py
+python create_promo_titles.py --model 32b
+
+# 不用traid
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type ESTJ \
+  --mbti-mode inline \
+  --exp-name planA_estj_32b_notraid \
+  --disable-triad
+
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA_estj_32b_notraid.xlsx \
+  --out-dir out_step1
+
+如显存不足，可 pkill -9 ollama（目前仅 1×4090）
+python render_with_comfyui.py \
+  --prompts-file out_step1/step1_prompts_planA_estj_32b_notraid.xlsx \
+  --exp-name estj_planA_32b_notraid
+
+# 39:40 版（指定 prompts Excel + 渲染图目录 + 输出目录）
+python add_template_39_40.py \
+  --prompts-file out_step1/step1_prompts_planA_estj_32b_notraid.xlsx \
+  --comfy-output out_step2/estj_planA_32b_notraid \
+  --result-dir output_39_40/output_39_40_planA_estj_32b_notraid \
+  --template template_39_40.png
+
+python merge_pairs.py \
+  --prompts-file out_step1/step1_prompts_planA_estj_32b_notraid.xlsx \
+  --generated-dir out_step2/estj_planA_32b_notraid \
+  --output-dir out_step3/estj_planA_32b_notraid_merged
+
+
+
+# INTP
+cd aicloud-data/yoyo_image_gen_mbti
+python create_promo_titles.py
+python create_promo_titles.py --model 32b
+
+# 不用traid
+python create_categorical_prompts.py \
+  --model 32b \
+  --mbti-plan A \
+  --mbti-profiles mbti_profiles.csv \
+  --mbti-type INTP \
+  --mbti-mode inline \
+  --exp-name planA_intp_32b_notraid \
+  --disable-triad
+
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA_intp_32b_notraid.xlsx \
+  --out-dir out_step1
+
+如显存不足，可 pkill -9 ollama（目前仅 1×4090）
+python render_with_comfyui.py \
+  --prompts-file out_step1/step1_prompts_planA_intp_32b_notraid.xlsx \
+  --exp-name intp_planA_32b_notraid
+
+# 39:40 版（指定 prompts Excel + 渲染图目录 + 输出目录）
+python add_template_39_40.py \
+  --prompts-file out_step1/step1_prompts_planA_intp_32b_notraid.xlsx \
+  --comfy-output out_step2/intp_planA_32b_notraid \
+  --result-dir output_39_40/output_39_40_planA_intp_32b_notraid \
+  --template template_39_40.png
+
+python merge_pairs.py \
+  --prompts-file out_step1/step1_prompts_planA_intp_32b_notraid.xlsx \
+  --generated-dir out_step2/intp_planA_32b_notraid \
+  --output-dir out_step3/intp_planA_32b_notraid_merged

@@ -1,0 +1,253 @@
+
+----------------------------------------------------------------------
+[ROW] id=61318
+[TITLE] 【娜扎同款】木九十25新品猫猫镜女款偏光墨镜太阳眼镜MJ12SM1600
+[BRAND] MUJOSH/木九十
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01zOT10M1yb1US2bkxo_!!6000000006596-0-yinhe.jpg
+[SAVE AS] out_step1\61318_800x800.jpg
+[PROMPT]
+A sleek pair of cat-eye sunglasses rests elegantly on a polished wooden table in a softly lit, minimalist luxury studio, creating a sophisticated and timeless backdrop for the MUJOSH/ 25 cat-eye sunglasses 4k.
+[TITLE_JSON]
+{"promo_title":"木九十猫眼墨镜"}
+[FINAL CANDIDATE] 木九十猫眼墨镜  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=78919
+[TITLE] 【会员抢先购】相宜本草山茶花抗皱淡纹紧致水乳精华套装保湿补水
+[BRAND] 相宜本草
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01wayqkl1zGhPXZUlfe_!!6000000006687-0-yinhe.jpg
+[SAVE AS] out_step1\78919_800x800.jpg
+[VLM Title 失败] id=78919: name 'b64_img' is not defined
+[PROMPT]
+A luxurious skincare set from Xiangyi Bencao is displayed against a serene garden backdrop, with golden rays of sunlight filtering through the leaves, creating a warm and inviting atmosphere for the 4k photo.
+[TITLE_JSON]
+{"promo_title":"相宜本草山茶花抗皱淡纹紧致水乳精华套装"}
+[FINAL CANDIDATE] 相宜本草山茶花抗皱淡纹紧致水乳精华套装  | valid=False (empty)
+[FEEDBACK USED] 可见字符超长(>10) | retries=0
+
+----------------------------------------------------------------------
+[ROW] id=100592
+[TITLE] 2400张抽纸悬挂式擦手纸巾面巾纸家庭囤货卫生纸厕纸整箱厨房用纸
+[BRAND] 云乐雅
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01OS4gBo1dHESQRJXb4_!!6000000003710-0-yinhe.jpg
+[SAVE AS] out_step1\100592_800x800.jpg
+[PROMPT]
+A soft pink lotus flower adorns the packaging of 's 2400, set against a serene, ethereal backdrop of a Japanese garden at dusk, with gentle, diffused light casting a tranquil glow. 4k
+[TITLE_JSON]
+{"promo_title":"云乐雅抽纸"}
+[FINAL CANDIDATE] 云乐雅抽纸  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=53221
+[TITLE] 潮宏基传家宝丝缘足金素圈戒指黄金戒圈手饰古法花丝麻花 计价
+[BRAND] CHJ/潮宏基
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01V0HTW01CApDvFzVtF_!!6000000000041-0-yinhe.jpg
+[SAVE AS] out_step1\53221_800x800.jpg
+[PROMPT]
+A golden twist of tradition shines in a luxurious studio setting, surrounded by subtle shadows and tasteful props, 4k.
+[TITLE_JSON]
+{"promo_title":"潮宏基麻花戒指"}
+[FINAL CANDIDATE] 潮宏基麻花戒指  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=106440
+[TITLE] 芭菲抑菌洁净柔软洗衣液7kg双重酵素深层洁净99.9%抑菌柔软顺滑
+[BRAND] Pahnli/芭菲
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01kajixL2A20btiMNO2_!!6000000008144-0-yinhe.jpg
+[SAVE AS] out_step1\106440_800x800.jpg
+[PROMPT]
+In a serene, sunlit laundry room with vintage ironing boards and a classic washing machine, three bottles of Pahnli laundry detergent stand ready for use, promising deep cleanliness and softness in every wash 4k.
+[TITLE_JSON]
+{"promo_title":"芭菲洗衣液"}
+[FINAL CANDIDATE] 芭菲洗衣液  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=78660
+[TITLE] chorchioee杜蔻蝴蝶耳钉高级感贝母轻奢耳钉女生日礼物送女友
+[BRAND] DUCOUR/杜蔻
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01FebNTM1tpbzuzTC7y_!!6000000005951-0-yinhe.jpg
+[SAVE AS] out_step1\78660_800x800.jpg
+[PROMPT]
+Elegant butterfly earrings by DUCOUR, set against a shimmering, opulent backdrop of gold leaf and black onyx, 4k.
+[TITLE_JSON]
+{"promo_title":"杜蔻蝴蝶耳钉"}
+[FINAL CANDIDATE] 杜蔻蝴蝶耳钉  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=83321
+[TITLE] 大黄蜂儿童洞洞鞋男童拖鞋中大童防臭室内夏季新款宝宝凉拖沙滩鞋
+[BRAND] BIG WASP/大黄蜂
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01iefwTY1YT4buCqFnF_!!6000000003059-0-yinhe.jpg
+[SAVE AS] out_step1\83321_800x800.jpg
+[PROMPT]
+A playful and vibrant children's clog featuring a Big Wasp astronaut design stands out against a modern, tech-inspired futuristic backdrop with sleek lines and ambient lighting, 4k.
+[TITLE_JSON]
+{"promo_title":"大黄蜂儿童洞洞鞋"}
+[FINAL CANDIDATE] 大黄蜂儿童洞洞鞋  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=94661
+[TITLE] 【春夏新品】JIL SANDER 2025新品女士 GOJI SOFT皮革小号单肩包
+[BRAND] Jil Sander
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01sbIaLs1fyP01BcqIG_!!6000000004075-0-yinhe.jpg
+[SAVE AS] out_step1\94661_800x800.jpg
+[VLM Title 失败] id=94661: name 'b64_img' is not defined
+[PROMPT]
+In a sleek, modern boutique, the Jil Sander GOJI SOFT leather handbag rests elegantly on a minimalist black pedestal, surrounded by tasteful props like a glass of sparkling water and a stylish watch, creating a luxurious and sophisticated 4k backdrop.
+[TITLE_JSON]
+{"promo_title":"Jil Sander单肩包"}
+[FINAL CANDIDATE] Jil Sander单肩包  | valid=False (empty)
+[FEEDBACK USED] 可见字符超长(>10) | retries=0
+
+----------------------------------------------------------------------
+[ROW] id=76776
+[TITLE] 【618立即抢购】Murad慕拉得A醇精华 视黄醇面部精华保湿紧致抗皱
+[BRAND] Murad/慕拉得
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01GLuDrQ1g3tliOENch_!!6000000004087-0-yinhe.jpg
+[SAVE AS] out_step1\76776_800x800.jpg
+[VLM Title 失败] id=76776: name 'b64_img' is not defined
+[PROMPT]
+Amidst a serene, futuristic garden illuminated by soft, diffused sunlight, the Murad Resurgence Retinol Youth Renewal Serum stands as a beacon of rejuvenation, its sleek glass bottle reflecting the tranquil beauty of the surroundings. 4k
+[TITLE_JSON]
+{"promo_title":"Murad慕拉得A醇精华"}
+[FINAL CANDIDATE] Murad慕拉得A醇精华  | valid=False (empty)
+[FEEDBACK USED] 可见字符超长(>10) | retries=0
+
+----------------------------------------------------------------------
+[ROW] id=25386
+[TITLE] 【曹恩齐同款】意大利KIKO夏季定妆控油粉饼散粉蜜粉补妆遮瑕油皮
+[BRAND] KIKO
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01h8rWR41JEDUfLQ7lS_!!6000000000996-2-yinhe.png
+[SAVE AS] out_step1\25386_800x800.jpg
+[PROMPT]
+A sleek, modern vanity table bathed in soft, natural light, adorned with a minimalist arrangement of elegant beauty tools and a delicate bouquet of fresh flowers, perfectly complements the luxurious KIKO powder compact, 4k.
+[TITLE_JSON]
+{"promo_title":"KIKO定妆粉饼"}
+[FINAL CANDIDATE] KIKO定妆粉饼  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=22256
+[TITLE] 【下拉详情回购正装享免单】顽皮全价猫主食小鲜盒猫罐头40g*2罐
+[BRAND] Wanpy/顽皮
+[IMG] https://img.alicdn.com/bao/uploaded/i3/2600131029/O1CN01bHRe8D1JTKTLg17ZK_!!2-item_pic.png
+[SAVE AS] out_step1\22256_800x800.jpg
+[PROMPT]
+In a cozy, modern kitchen setting, two cans of Wanpy cat food sit atop their branded boxes, bathed in soft, natural light that highlights the vibrant colors and text, creating a 4k immersive scene.
+[TITLE_JSON]
+{"promo_title":"顽皮猫罐头"}
+[FINAL CANDIDATE] 顽皮猫罐头  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=1037090
+[TITLE] 森达小金豆玛丽珍女鞋25夏秋新商场同款复古法式浅口平底尖头单鞋
+[BRAND] Senda/森达
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01BmaozJ25bCybIcOLW_!!6000000007544-0-yinhe.jpg
+[SAVE AS] out_step1\1037090_800x800.jpg
+[PROMPT]
+A pristine white Senda Mary Jane shoe is elegantly displayed against a soft, ethereal background of blooming cherry blossoms, with a gentle breeze and a subtle play of light and shadow, evoking a timeless French countryside charm, 4k.
+[TITLE_JSON]
+{"promo_title":"森达小金豆玛丽珍女鞋"}
+[FINAL CANDIDATE] 森达小金豆玛丽珍女鞋  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=90942
+[TITLE] 周六福黄金耳饰女计价足金5G金无极金珠耳环女友节日礼物
+[BRAND] ZLF/周六福
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01tJF2mX1L5dA53xONh_!!6000000001248-0-yinhe.jpg
+[SAVE AS] out_step1\90942_800x800.jpg
+[PROMPT]
+Elegant gold hoop earrings with intricate textures and a shimmering finish, set against a luxurious studio backdrop with soft, diffused lighting and a subtle gradient of warm gold tones, 4k.
+[TITLE_JSON]
+{"promo_title":"周六福黄金耳环"}
+[FINAL CANDIDATE] 周六福黄金耳环  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=54659
+[TITLE] 全友家居现代简约布艺沙发客厅小户型2025新款直排科技布沙发家具
+[BRAND] QuanU/全友
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01KmKga01vTkGh2pebT_!!6000000006174-0-yinhe.jpg
+[SAVE AS] out_step1\54659_800x800.jpg
+[PROMPT]
+In a serene modern living room with minimalist decor and soft natural light filtering through large windows, the QuanU/ modern minimalist fabric sofa stands as the centerpiece, showcasing its sleek design and inviting comfort in a spacious, elegant setting. 4k
+[TITLE_JSON]
+{"promo_title":"全友家居布艺沙发"}
+[FINAL CANDIDATE] 全友家居布艺沙发  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=14499
+[TITLE] 晴天大白倒置香氛卧室持久留香卫生间除臭去异味倒立空气厕所香薰
+[BRAND] EVERSHINE/晴天大白
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01w355Hl25z1YPqYV6V_!!6000000007596-0-yinhe.jpg
+[SAVE AS] out_step1\14499_800x800.jpg
+[PROMPT]
+Set against a serene, minimalist backdrop, the EVERSHINE air fresheners rest elegantly on a polished white marble surface, casting soft, diffused shadows that enhance their sleek, modern design, all captured in stunning 4k.
+[TITLE_JSON]
+{"promo_title":"晴天大白倒置香氛"}
+[FINAL CANDIDATE] 晴天大白倒置香氛  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=102546
+[TITLE] 【心愿618！加购！6月12日预售】POLA宝丽碧艾洁面膏(经典版)100g
+[BRAND] POLA宝丽官方旗舰店
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01MyrRNR1u712TX9j0W_!!6000000005989-0-yinhe.jpg
+[SAVE AS] out_step1\102546_800x800.jpg
+[PROMPT]
+A sleek black tube of POLA's classic facial cleanser sits elegantly on a polished marble surface, bathed in soft, diffused light against a minimalist white background, exuding a luxurious and modern aesthetic 4k.
+[TITLE_JSON]
+{"promo_title":"POLA宝丽洗面奶"}
+[FINAL CANDIDATE] POLA宝丽洗面奶  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=14061
+[TITLE] 海尔小优移动屏L27Z5闺蜜机智能大平板可移动电视显示屏 女生礼物
+[BRAND] Haier/海尔
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01UMQwrm1uS5GtoRIuo_!!6000000006035-0-yinhe.jpg
+[SAVE AS] out_step1\14061_800x800.jpg
+[PROMPT]
+A sleek Haier/ L27Z5, designed for stylish girls, stands proudly on a minimalist, modern pedestal against a backdrop of vibrant floral patterns and soft, ambient lighting, creating a luxurious 4k experience.
+[TITLE_JSON]
+{"promo_title":"海尔小优移动屏"}
+[FINAL CANDIDATE] 海尔小优移动屏  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=4300
+[TITLE] 若华珠宝夏蝉 刻面红宝石耳环女18K金流苏耳饰彩宝耳钉礼物定制
+[BRAND] 若华（饰品）
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01OQGHZD1KTcSvZ1IPE_!!6000000001165-0-yinhe.jpg
+[SAVE AS] out_step1\4300_800x800.jpg
+[PROMPT]
+Elegant ruby earrings rest gracefully on a luxurious gold chain against a serene, misty lake reflecting the golden light of dawn, 4k.
+[TITLE_JSON]
+{"promo_title":"若华珠宝红宝石耳环"}
+[FINAL CANDIDATE] 若华珠宝红宝石耳环  | valid=True (ok)
+
+----------------------------------------------------------------------
+[ROW] id=1067376
+[TITLE] 佳贝艾特荷兰进口晶萃悦白3段婴幼儿羊奶粉小分子好吸收800g7罐
+[BRAND] KABRITA/佳贝艾特
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01UHAss81XlYyrsU1E7_!!6000000002964-0-yinhe.jpg
+[SAVE AS] out_step1\1067376_800x800.jpg
+[VLM Title 失败] id=1067376: name 'b64_img' is not defined
+[PROMPT]
+A row of KABRITA 3 cans stands elegantly in a luxurious studio, bathed in soft, natural light that highlights their pristine white and gold packaging, set against a minimalist backdrop of serene, sunlit fields and gentle rolling hills, creating a harmonious and inviting 4k scene.
+[TITLE_JSON]
+{"promo_title":"佳贝艾特3段婴幼儿羊奶粉"}
+[FINAL CANDIDATE] 佳贝艾特3段婴幼儿羊奶粉  | valid=False (empty)
+[FEEDBACK USED] 含数字或非法字符；可见字符超长(>10) | retries=0
+
+----------------------------------------------------------------------
+[ROW] id=22322
+[TITLE] 黑全麦面粉麦麸石磨黑麦粉纯黑小麦面包杂粮家用荞麦0无糖精低脂
+[BRAND] 野三坡
+[IMG] https://img.alicdn.com/bao/uploaded/O1CN01bmF8fx2A8sY04bMDH_!!6000000008159-0-yinhe.jpg
+[SAVE AS] out_step1\22322_800x800.jpg
+[PROMPT]
+A rustic countryside backdrop with rolling hills and a quaint village, bathed in soft, natural light, perfectly complements the wholesome nature of Ye San Po's black whole wheat flour, 4k.
+[TITLE_JSON]
+{"promo_title":"野三坡黑全麦面粉"}
+[FINAL CANDIDATE] 野三坡黑全麦面粉  | valid=True (ok)
+
+✅ 完成！共 20 条：
+  Excel: out_step1\step1_prompts.xlsx
+  JSONL: out_step1\step1_prompts.jsonl
+⏱️ 平均每条: 5.46s

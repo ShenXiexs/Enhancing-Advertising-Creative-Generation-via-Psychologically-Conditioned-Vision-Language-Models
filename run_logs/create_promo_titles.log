@@ -1,0 +1,1466 @@
+CMD: C:\Users\25863\AppData\Local\Programs\Python\Python311\python.exe C:\Users\25863\PycharmProjects\yoyo_image_generation\create_promo_titles.py
+CWD: C:\Users\25863\PycharmProjects\yoyo_image_generation
+START: 2025-09-12 13:51:59
+
+===> [START] Title generation (Part1)
+Config: USE_MODEL_TITLE=True, SAMPLE_NUM=200, MODEL_TITLE=qwen2.5vl:7b
+[Load] Input CSV/XLSX: 白底商品信息类目.csv
+[Info] Total rows (after sampling): 200 / original 62797
+[Check] Ollama reachable: http://localhost:11434
+
+[1/200] id=1557544 | title='宽福猫罐头幼猫奶糕羊奶罐头幅营养湿粮猫咪零食慕斯奶昔12罐' | brand='宽福' | ETA --:--
+  - Image: OK
+  - Saved white BG: out_step1\1557544.jpg
+  - VLM(title): calling ...
+  - Title OK: '宽福猫罐头' (units=5.0)  | elapsed 6.46s
+  -> Progress: 1/200 | OK=1 invalid=0 offline/noimg=0 img_fail=0 | ETA 21:24
+
+[2/200] id=1556143 | title='云南白药牙膏留兰香型180g*2支清新口气护龈清洁口腔官方正' | brand='云南白药' | ETA 21:24
+  - Image: OK
+  - Saved white BG: out_step1\1556143.jpg
+  - VLM(title): calling ...
+  - Title OK: '云南白药牙膏' (units=6.0)  | elapsed 2.64s
+  -> Progress: 2/200 | OK=2 invalid=0 offline/noimg=0 img_fail=0 | ETA 15:00
+
+[3/200] id=96451 | title='【孙颖莎推荐】理肤泉焕肤三酸精华液水杨酸淡化痘痕祛痘黑头B' | brand='Laroche Posay/理肤泉' | ETA 15:01
+  - Image: OK
+  - Saved white BG: out_step1\96451.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '理肤泉焕肤精华液' (units=8.0)  | elapsed 5.25s
+  -> Progress: 3/200 | OK=3 invalid=0 offline/noimg=0 img_fail=0 | ETA 15:42
+
+[4/200] id=20115 | title='双立人刀具套装厨房家用厨具不锈钢切菜刀切肉刀架六件套官方正品' | brand='双立人' | ETA 15:42
+  - Image: OK
+  - Saved white BG: out_step1\20115.jpg
+  - VLM(title): calling ...
+  - Title OK: '双立人刀具套装' (units=7.0)  | elapsed 2.70s
+  -> Progress: 4/200 | OK=4 invalid=0 offline/noimg=0 img_fail=0 | ETA 13:55
+
+[5/200] id=1539916 | title='红色小象婴童冰雪霜婴幼儿宝宝儿童面霜补水保湿霜舒缓润肤乳春夏' | brand='红色小象' | ETA 13:55
+  - Image: OK
+  - Saved white BG: out_step1\1539916.jpg
+  - VLM(title): calling ...
+  - Title OK: '红色小象婴童冰雪霜' (units=9.0)  | elapsed 2.67s
+  -> Progress: 5/200 | OK=5 invalid=0 offline/noimg=0 img_fail=0 | ETA 12:48
+
+[6/200] id=35666 | title='漫花悬挂式抽纸厕纸卫生纸巾面巾纸4层厚320抽家商用实惠装提' | brand='漫花' | ETA 12:49
+  - Image: OK
+  - Saved white BG: out_step1\35666.jpg
+  - VLM(title): calling ...
+  - Title OK: '漫花挂式抽纸' (units=6.0)  | elapsed 2.65s
+  -> Progress: 6/200 | OK=6 invalid=0 offline/noimg=0 img_fail=0 | ETA 12:03
+
+[7/200] id=9620 | title='宫里上新珍珠手链女款天然正品轻奢小众精致福袋手串妈妈生日礼物' | brand='宫里上新' | ETA 12:03
+  - Image: OK
+  - Saved white BG: out_step1\9620.jpg
+  - VLM(title): calling ...
+  - Title OK: '宫里上新珍珠手链' (units=8.0)  | elapsed 2.70s
+  -> Progress: 7/200 | OK=7 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:31
+
+[8/200] id=1234805 | title='郎酒53度红花郎15酱香型高档白酒整箱500ml* 6瓶婚宴' | brand='郎' | ETA 11:31
+  - Image: OK
+  - Saved white BG: out_step1\1234805.jpg
+  - VLM(title): calling ...
+  - Title OK: '郎酒红花郎' (units=5.0)  | elapsed 2.66s
+  -> Progress: 8/200 | OK=8 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:05
+
+[9/200] id=103452 | title='MOCHA摩卡榨汁机汁渣分离原汁机家用全自动慢磨大口径鲜榨果' | brand='摩卡（家电）' | ETA 11:05
+  - Image: OK
+  - Saved white BG: out_step1\103452.jpg
+  - VLM(title): calling ...
+  - Title OK: '摩卡榨汁机' (units=5.0)  | elapsed 2.62s
+  -> Progress: 9/200 | OK=9 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:44
+
+[10/200] id=92871 | title='周六福黄金手链5G足金计价双层小仙蝴蝶梦幻森林系列节日礼物' | brand='ZLF/周六福' | ETA 10:44
+  - Image: OK
+  - Saved white BG: out_step1\92871.jpg
+  - VLM(title): calling ...
+  - Title OK: '周六福蝴蝶手链' (units=7.0)  | elapsed 2.69s
+  -> Progress: 10/200 | OK=10 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:27
+
+[11/200] id=77440 | title='迪卡侬泳衣女夏女款游泳衣竞速连体温泉专业女士新款游泳馆IVL' | brand='Decathlon/迪卡侬' | ETA 10:27
+  - Image: OK
+  - Saved white BG: out_step1\77440.jpg
+  - VLM(title): calling ...
+  - Title OK: '迪卡侬泳衣' (units=5.0)  | elapsed 2.58s
+  -> Progress: 11/200 | OK=11 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:11
+
+[12/200] id=21443 | title='德佑婴儿绵柔巾洗脸巾宝宝干湿两用擦脸巾湿巾非棉柔巾新生儿专用' | brand='德佑' | ETA 10:11
+  - Image: OK
+  - Saved white BG: out_step1\21443.jpg
+  - VLM(title): calling ...
+  - Title OK: '德佑婴儿绵柔巾' (units=7.0)  | elapsed 2.67s
+  -> Progress: 12/200 | OK=12 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:59
+
+[13/200] id=1232489 | title='德亚德国进口脱脂纯牛奶200ml*30盒高钙营养早餐整箱0脂' | brand='德亚' | ETA 09:59
+  - Image: OK
+  - Saved white BG: out_step1\1232489.jpg
+  - VLM(title): calling ...
+  - Title OK: '德亚脱脂纯牛奶' (units=7.0)  | elapsed 2.64s
+  -> Progress: 13/200 | OK=13 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:48
+
+[14/200] id=93779 | title='正版逻辑狗思维训练全套3-4阶5-6岁家庭版益智早教礼盒专注' | brand='逻辑狗' | ETA 09:48
+  - Image: OK
+  - Saved white BG: out_step1\93779.jpg
+  - VLM(title): calling ...
+  - Title OK: '逻辑狗思维训练礼盒' (units=9.0)  | elapsed 2.63s
+  -> Progress: 14/200 | OK=14 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:38
+
+[15/200] id=64681 | title='瑞幸咖啡精品即溶冻干黑咖啡拿铁美式黑糖黑咖啡囤货装' | brand='luckin coffee/瑞幸咖啡' | ETA 09:38
+  - Image: OK
+  - Saved white BG: out_step1\64681.jpg
+  - VLM(title): calling ...
+  - Title OK: '瑞幸咖啡冻干黑咖啡' (units=9.0)  | elapsed 2.61s
+  -> Progress: 15/200 | OK=15 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:29
+
+[16/200] id=13779 | title='【618现货】正品 YSL圣罗兰彩妆礼盒 粉气垫唇冻口红生日' | brand='YSL/圣罗兰' | ETA 09:29
+  - Image: OK
+  - Saved white BG: out_step1\13779.jpg
+  - VLM(title): calling ...
+  - Title OK: 'YSL彩妆礼盒' (units=5.5)  | elapsed 2.69s
+  -> Progress: 16/200 | OK=16 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:21
+
+[17/200] id=1388476 | title='宽胶带透明大号加宽8/10cm封箱打包快递封口大号封箱胶布整' | brand='华久' | ETA 09:21
+  - Image: OK
+  - Saved white BG: out_step1\1388476.jpg
+  - VLM(title): calling ...
+  - Title OK: '华久透明胶带' (units=6.0)  | elapsed 2.63s
+  -> Progress: 17/200 | OK=17 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:14
+
+[18/200] id=73259 | title='全棉时代奈丝宝宝纸尿裤全棉面层尿裤超薄透气新生婴儿尿不湿NB' | brand='Purcotton/全棉时代' | ETA 09:14
+  - Image: OK
+  - Saved white BG: out_step1\73259.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '奈丝宝宝纸尿裤' (units=7.0)  | elapsed 12.55s
+  -> Progress: 18/200 | OK=18 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:47
+
+[19/200] id=91069 | title='周六福5G黄金星星耳链女款2代无极金系列计价足金耳坠节日礼物' | brand='ZLF/周六福' | ETA 10:47
+  - Image: OK
+  - Saved white BG: out_step1\91069.jpg
+  - VLM(title): calling ...
+  - Title OK: '周六福星星耳链' (units=7.0)  | elapsed 2.65s
+  -> Progress: 19/200 | OK=19 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:35
+
+[20/200] id=1258757 | title='周生生足金生生有囍黄金龙戒指男士生肖龙开口戒94542R计价' | brand='周生生' | ETA 10:35
+  - Image: OK
+  - Saved white BG: out_step1\1258757.jpg
+  - VLM(title): calling ...
+  - Title OK: '周生生黄金龙戒指' (units=8.0)  | elapsed 2.66s
+  -> Progress: 20/200 | OK=20 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:24
+
+[21/200] id=94536 | title='【24期免息】Roger Vivier/RV女鞋Trompe' | brand='Roger Vivier' | ETA 10:24
+  - Image: OK
+  - Saved white BG: out_step1\94536.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '漆皮高跟鞋' (units=5.0)  | elapsed 15.15s
+  -> Progress: 21/200 | OK=21 invalid=0 offline/noimg=0 img_fail=0 | ETA 12:00
+
+[22/200] id=93056 | title='潮宏基非遗花丝风雨桥黄金钻石足金吊坠高级感生日礼物不含项链 ' | brand='CHJ/潮宏基' | ETA 12:00
+  - Image: OK
+  - Saved white BG: out_step1\93056.jpg
+  - VLM(title): calling ...
+  - Title OK: '潮宏基非遗花丝吊坠' (units=9.0)  | elapsed 2.77s
+  -> Progress: 22/200 | OK=22 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:46
+
+[23/200] id=73373 | title='车载挂式抽纸餐巾纸面巾纸实惠装纸巾纸抽厕纸擦手纸' | brand='天微' | ETA 11:46
+  - Image: OK
+  - Saved white BG: out_step1\73373.jpg
+  - VLM(title): calling ...
+  - Title OK: '天微车载挂式抽纸' (units=8.0)  | elapsed 2.67s
+  -> Progress: 23/200 | OK=23 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:32
+
+[24/200] id=98449 | title='糖师爷烧饼老上海传统葱油饼手抓饼早餐蟹壳黄千层饼半成品酥饼' | brand='糖师爷' | ETA 11:32
+  - Image: OK
+  - Saved white BG: out_step1\98449.jpg
+  - VLM(title): calling ...
+  - Title OK: '糖师爷葱油饼' (units=6.0)  | elapsed 2.61s
+  -> Progress: 24/200 | OK=24 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:18
+
+[25/200] id=110787 | title='【国标消毒级】赠吨吨杯|淘淘氧棉天山白消毒级纯棉卫生巾组合' | brand='淘淘氧棉' | ETA 11:18
+  - Image: OK
+  - Saved white BG: out_step1\110787.jpg
+  - VLM(title): calling ...
+  - Title OK: '淘淘氧棉纯棉卫生巾' (units=9.0)  | elapsed 2.71s
+  -> Progress: 25/200 | OK=25 invalid=0 offline/noimg=0 img_fail=0 | ETA 11:06
+
+[26/200] id=1554477 | title='郁美净郁婴坊婴儿润肤润肤乳液100g*1' | brand='郁美净' | ETA 11:06
+  - Image: OK
+  - Saved white BG: out_step1\1554477.jpg
+  - VLM(title): calling ...
+  - Title OK: '郁美净婴儿润肤乳液' (units=9.0)  | elapsed 2.66s
+  -> Progress: 26/200 | OK=26 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:55
+
+[27/200] id=95460 | title='【自营】Evereden夏季儿童水感舒适抗光损高倍防晒喷雾S' | brand='天猫国际自营全球超级店' | ETA 10:55
+  - Image: OK
+  - Saved white BG: out_step1\95460.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Evereden防晒喷雾' (units=8.0)  | elapsed 2.62s
+  -> Progress: 27/200 | OK=27 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:44
+
+[28/200] id=45226 | title='Crocs卡骆驰蜗轮洞洞鞋男沙滩鞋户外拖鞋凉鞋女鞋|2087' | brand='Crocs' | ETA 10:44
+  - Image: OK
+  - Saved white BG: out_step1\45226.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Crocs洞洞鞋' (units=5.5)  | elapsed 2.71s
+  -> Progress: 28/200 | OK=28 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:34
+
+[29/200] id=1258150 | title='【自营】顺顺儿婴儿绵柔巾干湿两用儿童宝宝一次性洗脸巾非棉柔巾' | brand='Soondoongi/顺顺儿' | ETA 10:34
+  - Image: OK
+  - Saved white BG: out_step1\1258150.jpg
+  - VLM(title): calling ...
+  - Title OK: '顺顺儿绵柔巾' (units=6.0)  | elapsed 2.63s
+  -> Progress: 29/200 | OK=29 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:24
+
+[30/200] id=1246177 | title='丝飘星空系抽取式纸巾可擦手面纸巾家用商用宿舍用餐厅客厅厨房用' | brand='丝飘（洗护）' | ETA 10:24
+  - Image: OK
+  - Saved white BG: out_step1\1246177.jpg
+  - VLM(title): calling ...
+  - Title OK: '丝飘星空系纸巾' (units=7.0)  | elapsed 2.63s
+  -> Progress: 30/200 | OK=30 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:14
+
+[31/200] id=1400921 | title='【天猫U先】巴啦豆丁婴儿除菌湿巾新生儿湿纸巾杀菌消毒迷你便携' | brand='巴啦豆丁' | ETA 10:14
+  - Image: OK
+  - Saved white BG: out_step1\1400921.jpg
+  - VLM(title): calling ...
+  - Title OK: '巴啦豆丁婴儿湿巾' (units=8.0)  | elapsed 2.63s
+  -> Progress: 31/200 | OK=31 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:05
+
+[32/200] id=91569 | title='周大生银杏叶珍珠项链正圆珍珠强光经典珍珠项链珍珠吊坠8.5-' | brand='Chow Tai Seng/周大生' | ETA 10:05
+  - Image: OK
+  - Saved white BG: out_step1\91569.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '周大生银杏叶珍珠' (units=8.0)  | elapsed 5.35s
+  -> Progress: 32/200 | OK=32 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:11
+
+[33/200] id=1247836 | title='周六福S925淡水珍珠手链优雅双层法式小米珠手饰女生节日礼物' | brand='ZLF/周六福' | ETA 10:11
+  - Image: OK
+  - Saved white BG: out_step1\1247836.jpg
+  - VLM(title): calling ...
+  - Title OK: '周六福淡水珍珠手链' (units=9.0)  | elapsed 2.66s
+  -> Progress: 33/200 | OK=33 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:02
+
+[34/200] id=96619 | title='费列罗榛果威化巧克力8粒心形100g*1盒零食喜糖送礼表白伴' | brand='费列罗' | ETA 10:02
+  - Image: OK
+  - Saved white BG: out_step1\96619.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '费列罗榛果威化' (units=7.0)  | elapsed 5.27s
+  -> Progress: 34/200 | OK=34 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:07
+
+[35/200] id=1248901 | title='官方授权！The Beautools Rocklean日本毛' | brand='The Beautools/优姬美器' | ETA 10:07
+  - Image: OK
+  - Saved white BG: out_step1\1248901.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'The Beautools毛孔仪' (units=9.0)  | elapsed 5.29s
+  -> Progress: 35/200 | OK=35 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:11
+
+[36/200] id=1563787 | title='天美意疯狂动物城联名厚底增高常青藤乐福鞋女新款复古单鞋小皮鞋' | brand='Teenmix/天美意' | ETA 10:11
+  - Image: OK
+  - Saved white BG: out_step1\1563787.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '天美意厚底乐福鞋' (units=8.0)  | elapsed 5.25s
+  -> Progress: 36/200 | OK=36 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:14
+
+[37/200] id=95621 | title='皇后牌片仔癀珍珠霜补水保湿面霜男女润肤乳春夏护肤品旗舰店正品' | brand='PZH/片仔癀' | ETA 10:14
+  - Image: OK
+  - Saved white BG: out_step1\95621.jpg
+  - VLM(title): calling ...
+  - Title OK: '皇后牌片仔癀珍珠霜' (units=9.0)  | elapsed 2.69s
+  -> Progress: 37/200 | OK=37 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:06
+
+[38/200] id=73651 | title='伊利官方旗舰店舒化全脂牛奶220ml*24盒无乳糖学生营养牛' | brand='伊利' | ETA 10:06
+  - Image: OK
+  - Saved white BG: out_step1\73651.jpg
+  - VLM(title): calling ...
+  - Title OK: '伊利舒化全脂牛奶' (units=8.0)  | elapsed 2.65s
+  -> Progress: 38/200 | OK=38 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:58
+
+[39/200] id=83204 | title='宝宝周岁抓周道具套装祥云地毯生日周岁照背景布置全套一岁抓阄' | brand='other' | ETA 09:58
+  - Image: OK
+  - Saved white BG: out_step1\83204.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '宝宝周岁祥云地毯' (units=8.0)  | elapsed 5.26s
+  -> Progress: 39/200 | OK=39 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:00
+
+[40/200] id=1560641 | title='【明星同款】R13 2025春夏新品 VENTI 浅色双腰袢' | brand='R13' | ETA 10:00
+  - Image: OK
+  - Saved white BG: out_step1\1560641.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title OK: '浅色牛仔短裤' (units=6.0)  | elapsed 5.28s
+  -> Progress: 40/200 | OK=40 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:03
+
+[41/200] id=97650 | title='【Gree/格力官方】新一级2匹变频冷暖空调客厅立式柜机云锦' | brand='Gree/格力' | ETA 10:03
+  - Image: OK
+  - Saved white BG: out_step1\97650.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '格力新一级变频冷暖' (units=9.0)  | elapsed 5.28s
+  -> Progress: 41/200 | OK=41 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:05
+
+[42/200] id=97015 | title='【顺手买一件】babycare婴儿酵素洗衣液儿童新生宝宝专用' | brand='bc babycare' | ETA 10:05
+  - Image: OK
+  - Saved white BG: out_step1\97015.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '婴儿酵素洗衣液' (units=7.0)  | elapsed 5.23s
+  -> Progress: 42/200 | OK=42 invalid=0 offline/noimg=0 img_fail=0 | ETA 10:06
+
+[43/200] id=110712 | title='宫中秘策儿童沐浴露婴儿宝宝洗浴专用屁屁清洁沐浴液女童官方夏季' | brand='GOONG BE/宫中秘策' | ETA 10:06
+  - Image: OK
+  - Saved white BG: out_step1\110712.jpg
+  - VLM(title): calling ...
+  - Title OK: '宫中秘策沐浴露' (units=7.0)  | elapsed 2.72s
+  -> Progress: 43/200 | OK=43 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:59
+
+[44/200] id=90680 | title='【到手56000张】悬挂式抽纸厨房擦手纸巾厕纸可湿水宿舍面巾' | brand='云垚（洗护）' | ETA 09:59
+  - Image: OK
+  - Saved white BG: out_step1\90680.jpg
+  - VLM(title): calling ...
+  - Title OK: '云垚抽纸' (units=4.0)  | elapsed 2.66s
+  -> Progress: 44/200 | OK=44 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:51
+
+[45/200] id=42044 | title='24大提抽纸巾悬挂式纸抽家用整箱批湿水面巾纸厨房纸巾擦手纸囤' | brand='植维洁' | ETA 09:51
+  - Image: OK
+  - Saved white BG: out_step1\42044.jpg
+  - VLM(title): calling ...
+  - Title OK: '植维洁抽纸' (units=5.0)  | elapsed 2.62s
+  -> Progress: 45/200 | OK=45 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:43
+
+[46/200] id=76197 | title='九味佳白灼汁150ml瓶家用清蒸鱼海鲜凉拌蔬菜蘸饺子增味提鲜' | brand='味妃（食品）' | ETA 09:43
+  - Image: OK
+  - Saved white BG: out_step1\76197.jpg
+  - VLM(title): calling ...
+  - Title OK: '味妃酱油' (units=4.0)  | elapsed 2.59s
+  -> Progress: 46/200 | OK=46 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:35
+
+[47/200] id=1554249 | title='好易康溶菌酶牙膏1号改善牙龈减轻去口臭气牙结石烟茶渍美亮白' | brand='Hawking/好易康' | ETA 09:35
+  - Image: OK
+  - Saved white BG: out_step1\1554249.jpg
+  - VLM(title): calling ...
+  - Title OK: '好易康溶菌酶牙膏' (units=8.0)  | elapsed 2.63s
+  -> Progress: 47/200 | OK=47 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:28
+
+[48/200] id=94619 | title='【618立即抢购】悦诗风吟绿茶透明质酸水乳套装保湿敏感肌舒缓' | brand='innisfree/悦诗风吟' | ETA 09:28
+  - Image: OK
+  - Saved white BG: out_step1\94619.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '绿茶水乳套装' (units=6.0)  | elapsed 5.35s
+  -> Progress: 48/200 | OK=48 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:29
+
+[49/200] id=1017 | title='青岛啤酒纯干干爽清醇 麦香浓郁 整箱装330ml*24罐' | brand='TSINGTAO/青岛啤酒' | ETA 09:29
+  - Image: OK
+  - Saved white BG: out_step1\1017.jpg
+  - VLM(title): calling ...
+  - Title OK: '青岛啤酒纯干' (units=6.0)  | elapsed 2.65s
+  -> Progress: 49/200 | OK=49 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:22
+
+[50/200] id=36968 | title='傲娇的老铁匠 手工edc收纳卷轴皮套 推牌陀螺便携随身玩具收' | brand='LAUTIE/傲娇的老铁匠' | ETA 09:22
+  - Image: OK
+  - Saved white BG: out_step1\36968.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Lautie手工收纳卷轴' (units=9.0)  | elapsed 2.60s
+  -> Progress: 50/200 | OK=50 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:15
+
+[51/200] id=142030 | title='德佑婴儿绵柔巾洗脸巾一次性干湿两用加厚擦脸巾80抽12包非棉' | brand='德佑' | ETA 09:15
+  - Image: OK
+  - Saved white BG: out_step1\142030.jpg
+  - VLM(title): calling ...
+  - Title OK: '德佑婴儿绵柔巾' (units=7.0)  | elapsed 2.69s
+  -> Progress: 51/200 | OK=51 invalid=0 offline/noimg=0 img_fail=0 | ETA 09:08
+
+[52/200] id=34862 | title='耐克女子老爹鞋夏季新款复古运动鞋官方NIKE M2K TEK' | brand='Nike/耐克' | ETA 09:08
+  - Image: OK
+  - Saved white BG: out_step1\34862.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='耐克M2K TEKNO运动鞋'  | elapsed 9.91s
+  -> Progress: 52/200 | OK=51 invalid=1 offline/noimg=0 img_fail=0 | ETA 09:22
+
+[53/200] id=44646 | title='儿童牙膏6到12岁含氟10以上奥拉氟防蛀固齿宝宝3不吞咽换牙' | brand='PROTEFIX/恐龙医生' | ETA 09:22
+  - Image: OK
+  - Saved white BG: out_step1\44646.jpg
+  - VLM(title): calling ...
+  - Title OK: '恐龙医生儿童牙膏' (units=8.0)  | elapsed 2.61s
+  -> Progress: 53/200 | OK=52 invalid=1 offline/noimg=0 img_fail=0 | ETA 09:15
+
+[54/200] id=98620 | title='【甄选折扣】GANNI女装 字母印花白色圆领宽松短袖T恤衫 ' | brand='Ganni' | ETA 09:15
+  - Image: OK
+  - Saved white BG: out_step1\98620.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Ganni白色T恤' (units=6.0)  | elapsed 2.68s
+  -> Progress: 54/200 | OK=53 invalid=1 offline/noimg=0 img_fail=0 | ETA 09:09
+
+[55/200] id=53981 | title='巴布豆儿童拖鞋男童夏小童凉拖鞋女孩洞洞鞋宝宝女童凉拖夏季室内' | brand='Bobdog/巴布豆' | ETA 09:09
+  - Image: OK
+  - Saved white BG: out_step1\53981.jpg
+  - VLM(title): calling ...
+  - Title OK: '巴布豆儿童凉拖鞋' (units=8.0)  | elapsed 2.66s
+  -> Progress: 55/200 | OK=54 invalid=1 offline/noimg=0 img_fail=0 | ETA 09:02
+
+[56/200] id=25246 | title='RNW鼻贴去黑头贴收缩毛孔粉刺闭口深层清洁神器导出液女男士专' | brand='RNW/如薇' | ETA 09:02
+  - Image: OK
+  - Saved white BG: out_step1\25246.jpg
+  - VLM(title): calling ...
+  - Title OK: 'RNW鼻贴' (units=3.5)  | elapsed 2.61s
+  -> Progress: 56/200 | OK=55 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:55
+
+[57/200] id=106061 | title='美的电压力锅家用智能5升多功能电高压锅饭煲饭锅官方旗舰店正品' | brand='Midea/美的' | ETA 08:55
+  - Image: OK
+  - Saved white BG: out_step1\106061.jpg
+  - VLM(title): calling ...
+  - Title OK: '美的电压力锅' (units=6.0)  | elapsed 2.62s
+  -> Progress: 57/200 | OK=56 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:49
+
+[58/200] id=95823 | title='JETINNO/技诺 JL15全自动咖啡机意式小型家用商用办' | brand='JETINNO/技诺' | ETA 08:49
+  - Image: OK
+  - Saved white BG: out_step1\95823.jpg
+  - VLM(title): calling ...
+  - Title OK: '技诺全自动咖啡机' (units=8.0)  | elapsed 2.72s
+  -> Progress: 58/200 | OK=57 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:43
+
+[59/200] id=103093 | title='【陈都灵同款】ubras软软杯防滑硅胶胸贴聚拢婚纱用内衣隐形' | brand='Ubras' | ETA 08:43
+  - Image: OK
+  - Saved white BG: out_step1\103093.jpg
+  - VLM(title): calling ...
+  - Title OK: 'UBRAS隐形胸贴' (units=6.5)  | elapsed 2.59s
+  -> Progress: 59/200 | OK=58 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:36
+
+[60/200] id=1556930 | title='MINISO名创优品矿砂猫砂无尘钠基除臭猫矿砂天然矿石20公' | brand='MINISO/名创优品' | ETA 08:36
+  - Image: OK
+  - Saved white BG: out_step1\1556930.jpg
+  - VLM(title): calling ...
+  - Title OK: 'MINISO猫砂' (units=5.0)  | elapsed 2.64s
+  -> Progress: 60/200 | OK=59 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:30
+
+[61/200] id=34344 | title='美肤丝袜女薄款防勾丝夏季超薄肉色菠萝连裤袜潮黑丝连体美腿春天' | brand='VEICE KECIN/威斯客森' | ETA 08:30
+  - Image: OK
+  - Saved white BG: out_step1\34344.jpg
+  - VLM(title): calling ...
+  - Title OK: 'VEICE KECIN美肤丝袜' (units=9.0)  | elapsed 2.66s
+  -> Progress: 61/200 | OK=60 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:24
+
+[62/200] id=60418 | title='力狼狗粮幼犬40斤装大型犬金毛边牧阿拉斯加哈士奇全犬通用型2' | brand='力狼' | ETA 08:24
+  - Image: OK
+  - Saved white BG: out_step1\60418.jpg
+  - VLM(title): calling ...
+  - Title OK: '力狼幼犬全犬通用型' (units=9.0)  | elapsed 2.79s
+  -> Progress: 62/200 | OK=61 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:19
+
+[63/200] id=1548998 | title='安踏儿童男女童短袜2025夏季新款舒适百搭精梳棉袜子运动' | brand='anta kids' | ETA 08:19
+  - Image: OK
+  - Saved white BG: out_step1\1548998.jpg
+  - VLM(title): calling ...
+  - Title OK: '安踏儿童短袜' (units=6.0)  | elapsed 2.61s
+  -> Progress: 63/200 | OK=62 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:13
+
+[64/200] id=78343 | title='TATA他她可露丽熊复古勃肯拖鞋女休闲厚底凉鞋2025夏新款' | brand='TATA/他她' | ETA 08:13
+  - Image: OK
+  - Saved white BG: out_step1\78343.jpg
+  - VLM(title): calling ...
+  - Title OK: 'TATA复古凉鞋' (units=6.0)  | elapsed 2.73s
+  -> Progress: 64/200 | OK=63 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:08
+
+[65/200] id=74684 | title='【618狂欢抢购】鲜的蕊了冷藏冷冻密封袋家用冰箱食品级保鲜袋' | brand='鲜的蕊了' | ETA 08:08
+  - Image: OK
+  - Saved white BG: out_step1\74684.jpg
+  - VLM(title): calling ...
+  - Title OK: '鲜的蕊了冷藏袋' (units=7.0)  | elapsed 2.64s
+  -> Progress: 65/200 | OK=64 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:02
+
+[66/200] id=91618 | title='考古挖掘恐龙蛋化石挖宝石玩具手工儿童生日礼物宝藏男孩女小学生' | brand='奋发（母婴）' | ETA 08:02
+  - Image: OK
+  - Saved white BG: out_step1\91618.jpg
+  - VLM(title): calling ...
+  - Title OK: '奋发恐龙蛋化石' (units=7.0)  | elapsed 2.74s
+  -> Progress: 66/200 | OK=65 invalid=1 offline/noimg=0 img_fail=0 | ETA 07:57
+
+[67/200] id=1560578 | title='【早秋新品】JIL SANDER 2025新品 女士 绵羊毛' | brand='Jil Sander' | ETA 07:57
+  - Image: OK
+  - Saved white BG: out_step1\1560578.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'Jil Sander大衣' (units=6.5)  | elapsed 12.48s
+  -> Progress: 67/200 | OK=66 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:11
+
+[68/200] id=109923 | title='【品牌精选】VERSACE范思哲美杜莎大表盘手表女 安克拉红' | brand='Versace/范思哲' | ETA 08:11
+  - Image: OK
+  - Saved white BG: out_step1\109923.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Versace范思哲手表' (units=8.5)  | elapsed 2.66s
+  -> Progress: 68/200 | OK=67 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:05
+
+[69/200] id=1240343 | title='斑布悬挂式抽纸巾竹纤维竹浆本色壁挂式厕所抽纸巾家用卫生抽纸' | brand='斑布' | ETA 08:05
+  - Image: OK
+  - Saved white BG: out_step1\1240343.jpg
+  - VLM(title): calling ...
+  - Title OK: '斑布悬挂式抽纸巾' (units=8.0)  | elapsed 2.69s
+  -> Progress: 69/200 | OK=68 invalid=1 offline/noimg=0 img_fail=0 | ETA 08:00
+
+[70/200] id=1086 | title='(新国标)皇家美素力婴儿配方奶粉(0-6月)1段800g×1' | brand='Friso/美素佳儿' | ETA 08:00
+  - Image: OK
+  - Saved white BG: out_step1\1086.jpg
+  - VLM(title): calling ...
+  - Title OK: '皇家美素力奶粉' (units=7.0)  | elapsed 2.63s
+  -> Progress: 70/200 | OK=69 invalid=1 offline/noimg=0 img_fail=0 | ETA 07:54
+
+[71/200] id=1547855 | title='好奇六层乳霜纸婴儿厚牛乳纸20抽12包超柔纸巾手口可用' | brand='HUGGIES/好奇' | ETA 07:54
+  - Image: OK
+  - Saved white BG: out_step1\1547855.jpg
+  - VLM(title): calling ...
+  - Title OK: 'HUGGIES·婴儿纸巾' (units=7.5)  | elapsed 2.66s
+  -> Progress: 71/200 | OK=70 invalid=1 offline/noimg=0 img_fail=0 | ETA 07:49
+
+[72/200] id=74246 | title='自由点卫生巾轻盈190mm羽翼轻轻迷你姨妈量少日用组合官方正' | brand='FREEMORE/自由点' | ETA 07:49
+  - Image: OK
+  - Saved white BG: out_step1\74246.jpg
+  - VLM(title): calling ...
+  - Title OK: '自由点卫生巾' (units=6.0)  | elapsed 2.69s
+  -> Progress: 72/200 | OK=71 invalid=1 offline/noimg=0 img_fail=0 | ETA 07:43
+
+[73/200] id=36182 | title='冬兰悬挂式抽纸18000张家用实惠装整箱批发卫生纸面巾纸擦手' | brand='冬兰' | ETA 07:43
+  - Image: OK
+  - Saved white BG: out_step1\36182.jpg
+  - VLM(title): calling ...
+  - Title OK: '冬兰抽纸' (units=4.0)  | elapsed 2.65s
+  -> Progress: 73/200 | OK=72 invalid=1 offline/noimg=0 img_fail=0 | ETA 07:38
+
+[74/200] id=35297 | title='华为路由X1 Pro  11根天线阵列 内置星闪网关 全新光' | brand='Huawei/华为' | ETA 07:38
+  - Image: OK
+  - Saved white BG: out_step1\35297.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='华为路由X1 Pro'  | elapsed 9.82s
+  -> Progress: 74/200 | OK=72 invalid=2 offline/noimg=0 img_fail=0 | ETA 07:45
+
+[75/200] id=65314 | title='【自营】Serge Lutens芦丹氏柏林少女/孤女/透明桂' | brand='Serge Lutens/芦丹氏' | ETA 07:45
+  - Image: OK
+  - Saved white BG: out_step1\65314.jpg
+  - VLM(title): calling ...
+  - Title OK: '芦丹氏香水' (units=5.0)  | elapsed 2.62s
+  -> Progress: 75/200 | OK=73 invalid=2 offline/noimg=0 img_fail=0 | ETA 07:39
+
+[76/200] id=1238291 | title='优柚乐婴儿湿巾纸新生手口专用屁宝宝幼儿童80抽5包家庭实惠大' | brand='优柚乐（洗护）' | ETA 07:39
+  - Image: OK
+  - Saved white BG: out_step1\1238291.jpg
+  - VLM(title): calling ...
+  - Title OK: '优柚乐婴儿湿巾纸' (units=8.0)  | elapsed 2.72s
+  -> Progress: 76/200 | OK=74 invalid=2 offline/noimg=0 img_fail=0 | ETA 07:34
+
+[77/200] id=62551 | title='攀升平面高配设计师电脑14600KF/14700KF主机视频' | brand='IPASON/攀升' | ETA 07:34
+  - Image: OK
+  - Saved white BG: out_step1\62551.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='攀升T400台式机'  | elapsed 9.90s
+  -> Progress: 77/200 | OK=74 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:40
+
+[78/200] id=1559282 | title='sato佐藤美白丸180粒内服淡化色斑雀斑焕白维生素c褪黑色' | brand='sato' | ETA 07:40
+  - Image: OK
+  - Saved white BG: out_step1\1559282.jpg
+  - VLM(title): calling ...
+  - Title OK: '佐藤美白丸' (units=5.0)  | elapsed 2.70s
+  -> Progress: 78/200 | OK=75 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:35
+
+[79/200] id=16549 | title='【臻选礼遇】MaxMara春夏女装印花圆领T恤9971034' | brand='MaxMara' | ETA 07:35
+  - Image: OK
+  - Saved white BG: out_step1\16549.jpg
+  - VLM(title): calling ...
+  - Title OK: 'MaxMara春夏T恤' (units=7.0)  | elapsed 2.67s
+  -> Progress: 79/200 | OK=76 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:30
+
+[80/200] id=95997 | title='icebreaker夏季100%美丽诺羊毛女150 Tech' | brand='icebreaker' | ETA 07:30
+  - Image: OK
+  - Saved white BG: out_step1\95997.jpg
+  - VLM(title): calling ...
+  - Title OK: 'icebreaker夏季T恤' (units=8.5)  | elapsed 2.63s
+  -> Progress: 80/200 | OK=77 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:24
+
+[81/200] id=48122 | title='电瓶车专用逆变器48v60v72v转220v通用大功率家用车' | brand='森海鸿图' | ETA 07:24
+  - Image: OK
+  - Saved white BG: out_step1\48122.jpg
+  - VLM(title): calling ...
+  - Title OK: '森海鸿图逆变器' (units=7.0)  | elapsed 2.71s
+  -> Progress: 81/200 | OK=78 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:19
+
+[82/200] id=1541905 | title='雷允上黄精九华山原产黄精片100g官方正品搭配枸杞泡茶水' | brand='雷允上' | ETA 07:19
+  - Image: OK
+  - Saved white BG: out_step1\1541905.jpg
+  - VLM(title): calling ...
+  - Title OK: '雷允上黄精' (units=5.0)  | elapsed 2.64s
+  -> Progress: 82/200 | OK=79 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:14
+
+[83/200] id=1253892 | title='黛米珠宝 凌羽7.3-8.3mm精品级近圆无核淡水珍珠项链S' | brand='黛米' | ETA 07:14
+  - Image: OK
+  - Saved white BG: out_step1\1253892.jpg
+  - VLM(title): calling ...
+  - Title OK: '黛米珍珠项链' (units=6.0)  | elapsed 2.64s
+  -> Progress: 83/200 | OK=80 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:09
+
+[84/200] id=44172 | title='全棉时代新生婴儿手口湿巾便携湿纸巾100%棉纯棉新生儿宝宝2' | brand='Purcotton/全棉时代' | ETA 07:09
+  - Image: OK
+  - Saved white BG: out_step1\44172.jpg
+  - VLM(title): calling ...
+  - Title OK: '全棉时代婴儿湿巾' (units=8.0)  | elapsed 2.70s
+  -> Progress: 84/200 | OK=81 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:04
+
+[85/200] id=58561 | title='6提1300张悬挂式抽纸巾家用实惠装餐巾纸整箱批纸抽大包擦手' | brand='植维洁' | ETA 07:04
+  - Image: OK
+  - Saved white BG: out_step1\58561.jpg
+  - VLM(title): calling ...
+  - Title OK: '植维洁悬挂式抽纸' (units=8.0)  | elapsed 2.60s
+  -> Progress: 85/200 | OK=82 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:59
+
+[86/200] id=1240907 | title='发顺丰-2025新茶西湖牌明前特级龙井头采50g罐' | brand='西湖' | ETA 06:59
+  - Image: OK
+  - Saved white BG: out_step1\1240907.jpg
+  - VLM(title): calling ...
+  - Title OK: '西湖龙井' (units=4.0)  | elapsed 2.63s
+  -> Progress: 86/200 | OK=83 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:54
+
+[87/200] id=107524 | title='【新品】优贝青少年自行车铝合金变速山地车男女学生车光轮成长车' | brand='Royalbaby/优贝' | ETA 06:54
+  - Image: OK
+  - Saved white BG: out_step1\107524.jpg
+  - VLM(title): calling ...
+  - Title OK: '优贝青少年自行车' (units=8.0)  | elapsed 2.66s
+  -> Progress: 87/200 | OK=84 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:49
+
+[88/200] id=1559585 | title='虞书欣同款SAM EDELMAN山姆爱德曼厚底阿甘鞋2025' | brand='SAM EDELMAN' | ETA 06:49
+  - Image: OK
+  - Saved white BG: out_step1\1559585.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '厚底阿甘鞋' (units=5.0)  | elapsed 15.20s
+  -> Progress: 88/200 | OK=85 invalid=3 offline/noimg=0 img_fail=0 | ETA 07:00
+
+[89/200] id=43439 | title='数控夹头定位器靠山46机0640弹簧夹头工件可调定位36机5' | brand='睿智数控刀具' | ETA 07:00
+  - Image: OK
+  - Saved white BG: out_step1\43439.jpg
+  - VLM(title): calling ...
+  - Title OK: '睿智数控夹头定位器' (units=9.0)  | elapsed 2.63s
+  -> Progress: 89/200 | OK=86 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:55
+
+[90/200] id=106077 | title='容声300升家用冰柜商用大容量单温冷柜全冷冻冷藏减霜节能冰箱' | brand='Ronshen/容声' | ETA 06:55
+  - Image: OK
+  - Saved white BG: out_step1\106077.jpg
+  - VLM(title): calling ...
+  - Title OK: '容声冰柜' (units=4.0)  | elapsed 2.68s
+  -> Progress: 90/200 | OK=87 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:50
+
+[91/200] id=109295 | title='【经典款】北面男户外长裤速干裤舒适透气新款TheNorthF' | brand='THE NORTH FACE/北面' | ETA 06:50
+  - Image: OK
+  - Saved white BG: out_step1\109295.jpg
+  - VLM(title): calling ...
+  - Title OK: '北面男户外长裤' (units=7.0)  | elapsed 2.64s
+  -> Progress: 91/200 | OK=88 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:45
+
+[92/200] id=27884 | title='卓力全新升级高端挂烫机智控恒温香氛熨烫机家用衣物护理中心G7' | brand='卓力（生活电器）' | ETA 06:45
+  - Image: OK
+  - Saved white BG: out_step1\27884.jpg
+  - VLM(title): calling ...
+  - Title OK: '卓力挂烫机' (units=5.0)  | elapsed 2.63s
+  -> Progress: 92/200 | OK=89 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:40
+
+[93/200] id=96252 | title='MOLYVIVI魔力薇薇修身软壳外套女登山收腰上衣2024新' | brand='MOLY VIVI/魔力薇薇' | ETA 06:40
+  - Image: OK
+  - Saved white BG: out_step1\96252.jpg
+  - VLM(title): calling ...
+  - Title OK: 'MOLY VIVI软壳外套' (units=8.0)  | elapsed 2.64s
+  -> Progress: 93/200 | OK=90 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:35
+
+[94/200] id=1236193 | title='六桂福珠宝碧玉佳人手串天然和田玉国风玉髓手链女款七夕送礼指南' | brand='LUK KWAI FOOK/六桂福' | ETA 06:35
+  - Image: OK
+  - Saved white BG: out_step1\1236193.jpg
+  - VLM(title): calling ...
+  - Title OK: '六桂福碧玉手串' (units=7.0)  | elapsed 2.64s
+  -> Progress: 94/200 | OK=91 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:30
+
+[95/200] id=104665 | title='曼秀雷敦痘痘贴acnes乐肤洁祛痘贴遮瑕隔离抗痘隐形日夜修护' | brand='Mentholatum/曼秀雷敦' | ETA 06:30
+  - Image: OK
+  - Saved white BG: out_step1\104665.jpg
+  - VLM(title): calling ...
+  - Title OK: '曼秀雷敦痘痘贴' (units=7.0)  | elapsed 2.69s
+  -> Progress: 95/200 | OK=92 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:25
+
+[96/200] id=1385 | title='福临门大米秋田小町10kg*1袋东北大米大包装粳米' | brand='福临门' | ETA 06:25
+  - Image: OK
+  - Saved white BG: out_step1\1385.jpg
+  - VLM(title): calling ...
+  - Title OK: '福临门大米' (units=5.0)  | elapsed 2.64s
+  -> Progress: 96/200 | OK=93 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:20
+
+[97/200] id=97680 | title='特百惠微波汤碗460ml上班族上学野餐便当饭盒便携密封保鲜燕' | brand='Tupperware/特百惠' | ETA 06:20
+  - Image: OK
+  - Saved white BG: out_step1\97680.jpg
+  - VLM(title): calling ...
+  - Title OK: '特百惠微波汤碗' (units=7.0)  | elapsed 2.64s
+  -> Progress: 97/200 | OK=94 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:16
+
+[98/200] id=100187 | title='【618现货速达】RYO吕紫吕洗发水控油保湿强韧护发素洗头膏' | brand='RYO/吕' | ETA 06:16
+  - Image: OK
+  - Saved white BG: out_step1\100187.jpg
+  - VLM(title): calling ...
+  - Title OK: '吕控油洗发水' (units=6.0)  | elapsed 2.62s
+  -> Progress: 98/200 | OK=95 invalid=3 offline/noimg=0 img_fail=0 | ETA 06:11
+
+[99/200] id=95817 | title='【学而思官方旗舰店】 摩比全脑开发3000问全脑开发思维逻辑' | brand='学而思' | ETA 06:11
+  - Image: OK
+  - Saved white BG: out_step1\95817.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符；等价长度超限(>9)
+  - Title NOT OK: reason=invalid_chars → final='全脑开发3000问'  | elapsed 9.91s
+  -> Progress: 99/200 | OK=95 invalid=4 offline/noimg=0 img_fail=0 | ETA 06:14
+
+[100/200] id=73948 | title='恒大苏打水茉莉味370ml/24瓶装苏打水饮料整箱开瓶即饮好' | brand='恒大' | ETA 06:14
+  - Image: OK
+  - Saved white BG: out_step1\73948.jpg
+  - VLM(title): calling ...
+  - Title OK: '恒大苏打水' (units=5.0)  | elapsed 2.66s
+  -> Progress: 100/200 | OK=96 invalid=4 offline/noimg=0 img_fail=0 | ETA 06:09
+
+[101/200] id=103935 | title='【自营】好奇奢透呼吸拉拉裤L/XL/XXL/XXXL 2件装' | brand='HUGGIES/好奇' | ETA 06:09
+  - Image: OK
+  - Saved white BG: out_step1\103935.jpg
+  - VLM(title): calling ...
+  - Title OK: 'HUGGIES奢透拉拉裤' (units=8.5)  | elapsed 2.64s
+  -> Progress: 101/200 | OK=97 invalid=4 offline/noimg=0 img_fail=0 | ETA 06:04
+
+[102/200] id=1237373 | title='【自营】中国香港海天温胆汤免煮浓缩中药颗粒理气化痰草晶华汉方' | brand='海天牌' | ETA 06:04
+  - Image: OK
+  - Saved white BG: out_step1\1237373.jpg
+  - VLM(title): calling ...
+  - Title OK: '海天温胆汤' (units=5.0)  | elapsed 2.67s
+  -> Progress: 102/200 | OK=98 invalid=4 offline/noimg=0 img_fail=0 | ETA 06:00
+
+[103/200] id=82162 | title='周生生航海王骷髅头海贼旗黄金转运珠手链串珠89006C定价' | brand='周生生' | ETA 06:00
+  - Image: OK
+  - Saved white BG: out_step1\82162.jpg
+  - VLM(title): calling ...
+  - Title OK: '周生生航海王骷髅头' (units=9.0)  | elapsed 2.68s
+  -> Progress: 103/200 | OK=99 invalid=4 offline/noimg=0 img_fail=0 | ETA 05:55
+
+[104/200] id=52732 | title='《编织梦》甄奢纯手工蕾丝复古编织无核淡水珍珠锁骨项链脖子遮疤' | brand='甄奢' | ETA 05:55
+  - Image: OK
+  - Saved white BG: out_step1\52732.jpg
+  - VLM(title): calling ...
+  - Title OK: '甄奢·珍珠项链' (units=6.0)  | elapsed 2.62s
+  -> Progress: 104/200 | OK=100 invalid=4 offline/noimg=0 img_fail=0 | ETA 05:50
+
+[105/200] id=64131 | title='整箱 官方贵州鸭溪窖54度复古浓头酱尾浓香型白酒固态纯粮食酒' | brand='鸭溪' | ETA 05:50
+  - Image: OK
+  - Saved white BG: out_step1\64131.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符；等价长度超限(>9)
+  - Title NOT OK: reason=invalid_chars → final='鸭溪54度浓香型白酒'  | elapsed 9.94s
+  -> Progress: 105/200 | OK=100 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:52
+
+[106/200] id=1564788 | title='Coati/小浣熊儿童防蛀护齿牙膏3-6-12岁以上宝宝奥拉' | brand='Coati/小浣熊' | ETA 05:52
+  - Image: OK
+  - Saved white BG: out_step1\1564788.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '小浣熊防蛀护齿牙膏' (units=9.0)  | elapsed 5.29s
+  -> Progress: 106/200 | OK=101 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:50
+
+[107/200] id=1546977 | title='三竹电动扳手无刷冲击扳手850N大扭力汽保专用汽修架子工锂电' | brand='三竹（五金）' | ETA 05:50
+  - Image: OK
+  - Saved white BG: out_step1\1546977.jpg
+  - VLM(title): calling ...
+  - Title OK: '三竹电动扳手' (units=6.0)  | elapsed 2.70s
+  -> Progress: 107/200 | OK=102 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:45
+
+[108/200] id=102982 | title='小米米家巨省电空调挂机冷暖两用3匹一级能效壁挂式家用客厅官方' | brand='MIUI/小米' | ETA 05:45
+  - Image: OK
+  - Saved white BG: out_step1\102982.jpg
+  - VLM(title): calling ...
+  - Title OK: '小米空调' (units=4.0)  | elapsed 2.62s
+  -> Progress: 108/200 | OK=103 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:41
+
+[109/200] id=21722 | title='百草味芒果干小吃零食120g*6袋果脯蜜饯水果干果休闲零食' | brand='BE＆CHEERY/百草味' | ETA 05:41
+  - Image: OK
+  - Saved white BG: out_step1\21722.jpg
+  - VLM(title): calling ...
+  - Title OK: '百草味芒果干' (units=6.0)  | elapsed 2.64s
+  -> Progress: 109/200 | OK=104 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:36
+
+[110/200] id=1562519 | title='欧克利【破风有型赛场焦点】中性太阳镜Sphaera运动半框墨' | brand='Oakley/欧克利' | ETA 05:36
+  - Image: OK
+  - Saved white BG: out_step1\1562519.jpg
+  - VLM(title): calling ...
+  - Title OK: '欧克利破风墨镜' (units=7.0)  | elapsed 2.62s
+  -> Progress: 110/200 | OK=105 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:32
+
+[111/200] id=1559704 | title='榄菊蟑螂屋贴粘板蟑螂药家用非无毒全窝端全魔盒捕捉灭消杀除蟑螂' | brand='榄菊' | ETA 05:32
+  - Image: OK
+  - Saved white BG: out_step1\1559704.jpg
+  - VLM(title): calling ...
+  - Title OK: '榄菊蟑螂屋' (units=5.0)  | elapsed 2.71s
+  -> Progress: 111/200 | OK=106 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:27
+
+[112/200] id=1537571 | title='【折扣倒计时】RENE CAOVILLA CINDERELL' | brand='RENE CAOVILLA' | ETA 05:27
+  - Image: OK
+  - Saved white BG: out_step1\1537571.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'CAOVILLA平底鞋' (units=7.0)  | elapsed 12.59s
+  -> Progress: 112/200 | OK=107 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:30
+
+[113/200] id=23215 | title='维达商用大盘纸大卷纸厕所卫生纸酒店纸巾3层650克实惠装整箱' | brand='Vinda/维达' | ETA 05:30
+  - Image: OK
+  - Saved white BG: out_step1\23215.jpg
+  - VLM(title): calling ...
+  - Title OK: '维达商用大盘纸' (units=7.0)  | elapsed 2.67s
+  -> Progress: 113/200 | OK=108 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:26
+
+[114/200] id=4733 | title='勺子一次性甜品冰淇淋打包塑料勺独立装布丁酸奶小勺商用批发整箱' | brand='古月天呈餐饮具工厂店' | ETA 05:26
+  - Image: OK
+  - Saved white BG: out_step1\4733.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '一次性甜品勺' (units=6.0)  | elapsed 5.23s
+  -> Progress: 114/200 | OK=109 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:23
+
+[115/200] id=108057 | title='【政府补贴15%】乐程式卷发棒男士专用直发夹板短发男生直板夹' | brand='LivChic/乐程式' | ETA 05:23
+  - Image: OK
+  - Saved white BG: out_step1\108057.jpg
+  - VLM(title): calling ...
+  - Title OK: '乐程式卷发棒' (units=6.0)  | elapsed 2.61s
+  -> Progress: 115/200 | OK=110 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:19
+
+[116/200] id=1391606 | title='艾丽乐悬挂式抽纸家用实惠装整箱壁挂底部纸巾大包加厚厕所卫生纸' | brand='艾丽乐' | ETA 05:19
+  - Image: OK
+  - Saved white BG: out_step1\1391606.jpg
+  - VLM(title): calling ...
+  - Title OK: '艾丽乐抽纸' (units=5.0)  | elapsed 2.68s
+  -> Progress: 116/200 | OK=111 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:14
+
+[117/200] id=1538958 | title='vs沙宣洗发水露光感莹润莹润亮泽修护干枯受损改善暗哑蓬松发' | brand='沙宣' | ETA 05:14
+  - Image: OK
+  - Saved white BG: out_step1\1538958.jpg
+  - VLM(title): calling ...
+  - Title OK: '沙宣洗发水' (units=5.0)  | elapsed 2.65s
+  -> Progress: 117/200 | OK=112 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:09
+
+[118/200] id=30268 | title='铜师傅《吉祥苹果》客厅平安果铜摆件 家居装饰工艺品 节日礼物' | brand='铜师傅' | ETA 05:09
+  - Image: OK
+  - Saved white BG: out_step1\30268.jpg
+  - VLM(title): calling ...
+  - Title OK: '铜师傅吉祥苹果' (units=7.0)  | elapsed 2.64s
+  -> Progress: 118/200 | OK=113 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:05
+
+[119/200] id=101501 | title='康之味NFC100%纯椰子水0添加东南亚进口椰源246ml*' | brand='康之味' | ETA 05:05
+  - Image: OK
+  - Saved white BG: out_step1\101501.jpg
+  - VLM(title): calling ...
+  - Title OK: '康之味椰子水' (units=6.0)  | elapsed 2.62s
+  -> Progress: 119/200 | OK=114 invalid=5 offline/noimg=0 img_fail=0 | ETA 05:01
+
+[120/200] id=52643 | title='周六福黄18K金珍珠项链小米珠优雅淡水珍珠送妈妈礼物送礼盒' | brand='ZLF/周六福' | ETA 05:01
+  - Image: OK
+  - Saved white BG: out_step1\52643.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符；等价长度超限(>9)
+  - Title NOT OK: reason=invalid_chars → final='18K金珍珠项链'  | elapsed 9.91s
+  -> Progress: 120/200 | OK=114 invalid=6 offline/noimg=0 img_fail=0 | ETA 05:01
+
+[121/200] id=1255712 | title='【以旧换新】易科美三源光子净肤仪祛痘舒缓控油便携' | brand='YDUNVIE/易科美' | ETA 05:01
+  - Image: OK
+  - Saved white BG: out_step1\1255712.jpg
+  - VLM(title): calling ...
+  - Title OK: '易科美净肤仪' (units=6.0)  | elapsed 2.67s
+  -> Progress: 121/200 | OK=115 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:56
+
+[122/200] id=15032 | title='炊大皇无氟涂层不粘锅炒锅家用聚油不沾锅燃气电磁炉用钛锅炒菜锅' | brand='COOKER KinG/炊大皇' | ETA 04:56
+  - Image: OK
+  - Saved white BG: out_step1\15032.jpg
+  - VLM(title): calling ...
+  - Title OK: '炊大皇炒锅' (units=5.0)  | elapsed 2.61s
+  -> Progress: 122/200 | OK=116 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:52
+
+[123/200] id=103125 | title='ohsunny带帽檐防晒面罩女防护防紫外线冰丝脸基尼全脸护颈' | brand='OhSunny' | ETA 04:52
+  - Image: OK
+  - Saved white BG: out_step1\103125.jpg
+  - VLM(title): calling ...
+  - Title OK: 'OhSunny防晒面罩' (units=7.5)  | elapsed 2.70s
+  -> Progress: 123/200 | OK=117 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:48
+
+[124/200] id=59722 | title='大提悬挂式大包抽纸餐巾纸家用实惠装大包婴幼儿面巾卫生纸巾' | brand='天府韵' | ETA 04:48
+  - Image: OK
+  - Saved white BG: out_step1\59722.jpg
+  - VLM(title): calling ...
+  - Title OK: '天府韵花语抽纸' (units=7.0)  | elapsed 2.70s
+  -> Progress: 124/200 | OK=118 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:43
+
+[125/200] id=596 | title='拜灭士德国拜耳蟑螂药非无毒家用全窝强效端第正品虫卵一名双杀' | brand='PREMISE/拜灭士' | ETA 04:43
+  - Image: OK
+  - Saved white BG: out_step1\596.jpg
+  - VLM(title): calling ...
+  - Title OK: '拜灭士蟑螂药' (units=6.0)  | elapsed 2.62s
+  -> Progress: 125/200 | OK=119 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:39
+
+[126/200] id=1247064 | title='小仙炖燕窝萱草花礼盒鲜炖即食营养滋补品送长辈朋友孕妇礼物' | brand='小仙炖' | ETA 04:39
+  - Image: OK
+  - Saved white BG: out_step1\1247064.jpg
+  - VLM(title): calling ...
+  - Title OK: '小仙炖燕窝礼盒' (units=7.0)  | elapsed 2.69s
+  -> Progress: 126/200 | OK=120 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:34
+
+[127/200] id=142207 | title='任选舒莱卫生巾全系列随心配透气悬浮芯姨妈巾安睡裤【官方正品】' | brand='舒莱' | ETA 04:34
+  - Image: OK
+  - Saved white BG: out_step1\142207.jpg
+  - VLM(title): calling ...
+  - Title OK: '舒莱卫生巾' (units=5.0)  | elapsed 2.60s
+  -> Progress: 127/200 | OK=121 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:30
+
+[128/200] id=764 | title='盖菜罩饭菜罩折叠餐桌菜盖罩剩菜水果防苍蝇神器家用2025新款' | brand='沃尊' | ETA 04:30
+  - Image: OK
+  - Saved white BG: out_step1\764.jpg
+  - VLM(title): calling ...
+  - Title OK: '沃尊防苍蝇罩' (units=6.0)  | elapsed 2.64s
+  -> Progress: 128/200 | OK=122 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:26
+
+[129/200] id=1394480 | title='可卿珠宝 红豆 素面红宝石项链女18k颈链锁骨手链彩宝正品礼' | brand='Ka-Ching/可卿' | ETA 04:26
+  - Image: OK
+  - Saved white BG: out_step1\1394480.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '可卿红豆红宝石项链' (units=9.0)  | elapsed 5.24s
+  -> Progress: 129/200 | OK=123 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:23
+
+[130/200] id=110796 | title='Harbor House大豆纤维A类母婴云朵四季被芯春秋全棉' | brand='Harbor House' | ETA 04:23
+  - Image: OK
+  - Saved white BG: out_step1\110796.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '大豆纤维四季被芯' (units=8.0)  | elapsed 5.20s
+  -> Progress: 130/200 | OK=124 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:20
+
+[131/200] id=1239829 | title='大黄蜂儿童洞洞鞋女童拖鞋外穿防滑小孩凉拖夏季新款女孩沙滩凉鞋' | brand='BIG WASP/大黄蜂' | ETA 04:20
+  - Image: OK
+  - Saved white BG: out_step1\1239829.jpg
+  - VLM(title): calling ...
+  - Title OK: '大黄蜂儿童洞洞鞋' (units=8.0)  | elapsed 2.63s
+  -> Progress: 131/200 | OK=125 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:16
+
+[132/200] id=1558984 | title='蓝漂1280张*12大提悬挂式抽纸大包家用实惠装面巾纸餐巾纸' | brand='Lampure/蓝漂' | ETA 04:16
+  - Image: OK
+  - Saved white BG: out_step1\1558984.jpg
+  - VLM(title): calling ...
+  - Title OK: '蓝漂卫生纸' (units=5.0)  | elapsed 2.68s
+  -> Progress: 132/200 | OK=126 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:11
+
+[133/200] id=102908 | title='【立即抢购】ghd黄金版直板夹卷发器夹板烫卷发棒拉直发夹板防' | brand='GHD' | ETA 04:11
+  - Image: OK
+  - Saved white BG: out_step1\102908.jpg
+  - VLM(title): calling ...
+  - Title OK: 'ghd直板夹' (units=4.5)  | elapsed 2.56s
+  -> Progress: 133/200 | OK=127 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:07
+
+[134/200] id=37763 | title='丝飘萌宠家用实惠装婴儿擦手纸面巾纸便携装宝宝乳霜保湿云柔纸巾' | brand='丝飘（洗护）' | ETA 04:07
+  - Image: OK
+  - Saved white BG: out_step1\37763.jpg
+  - VLM(title): calling ...
+  - Title OK: '丝飘萌宠纸巾' (units=6.0)  | elapsed 2.68s
+  -> Progress: 134/200 | OK=128 invalid=6 offline/noimg=0 img_fail=0 | ETA 04:03
+
+[135/200] id=92479 | title='周大生黄金戒指足金月见素圈戒方糖指环订婚戒生日礼物送女生' | brand='Chow Tai Seng/周大生' | ETA 04:03
+  - Image: OK
+  - Saved white BG: out_step1\92479.jpg
+  - VLM(title): calling ...
+  - Title OK: '周大生黄金戒指' (units=7.0)  | elapsed 2.63s
+  -> Progress: 135/200 | OK=129 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:59
+
+[136/200] id=90649 | title='抽纸车载悬挂式纸巾家用实惠装母婴整箱卫生纸餐巾纸擦手纸' | brand='冬兰' | ETA 03:59
+  - Image: OK
+  - Saved white BG: out_step1\90649.jpg
+  - VLM(title): calling ...
+  - Title OK: '冬兰抽纸' (units=4.0)  | elapsed 2.62s
+  -> Progress: 136/200 | OK=130 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:55
+
+[137/200] id=5631 | title='家用大号漏勺厨房长柄捞饺子面条勺子家用沥水漏网捞滤网沥水捞勺' | brand='关注店 优先发' | ETA 03:55
+  - Image: OK
+  - Saved white BG: out_step1\5631.jpg
+  - VLM(title): calling ...
+  - Title OK: '家用大号漏勺' (units=6.0)  | elapsed 2.60s
+  -> Progress: 137/200 | OK=131 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:50
+
+[138/200] id=1550515 | title='【季末清】良良婴儿苎麻凉席宝宝专用凉垫儿童幼儿园午睡席子' | brand='良良' | ETA 03:50
+  - Image: OK
+  - Saved white BG: out_step1\1550515.jpg
+  - VLM(title): calling ...
+  - Title OK: '良良婴儿凉席' (units=6.0)  | elapsed 2.61s
+  -> Progress: 138/200 | OK=132 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:46
+
+[139/200] id=1252019 | title='女童白色洞洞鞋蝴蝶幼儿童爆款拖鞋外穿女款女生2025年新款多' | brand='莉丝优优' | ETA 03:46
+  - Image: OK
+  - Saved white BG: out_step1\1252019.jpg
+  - VLM(title): calling ...
+  - Title OK: '莉丝优优女童洞洞鞋' (units=9.0)  | elapsed 2.72s
+  -> Progress: 139/200 | OK=133 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:42
+
+[140/200] id=38126 | title='CIGALONG龙梓嘉藕花橄榄石戒指S925银苏州园林新中式' | brand='Ciga Long' | ETA 03:42
+  - Image: OK
+  - Saved white BG: out_step1\38126.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'CIGALONG橄榄石戒指' (units=9.0)  | elapsed 5.29s
+  -> Progress: 140/200 | OK=134 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:39
+
+[141/200] id=19892 | title='【尝鲜装】贝德玛PP霜8ml*4身体乳止痒修护舒缓干敏官方正' | brand='Bioderma/贝德玛' | ETA 03:39
+  - Image: OK
+  - Saved white BG: out_step1\19892.jpg
+  - VLM(title): calling ...
+  - Title OK: '贝德玛PP霜' (units=5.0)  | elapsed 2.76s
+  -> Progress: 141/200 | OK=135 invalid=6 offline/noimg=0 img_fail=0 | ETA 03:35
+
+[142/200] id=1551782 | title='飞鹤金装1962高锌高钙儿童青少年成长奶粉800g*2罐便携' | brand='FIRMUS/飞鹤' | ETA 03:35
+  - Image: OK
+  - Saved white BG: out_step1\1551782.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='飞鹤1962奶粉'  | elapsed 9.85s
+  -> Progress: 142/200 | OK=135 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:34
+
+[143/200] id=1234464 | title='小熊树洞手工可爱香薰蜡烛森系自制生日礼物卧室伴手礼氛围感摆件' | brand='Odorflame见季 香氛伴手礼' | ETA 03:34
+  - Image: OK
+  - Saved white BG: out_step1\1234464.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '小熊树洞香薰蜡烛' (units=8.0)  | elapsed 5.29s
+  -> Progress: 143/200 | OK=136 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:31
+
+[144/200] id=1562048 | title='Stella McCartney2025春季新品短款精裁羊毛' | brand='Stella Mccartney' | ETA 03:31
+  - Image: OK
+  - Saved white BG: out_step1\1562048.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '马甲' (units=2.0)  | elapsed 14.92s
+  -> Progress: 144/200 | OK=137 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:32
+
+[145/200] id=94329 | title='【2024新款】kate spade ks Spot The' | brand='kate spade' | ETA 03:32
+  - Image: OK
+  - Saved white BG: out_step1\94329.jpg
+  - VLM(title): calling ...
+  - Title OK: 'kate spade黑桃手镯' (units=8.5)  | elapsed 2.62s
+  -> Progress: 145/200 | OK=138 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:27
+
+[146/200] id=1252345 | title='周生生珠宝饰品黄金足金素圈扭绳纹戒指92309R定价' | brand='周生生' | ETA 03:27
+  - Image: OK
+  - Saved white BG: out_step1\1252345.jpg
+  - VLM(title): calling ...
+  - Title OK: '周生生扭绳纹戒指' (units=8.0)  | elapsed 2.67s
+  -> Progress: 146/200 | OK=139 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:23
+
+[147/200] id=25372 | title='pinkbear皮可熊少女梦境九色眼影三丽鸥联名款修容哑光女' | brand='Pink Bear' | ETA 03:23
+  - Image: OK
+  - Saved white BG: out_step1\25372.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Pink Bear九色眼影' (units=8.0)  | elapsed 2.59s
+  -> Progress: 147/200 | OK=140 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:19
+
+[148/200] id=1387838 | title='手工制掸除尘神器 加厚密汽车鸡毛掸子家用伸缩不掉毛尘扫清洁掸' | brand='金碧丝' | ETA 03:19
+  - Image: OK
+  - Saved white BG: out_step1\1387838.jpg
+  - VLM(title): calling ...
+  - Title OK: '金碧丝鸡毛掸子' (units=7.0)  | elapsed 2.66s
+  -> Progress: 148/200 | OK=141 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:15
+
+[149/200] id=105789 | title='美的电压力锅5升家用双胆高压锅多功能6升电饭煲2-6人' | brand='Midea/美的' | ETA 03:15
+  - Image: OK
+  - Saved white BG: out_step1\105789.jpg
+  - VLM(title): calling ...
+  - Title OK: '美的电压力锅' (units=6.0)  | elapsed 2.62s
+  -> Progress: 149/200 | OK=142 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:11
+
+[150/200] id=2168 | title='川月悬挂氏纸面巾尺寸156*175mm，1900张/包，壁挂' | brand='0001' | ETA 03:11
+  - Image: OK
+  - Saved white BG: out_step1\2168.jpg
+  - VLM(title): calling ...
+  - Title OK: '川月纸巾' (units=4.0)  | elapsed 2.62s
+  -> Progress: 150/200 | OK=143 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:07
+
+[151/200] id=109182 | title='【618狂欢】JOVS骄予时超膜刀美容仪家用胶原抗衰紧致淡细' | brand='JOVS' | ETA 03:07
+  - Image: OK
+  - Saved white BG: out_step1\109182.jpg
+  - VLM(title): calling ...
+  - Title OK: 'JOVS美容仪' (units=5.0)  | elapsed 2.60s
+  -> Progress: 151/200 | OK=144 invalid=7 offline/noimg=0 img_fail=0 | ETA 03:03
+
+[152/200] id=52468 | title='周六福黄金耳钉女款5d硬金珐琅蝴蝶仙踪足金定价耳饰甜心618' | brand='ZLF/周六福' | ETA 03:03
+  - Image: OK
+  - Saved white BG: out_step1\52468.jpg
+  - VLM(title): calling ...
+  - Title OK: '周六福蝴蝶耳钉' (units=7.0)  | elapsed 2.60s
+  -> Progress: 152/200 | OK=145 invalid=7 offline/noimg=0 img_fail=0 | ETA 02:58
+
+[153/200] id=1561100 | title='雀巢自然之宝辅酶q10胶囊200mg官方正品护心脏进口辅酶q' | brand='Nature’s Bounty/自然之宝' | ETA 02:58
+  - Image: OK
+  - Saved white BG: out_step1\1561100.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符；等价长度超限(>9)
+  - Title NOT OK: reason=invalid_chars → final='辅酶Q10胶囊'  | elapsed 9.80s
+  -> Progress: 153/200 | OK=145 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:57
+
+[154/200] id=100858 | title='【大促补贴】家用悬挂式抽纸巾厂家直销买二送一卫生纸家庭装纸巾' | brand='云垚（洗护）' | ETA 02:57
+  - Image: OK
+  - Saved white BG: out_step1\100858.jpg
+  - VLM(title): calling ...
+  - Title OK: '云垚·挂式抽纸' (units=6.0)  | elapsed 2.72s
+  -> Progress: 154/200 | OK=146 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:52
+
+[155/200] id=69147 | title='复古两穿软底勃肯鞋女2025春季新款外穿一脚蹬孕妇鞋真皮豆豆' | brand='述态' | ETA 02:52
+  - Image: OK
+  - Saved white BG: out_step1\69147.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '述态复古两穿软底鞋' (units=9.0)  | elapsed 5.24s
+  -> Progress: 155/200 | OK=147 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:49
+
+[156/200] id=1539046 | title='智利原瓶进口送礼礼物礼品红酒干露红魔鬼梅洛干红葡萄酒' | brand='红魔鬼' | ETA 02:49
+  - Image: OK
+  - Saved white BG: out_step1\1539046.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '红魔鬼梅洛干红' (units=7.0)  | elapsed 5.24s
+  -> Progress: 156/200 | OK=148 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:46
+
+[157/200] id=95875 | title='泰迪熊动感特薄拉拉裤2包 春夏超薄透气尿不湿L-3XL新生婴' | brand='Teddy Bear/泰迪熊' | ETA 02:46
+  - Image: OK
+  - Saved white BG: out_step1\95875.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '泰迪熊特薄尿不湿' (units=8.0)  | elapsed 5.23s
+  -> Progress: 157/200 | OK=149 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:42
+
+[158/200] id=78232 | title='[云溪2.0]海尔176滚筒洗衣机家用全自动超薄直驱10kg' | brand='Haier/海尔' | ETA 02:42
+  - Image: OK
+  - Saved white BG: out_step1\78232.jpg
+  - VLM(title): calling ...
+  - Title OK: '海尔滚筒洗衣机' (units=7.0)  | elapsed 2.70s
+  -> Progress: 158/200 | OK=150 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:38
+
+[159/200] id=98201 | title='爱慕集团乎兮背心一片式大胸显小无尺码内衣女无痕无钢圈文胸胸罩' | brand='乎兮' | ETA 02:38
+  - Image: OK
+  - Saved white BG: out_step1\98201.jpg
+  - VLM(title): calling ...
+  - Title OK: '乎兮背心内衣' (units=6.0)  | elapsed 2.64s
+  -> Progress: 159/200 | OK=151 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:34
+
+[160/200] id=1544372 | title='韩国进口三养火鸡面韩式奶油拌面泡面炸酱过年鸡面混搭方便面正品' | brand='Samyang/三养' | ETA 02:34
+  - Image: OK
+  - Saved white BG: out_step1\1544372.jpg
+  - VLM(title): calling ...
+  - Title OK: '三养火鸡面' (units=5.0)  | elapsed 2.64s
+  -> Progress: 160/200 | OK=152 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:30
+
+[161/200] id=107884 | title='RENE CAOVILLACLEO系列水钻细跟女士凉鞋' | brand='RENE CAOVILLA' | ETA 02:30
+  - Image: OK
+  - Saved white BG: out_step1\107884.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '水钻细跟凉鞋' (units=6.0)  | elapsed 5.27s
+  -> Progress: 161/200 | OK=153 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:27
+
+[162/200] id=1251225 | title='阿迪达斯童装24年春秋款男女童训练外套蓝色运动休闲棒球服IT' | brand='Adidas/阿迪达斯' | ETA 02:27
+  - Image: OK
+  - Saved white BG: out_step1\1251225.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '阿迪童装训练外套' (units=8.0)  | elapsed 5.31s
+  -> Progress: 162/200 | OK=154 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:23
+
+[163/200] id=1259754 | title='日本AKOYA天然海水珍珠耳钉18K金真多麻银灰蓝耳饰气质经' | brand='银沙珠宝' | ETA 02:23
+  - Image: OK
+  - Saved white BG: out_step1\1259754.jpg
+  - VLM(title): calling ...
+  - Title OK: '银沙珠宝珍珠耳钉' (units=8.0)  | elapsed 2.63s
+  -> Progress: 163/200 | OK=155 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:19
+
+[164/200] id=1540811 | title='小黄鸭儿童电脑玩具益智早教机宝宝点读机婴幼儿学习机仿真小电脑' | brand='UNI-FUN（母婴）' | ETA 02:19
+  - Image: OK
+  - Saved white BG: out_step1\1540811.jpg
+  - VLM(title): calling ...
+  - Title OK: '小黄鸭儿童电脑玩具' (units=9.0)  | elapsed 2.62s
+  -> Progress: 164/200 | OK=156 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:15
+
+[165/200] id=1235091 | title='香山婴儿体重秤智能秤体重家用精准称重带卷尺电子秤' | brand='香山' | ETA 02:15
+  - Image: OK
+  - Saved white BG: out_step1\1235091.jpg
+  - VLM(title): calling ...
+  - Title OK: '香山智能秤' (units=5.0)  | elapsed 2.69s
+  -> Progress: 165/200 | OK=157 invalid=8 offline/noimg=0 img_fail=0 | ETA 02:11
+
+[166/200] id=1562152 | title='[热销补货]Sporty&Rich Preppy系列男女同款' | brand='SPORTY & RICH' | ETA 02:11
+  - Image: OK
+  - Saved white BG: out_step1\1562152.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='SPORTY & RICH短裤'  | elapsed 9.81s
+  -> Progress: 166/200 | OK=157 invalid=9 offline/noimg=0 img_fail=0 | ETA 02:09
+
+[167/200] id=81525 | title='可心柔V9云柔巾新生婴儿手口专用保湿乳霜柔纸巾60抽5小包便' | brand='COROU/可心柔' | ETA 02:09
+  - Image: OK
+  - Saved white BG: out_step1\81525.jpg
+  - VLM(title): calling ...
+  - Title OK: '可心柔保湿纸' (units=6.0)  | elapsed 2.66s
+  -> Progress: 167/200 | OK=158 invalid=9 offline/noimg=0 img_fail=0 | ETA 02:05
+
+[168/200] id=1552525 | title='ECCO爱步乐福鞋 秋季婚鞋牛皮商务皮鞋豆豆鞋 都市伦敦52' | brand='Ecco/爱步' | ETA 02:05
+  - Image: OK
+  - Saved white BG: out_step1\1552525.jpg
+  - VLM(title): calling ...
+  - Title OK: '爱步乐福鞋' (units=5.0)  | elapsed 2.62s
+  -> Progress: 168/200 | OK=159 invalid=9 offline/noimg=0 img_fail=0 | ETA 02:01
+
+[169/200] id=27392 | title='【618】Evereden安唯伊孕妇妊娠纹油妊娠纹淡化妊娠精' | brand='Evereden海外旗舰店' | ETA 02:01
+  - Image: OK
+  - Saved white BG: out_step1\27392.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'Evereden孕妇油' (units=7.0)  | elapsed 5.20s
+  -> Progress: 169/200 | OK=160 invalid=9 offline/noimg=0 img_fail=0 | ETA 01:57
+
+[170/200] id=41977 | title='【6大提共6000张】悬挂式抽纸巾家用整箱实惠装大包批发擦手' | brand='云垚（洗护）' | ETA 01:57
+  - Image: OK
+  - Saved white BG: out_step1\41977.jpg
+  - VLM(title): calling ...
+  - Title OK: '云垚·梅雪暗香' (units=6.0)  | elapsed 2.64s
+  -> Progress: 170/200 | OK=161 invalid=9 offline/noimg=0 img_fail=0 | ETA 01:53
+
+[171/200] id=53112 | title='周六福5G足金计价黄金戒指女款简约造型时尚百搭节日礼物' | brand='ZLF/周六福' | ETA 01:53
+  - Image: OK
+  - Saved white BG: out_step1\53112.jpg
+  - VLM(title): calling ...
+  - Normalize: 含数字或非法字符
+  - Title NOT OK: reason=invalid_chars → final='周六福5G足金戒指'  | elapsed 9.91s
+  -> Progress: 171/200 | OK=161 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:50
+
+[172/200] id=27489 | title='爱果乐儿童学习桌椅家用儿童书桌可升降写字桌学生专用实木大白桌' | brand='爱果乐' | ETA 01:50
+  - Image: OK
+  - Saved white BG: out_step1\27489.jpg
+  - VLM(title): calling ...
+  - Title OK: '爱果乐儿童学习桌椅' (units=9.0)  | elapsed 2.64s
+  -> Progress: 172/200 | OK=162 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:46
+
+[173/200] id=105977 | title='【618狂欢】花西子玉养气垫遮瑕持久不脱妆bb霜粉底液正品' | brand='花西子' | ETA 01:46
+  - Image: OK
+  - Saved white BG: out_step1\105977.jpg
+  - VLM(title): calling ...
+  - Title OK: '花西子气垫粉底液' (units=8.0)  | elapsed 2.64s
+  -> Progress: 173/200 | OK=163 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:42
+
+[174/200] id=77377 | title='玻璃门指纹锁办公室免打孔密码锁双开门商铺钥匙电子智能门锁' | brand='纳智德' | ETA 01:42
+  - Image: OK
+  - Saved white BG: out_step1\77377.jpg
+  - VLM(title): calling ...
+  - Title OK: '纳智德智能门锁' (units=7.0)  | elapsed 2.68s
+  -> Progress: 174/200 | OK=164 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:38
+
+[175/200] id=99197 | title='海尔智家Leader电热水器家用小型出租房速热40L卫生间X' | brand='Leader/统帅' | ETA 01:38
+  - Image: OK
+  - Saved white BG: out_step1\99197.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Leader电热水器' (units=7.0)  | elapsed 2.63s
+  -> Progress: 175/200 | OK=165 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:34
+
+[176/200] id=13968 | title='德国拜耳】第一卫2025新款适用苹果16ProMax手机壳i' | brand='第一卫' | ETA 01:34
+  - Image: OK
+  - Saved white BG: out_step1\13968.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '拜耳第一卫苹果壳' (units=8.0)  | elapsed 5.26s
+  -> Progress: 176/200 | OK=166 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:31
+
+[177/200] id=1257216 | title='周生生黄金足金微糖系列银杏叶「杏」运耳钉95571E定价' | brand='周生生' | ETA 01:31
+  - Image: OK
+  - Saved white BG: out_step1\1257216.jpg
+  - VLM(title): calling ...
+  - Title OK: '周生生黄金耳钉' (units=7.0)  | elapsed 2.61s
+  -> Progress: 177/200 | OK=167 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:27
+
+[178/200] id=1545516 | title='5本装 莱特支出证明单财务专用通用单联现金支付会计票据办公用' | brand='莱特' | ETA 01:27
+  - Image: OK
+  - Saved white BG: out_step1\1545516.jpg
+  - VLM(title): calling ...
+  - Title OK: '莱特支出证明单' (units=7.0)  | elapsed 2.70s
+  -> Progress: 178/200 | OK=168 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:23
+
+[179/200] id=1247275 | title='佳贝艾特婴幼儿配方羊奶粉低敏悦护2段6-12个月试用尝鲜13' | brand='KABRITA/佳贝艾特' | ETA 01:23
+  - Image: OK
+  - Saved white BG: out_step1\1247275.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '佳贝艾特羊奶粉' (units=7.0)  | elapsed 5.26s
+  -> Progress: 179/200 | OK=169 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:19
+
+[180/200] id=49822 | title='润本内衣洗衣液内裤清洗液儿童女士洗内裤专用液抑菌除菌杀菌血渍' | brand='润本' | ETA 01:19
+  - Image: OK
+  - Saved white BG: out_step1\49822.jpg
+  - VLM(title): calling ...
+  - Title OK: '润本内衣洗衣液' (units=7.0)  | elapsed 2.63s
+  -> Progress: 180/200 | OK=170 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:15
+
+[181/200] id=80170 | title='悬挂式纸抽大包抽纸卫生纸囤货实惠装加厚餐巾纸卫生间擦手纸纸巾' | brand='蓝猫(纸张)' | ETA 01:15
+  - Image: OK
+  - Saved white BG: out_step1\80170.jpg
+  - VLM(title): calling ...
+  - Title OK: '蓝猫·纸巾' (units=4.0)  | elapsed 2.62s
+  -> Progress: 181/200 | OK=171 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:11
+
+[182/200] id=43124 | title='可卿珠宝 红婉  红宝石耳钉女18k基础款红色耳饰礼物设计通' | brand='Ka-Ching/可卿' | ETA 01:11
+  - Image: OK
+  - Saved white BG: out_step1\43124.jpg
+  - VLM(title): calling ...
+  - Title OK: '可卿珠宝红宝石耳钉' (units=9.0)  | elapsed 2.61s
+  -> Progress: 182/200 | OK=172 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:08
+
+[183/200] id=98698 | title='思加图新款贝母方糖银色玛丽珍女鞋复古法式凉鞋单鞋S1952A' | brand='Staccato/思加图' | ETA 01:08
+  - Image: OK
+  - Saved white BG: out_step1\98698.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '思加图银色玛丽珍鞋' (units=9.0)  | elapsed 5.21s
+  -> Progress: 183/200 | OK=173 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:04
+
+[184/200] id=105303 | title='【包邮】一次性保鲜膜家用点断式食品级PE蔬果保鲜膜30cm*' | brand='sodolike' | ETA 01:04
+C:\Users\25863\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py:1045: UserWarning: Palette images with Transparency expressed in bytes should be converted to RGBA images
+  warnings.warn(
+  - Image: OK
+  - Saved white BG: out_step1\105303.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Sodolike保鲜膜' (units=7.0)  | elapsed 2.71s
+  -> Progress: 184/200 | OK=174 invalid=10 offline/noimg=0 img_fail=0 | ETA 01:00
+
+[185/200] id=17648 | title='硅胶锅铲食品级小刮刀烘焙专用工具套装家用耐高温炒菜和面小铲子' | brand='PLYS/派莱斯' | ETA 01:00
+  - Image: OK
+  - Saved white BG: out_step1\17648.jpg
+  - VLM(title): calling ...
+  - Title OK: 'PLYS硅胶锅铲套装' (units=8.0)  | elapsed 2.64s
+  -> Progress: 185/200 | OK=175 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:56
+
+[186/200] id=1247484 | title='TARANIS/泰兰尼斯夏季洞洞鞋男女童凉鞋包头溯溪鞋速干踩' | brand='TARANIS/泰兰尼斯' | ETA 00:56
+  - Image: OK
+  - Saved white BG: out_step1\1247484.jpg
+  - VLM(title): calling ...
+  - Title OK: '泰兰尼斯洞洞鞋' (units=7.0)  | elapsed 2.63s
+  -> Progress: 186/200 | OK=176 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:52
+
+[187/200] id=1396488 | title='琳达妈咪婴儿绵柔巾非湿纸巾加厚柔软宝宝手口使用干湿两用洗脸巾' | brand='琳达妈咪' | ETA 00:52
+  - Image: OK
+  - Saved white BG: out_step1\1396488.jpg
+  - VLM(title): calling ...
+  - Title OK: '琳达妈咪婴儿绵柔巾' (units=9.0)  | elapsed 2.62s
+  -> Progress: 187/200 | OK=177 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:48
+
+[188/200] id=103803 | title='可复美重组胶原蛋白敷料医用非面膜5片/盒巨子生物' | brand='可复美' | ETA 00:48
+  - Image: OK
+  - Saved white BG: out_step1\103803.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '可复美重组胶原蛋白' (units=9.0)  | elapsed 5.25s
+  -> Progress: 188/200 | OK=178 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:45
+
+[189/200] id=100318 | title='【正品保障】尔木萄粉扑专用清洗剂海绵彩妆化妆刷美妆蛋清洗液' | brand='AMORTALS/尔木萄' | ETA 00:45
+  - Image: OK
+  - Saved white BG: out_step1\100318.jpg
+  - VLM(title): calling ...
+  - Title OK: '尔木萄粉扑清洗液' (units=8.0)  | elapsed 2.66s
+  -> Progress: 189/200 | OK=179 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:41
+
+[190/200] id=92941 | title='预售老庙黄金足金五帝钱手足链鳞甲金闪耀吸睛事事顺利富贵如意' | brand='老庙' | ETA 00:41
+  - Image: OK
+  - Saved white BG: out_step1\92941.jpg
+  - VLM(title): calling ...
+  - Title OK: '老庙黄金手链' (units=6.0)  | elapsed 2.62s
+  -> Progress: 190/200 | OK=180 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:37
+
+[191/200] id=1563998 | title='小鹿蓝蓝高钙牛奶小软饼原味蓝莓叶黄素宝宝儿童零食品牌磨牙饼干' | brand='小鹿蓝蓝' | ETA 00:37
+  - Image: OK
+  - Saved white BG: out_step1\1563998.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: '小鹿蓝蓝高钙牛奶饼' (units=9.0)  | elapsed 5.26s
+  -> Progress: 191/200 | OK=181 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:33
+
+[192/200] id=4032 | title='棉柔巾婴儿专用新生洗脸巾一次性宝宝洁面干湿两用加厚悬挂抽取式' | brand='GGACEN/果果阿成' | ETA 00:33
+  - Image: OK
+  - Saved white BG: out_step1\4032.jpg
+  - VLM(title): calling ...
+  - Title OK: '果果阿成婴儿洗脸巾' (units=9.0)  | elapsed 2.71s
+  -> Progress: 192/200 | OK=182 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:30
+
+[193/200] id=28056 | title='【尊享礼遇】Mulberry/玛葆俪Bayswater斜挎包' | brand='Mulberry' | ETA 00:30
+  - Image: OK
+  - Saved white BG: out_step1\28056.jpg
+  - VLM(title): calling ...
+  - Title OK: 'Mulberry学院风女包' (units=9.0)  | elapsed 2.64s
+  -> Progress: 193/200 | OK=183 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:26
+
+[194/200] id=1232733 | title='MODIAN摩典莫桑石排钻戒指女S925纯银超闪轻奢仿真钻叠' | brand='摩典' | ETA 00:26
+  - Image: OK
+  - Saved white BG: out_step1\1232733.jpg
+  - VLM(title): calling ...
+  - Title OK: '摩典排钻戒指' (units=6.0)  | elapsed 2.62s
+  -> Progress: 194/200 | OK=184 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:22
+
+[195/200] id=1393960 | title='森地客骑行内裤四季公路山地自行车弹力贴身骑行内搭短裤那木二季' | brand='Santic/森地客' | ETA 00:22
+  - Image: OK
+  - Saved white BG: out_step1\1393960.jpg
+  - VLM(title): calling ...
+  - Title OK: '森地客骑行内裤' (units=7.0)  | elapsed 2.61s
+  -> Progress: 195/200 | OK=185 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:18
+
+[196/200] id=1547502 | title='【品牌精选】VERSACE范思哲PALAZZO EMPIRE' | brand='Versace/范思哲' | ETA 00:18
+  - Image: OK
+  - Saved white BG: out_step1\1547502.jpg
+  - VLM(title): calling ...
+  - Normalize: 等价长度超限(>9)
+  - Title OK: 'Versace美杜莎女表' (units=8.5)  | elapsed 9.99s
+  -> Progress: 196/200 | OK=186 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:15
+
+[197/200] id=1548656 | title='古越龙山中央库藏老金五年绍兴黄酒绍兴酒花雕酒600ml*6瓶' | brand='古越龙山' | ETA 00:15
+  - Image: OK
+  - Saved white BG: out_step1\1548656.jpg
+  - VLM(title): calling ...
+  - Title OK: '古越龙山黄酒' (units=6.0)  | elapsed 2.64s
+  -> Progress: 197/200 | OK=187 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:11
+
+[198/200] id=73685 | title='【车载清洁】20提2400张悬挂抽纸擦手纸卫生纸餐巾纸面巾纸' | brand='植维洁' | ETA 00:11
+  - Image: OK
+  - Saved white BG: out_step1\73685.jpg
+  - VLM(title): calling ...
+  - Title OK: '植维洁车载清洁抽纸' (units=9.0)  | elapsed 2.72s
+  -> Progress: 198/200 | OK=188 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:07
+
+[199/200] id=1552916 | title='好望水植物饮料柠檬薏米水0脂0蔗糖维生素E' | brand='好望水' | ETA 00:07
+  - Image: OK
+  - Saved white BG: out_step1\1552916.jpg
+  - VLM(title): calling ...
+  - Title OK: '好望水·柠檬薏米水' (units=8.0)  | elapsed 2.64s
+  -> Progress: 199/200 | OK=189 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:03
+
+[200/200] id=1437 | title='舒适达抗敏感牙膏成人含氟多效去牙渍防蛀护龈脱敏清新' | brand='舒适达' | ETA 00:03
+  - Image: OK
+  - Saved white BG: out_step1\1437.jpg
+  - VLM(title): calling ...
+  - Title OK: '舒适达牙膏' (units=5.0)  | elapsed 2.60s
+  -> Progress: 200/200 | OK=190 invalid=10 offline/noimg=0 img_fail=0 | ETA 00:00
+
+[Write] Saving outputs ...
+
+===> [DONE] Title generation (Part1)
+Output Excel : out_step1\step1_titles.xlsx
+Output JSONL : out_step1\step1_titles.jsonl
+Summary      : total=200, OK=190, invalid=10, offline/noimg=0, img_fail=0
+Timing       : total_elapsed=751.34s, avg_per_row=3.76s
+
+END: 2025-09-12 14:04:33
+ELAPSED: 754.09s

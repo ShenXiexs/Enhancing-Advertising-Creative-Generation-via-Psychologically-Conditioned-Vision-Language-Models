@@ -1,0 +1,15 @@
+[info] Checking ComfyUI service...
+[ok] ComfyUI API: http://localhost:8000
+[info] 20 records to process.
+
+[task 1/20] id=61318
+  [debug] inputs going into workflow:
+    image_src : out_step1\61318_800x800.jpg
+    copied_to : C:\Users\25863\Documents\ComfyUI\input\61318_800x800.jpg
+    used_name : 61318_800x800.jpg  # for LoadImage
+    out_prefix: api_61318
+    save_name : 61318_qwen_image{ext}  # 输出落地到 out_step2 时采用
+    prompt    : A sleek pair of cat-eye sunglasses rests elegantly on a polished wooden table in a softly lit, minimalist luxury studio, creating a sophisticated and timeless b
+    neg       : plain white background, empty minimal backdrop, overly simple scene, flat lighting, overexposed, underexposed, unrealistic CGI, plastic surface, cartoonish styl
+ queueing...
+ queued id=2fd22fc6-52c6-4f68-bbbc-b85e2eff1b1f

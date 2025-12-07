@@ -1,0 +1,10 @@
+CMD: C:\Users\25863\AppData\Local\Programs\Python\Python311\python.exe C:\Users\25863\PycharmProjects\yoyo_image_generation\download_and_resize.py
+CWD: C:\Users\25863\PycharmProjects\yoyo_image_generation
+START: 2025-09-12 14:14:41
+
+C:\Users\25863\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py:1045: UserWarning: Palette images with Transparency expressed in bytes should be converted to RGBA images
+  warnings.warn(
+✅ 完成：200 张 | 平均每张 0.06s
+[0m
+END: 2025-09-12 14:14:54
+ELAPSED: 12.96s

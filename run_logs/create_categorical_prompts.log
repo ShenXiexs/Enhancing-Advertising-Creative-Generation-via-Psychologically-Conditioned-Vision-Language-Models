@@ -1,0 +1,1024 @@
+CMD: C:\Users\25863\AppData\Local\Programs\Python\Python311\python.exe C:\Users\25863\PycharmProjects\yoyo_image_generation\create_categorical_prompts.py
+CWD: C:\Users\25863\PycharmProjects\yoyo_image_generation
+START: 2025-09-12 14:04:33
+
+===> [START] Prompt generation (Part2)
+Config: USE_MODEL_PROMPT=True, MODEL_PROMPT=qwen2.5vl:7b
+[Load] Titles from: out_step1/step1_titles.xlsx
+[Load] Map from: step_one_to_super_category_map.csv
+[Load] Triad from: step_one_triad_prompts_22cats.csv
+[Load] Style descriptions from: step_one_background_description.csv
+[Info] Rows to process: 200
+[Check] Ollama reachable: http://localhost:11434
+
+[1/200] id=1557544 | super_category='宠物用品' | triad_hit=True | ETA --:--
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The cans of Kuanfu pet food rest on a wooden surface, surrounded by a natural, earthy sett...'  | elapsed 3.19s
+  -> Progress: 1/200 | model_ok=1 fallback=0 no_img=0 fetch_fail=0 | ETA 10:35
+
+[2/200] id=1556143 | super_category='收纳日用' | triad_hit=True | ETA 10:35
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toothpaste tubes and box are displayed against a soft, light gray background, giving a...'  | elapsed 2.97s
+  -> Progress: 2/200 | model_ok=2 fallback=0 no_img=0 fetch_fail=0 | ETA 10:10
+
+[3/200] id=96451 | super_category='美妆个护' | triad_hit=True | ETA 10:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a cozy, well-lit bathroom, the La Roche-Posay Effaclar Ultra Concentrated Serum bottles...'  | elapsed 3.18s
+  -> Progress: 3/200 | model_ok=3 fallback=0 no_img=0 fetch_fail=0 | ETA 10:13
+
+[4/200] id=20115 | super_category='家电厨具' | triad_hit=True | ETA 10:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The knife block sits atop a wooden cutting board, surrounded by the soft glow of natural l...'  | elapsed 3.12s
+  -> Progress: 4/200 | model_ok=4 fallback=0 no_img=0 fetch_fail=0 | ETA 10:10
+
+[5/200] id=1539916 | super_category='母婴亲子' | triad_hit=True | ETA 10:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The baby elephant cooling cream is nestled on a cozy, lived-in windowsill bathed in soft n...'  | elapsed 2.93s
+  -> Progress: 5/200 | model_ok=5 fallback=0 no_img=0 fetch_fail=0 | ETA 10:00
+
+[6/200] id=35666 | super_category='收纳日用' | triad_hit=True | ETA 10:00
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a softly lit, naturalistic backdrop featuring a serene garden s...'  | elapsed 2.98s
+  -> Progress: 6/200 | model_ok=6 fallback=0 no_img=0 fetch_fail=0 | ETA 09:53
+
+[7/200] id=9620 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 09:53
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bracelet rests on a soft, textured surface that mimics the appearance of fine silk, ad...'  | elapsed 3.12s
+  -> Progress: 7/200 | model_ok=7 fallback=0 no_img=0 fetch_fail=0 | ETA 09:52
+
+[8/200] id=1234805 | super_category='食品饮料' | triad_hit=True | ETA 09:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a wooden table, surrounded by soft, natural light that creates...'  | elapsed 3.03s
+  -> Progress: 8/200 | model_ok=8 fallback=0 no_img=0 fetch_fail=0 | ETA 09:48
+
+[9/200] id=103452 | super_category='家电厨具' | triad_hit=True | ETA 09:48
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The MOCHA blender sits on a polished wooden table in a cozy kitchen setting, with soft nat...'  | elapsed 2.94s
+  -> Progress: 9/200 | model_ok=9 fallback=0 no_img=0 fetch_fail=0 | ETA 09:42
+
+[10/200] id=92871 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 09:42
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bracelet is elegantly displayed against a soft, diffused light that casts gentle shado...'  | elapsed 3.01s
+  -> Progress: 10/200 | model_ok=10 fallback=0 no_img=0 fetch_fail=0 | ETA 09:39
+
+[11/200] id=77440 | super_category='户外运动装备交通' | triad_hit=True | ETA 09:39
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The dress is displayed against a minimalist backdrop, with soft, natural light casting gen...'  | elapsed 2.99s
+  -> Progress: 11/200 | model_ok=11 fallback=0 no_img=0 fetch_fail=0 | ETA 09:35
+
+[12/200] id=21443 | super_category='收纳日用' | triad_hit=True | ETA 09:35
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The Deeyeo Soft Towels are neatly arranged on a cozy kitchen counter, surrounded by warm, ...'  | elapsed 3.00s
+  -> Progress: 12/200 | model_ok=12 fallback=0 no_img=0 fetch_fail=0 | ETA 09:31
+
+[13/200] id=1232489 | super_category='食品饮料' | triad_hit=True | ETA 09:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The milk cartons are displayed against a backdrop of a cozy kitchen counter, where a few s...'  | elapsed 3.00s
+  -> Progress: 13/200 | model_ok=13 fallback=0 no_img=0 fetch_fail=0 | ETA 09:27
+
+[14/200] id=93779 | super_category='玩乐兴趣文创礼品' | triad_hit=True | ETA 09:27
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant yellow box is nestled on a cozy, sunlit windowsill, with soft natural light fi...'  | elapsed 2.84s
+  -> Progress: 14/200 | model_ok=14 fallback=0 no_img=0 fetch_fail=0 | ETA 09:22
+
+[15/200] id=64681 | super_category='食品饮料' | triad_hit=True | ETA 09:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The white container sits on a wooden table, with the soft light of a nearby window casting...'  | elapsed 2.95s
+  -> Progress: 15/200 | model_ok=15 fallback=0 no_img=0 fetch_fail=0 | ETA 09:18
+
+[16/200] id=13779 | super_category='美妆个护' | triad_hit=True | ETA 09:18
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The YSL beauty set rests on a soft, beige-toned surface that mimics the texture of fine le...'  | elapsed 3.19s
+  -> Progress: 16/200 | model_ok=16 fallback=0 no_img=0 fetch_fail=0 | ETA 09:17
+
+[17/200] id=1388476 | super_category='文教办公与图书' | triad_hit=True | ETA 09:17
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The roll of yellow tape is placed on a rustic wooden surface, with the warm tones of the w...'  | elapsed 3.00s
+  -> Progress: 17/200 | model_ok=17 fallback=0 no_img=0 fetch_fail=0 | ETA 09:13
+
+[18/200] id=73259 | super_category='母婴亲子' | triad_hit=True | ETA 09:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a light, neutral-toned background, mimicking a softly lit bedr...'  | elapsed 2.88s
+  -> Progress: 18/200 | model_ok=18 fallback=0 no_img=0 fetch_fail=0 | ETA 09:09
+
+[19/200] id=91069 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 09:09
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The earrings are displayed against a soft, ethereal gradient background that transitions f...'  | elapsed 3.07s
+  -> Progress: 19/200 | model_ok=19 fallback=0 no_img=0 fetch_fail=0 | ETA 09:06
+
+[20/200] id=1258757 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 09:06
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The golden dragon ring is set against a soft, diffused light that casts gentle shadows, cr...'  | elapsed 3.11s
+  -> Progress: 20/200 | model_ok=20 fallback=0 no_img=0 fetch_fail=0 | ETA 09:04
+
+[21/200] id=94536 | super_category='服饰鞋包' | triad_hit=True | ETA 09:04
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The beige patent leather pump is elegantly displayed against a soft, gradient backdrop tha...'  | elapsed 3.04s
+  -> Progress: 21/200 | model_ok=21 fallback=0 no_img=0 fetch_fail=0 | ETA 09:01
+
+[22/200] id=93056 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 09:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The gold ring with intricate diamond detailing is set against a luxurious, textured backgr...'  | elapsed 3.18s
+  -> Progress: 22/200 | model_ok=22 fallback=0 no_img=0 fetch_fail=0 | ETA 08:59
+
+[23/200] id=73373 | super_category='汽车摩托出行' | triad_hit=True | ETA 08:59
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The packaging sits on a lush green lawn dotted with delicate white flowers and scattered a...'  | elapsed 3.16s
+  -> Progress: 23/200 | model_ok=23 fallback=0 no_img=0 fetch_fail=0 | ETA 08:57
+
+[24/200] id=98449 | super_category='食品饮料' | triad_hit=True | ETA 08:57
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The flaky pastry is nestled on a rustic wooden table, its golden hues contrasting with the...'  | elapsed 3.06s
+  -> Progress: 24/200 | model_ok=24 fallback=0 no_img=0 fetch_fail=0 | ETA 08:54
+
+[25/200] id=110787 | super_category='收纳日用' | triad_hit=True | ETA 08:54
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a serene, minimalist setting, the boxes of Pure Cotton are arranged neatly on a light b...'  | elapsed 2.97s
+  -> Progress: 25/200 | model_ok=25 fallback=0 no_img=0 fetch_fail=0 | ETA 08:51
+
+[26/200] id=1554477 | super_category='其他' | triad_hit=True | ETA 08:51
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The baby emollient lotion bottle is centered on a soft, light gray background that subtly ...'  | elapsed 3.05s
+  -> Progress: 26/200 | model_ok=26 fallback=0 no_img=0 fetch_fail=0 | ETA 08:48
+
+[27/200] id=95460 | super_category='母婴亲子' | triad_hit=True | ETA 08:48
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is nestled on a soft, textured surface that mimics the look of a cozy, sunlit ...'  | elapsed 3.10s
+  -> Progress: 27/200 | model_ok=27 fallback=0 no_img=0 fetch_fail=0 | ETA 08:45
+
+[28/200] id=45226 | super_category='服饰鞋包' | triad_hit=True | ETA 08:45
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The white Crocs sandal is displayed against a minimalist backdrop of soft, neutral tones, ...'  | elapsed 3.06s
+  -> Progress: 28/200 | model_ok=28 fallback=0 no_img=0 fetch_fail=0 | ETA 08:42
+
+[29/200] id=1258150 | super_category='母婴亲子' | triad_hit=True | ETA 08:42
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The soft purple packaging of the Softmate Premium diapers is displayed against a softly li...'  | elapsed 2.96s
+  -> Progress: 29/200 | model_ok=29 fallback=0 no_img=0 fetch_fail=0 | ETA 08:39
+
+[30/200] id=1246177 | super_category='收纳日用' | triad_hit=True | ETA 08:39
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tissue boxes are placed on a softly lit table, with a gentle gradient of blue and whit...'  | elapsed 2.89s
+  -> Progress: 30/200 | model_ok=30 fallback=0 no_img=0 fetch_fail=0 | ETA 08:35
+
+[31/200] id=1400921 | super_category='母婴亲子' | triad_hit=True | ETA 08:35
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The wet wipes are nestled in a cozy corner of a well-lit kitchen, with the soft glow of su...'  | elapsed 3.02s
+  -> Progress: 31/200 | model_ok=31 fallback=0 no_img=0 fetch_fail=0 | ETA 08:32
+
+[32/200] id=91569 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 08:32
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'A delicate gold necklace with a pearl and diamond pendant hangs gracefully against a soft,...'  | elapsed 3.02s
+  -> Progress: 32/200 | model_ok=32 fallback=0 no_img=0 fetch_fail=0 | ETA 08:29
+
+[33/200] id=1247836 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 08:29
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bracelet rests on a soft, textured surface that mimics the appearance of fine, white m...'  | elapsed 3.07s
+  -> Progress: 33/200 | model_ok=33 fallback=0 no_img=0 fetch_fail=0 | ETA 08:26
+
+[34/200] id=96619 | super_category='食品饮料' | triad_hit=True | ETA 08:26
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The heart-shaped box of Ferrero Rocher chocolates sits on a cozy tabletop, surrounded by t...'  | elapsed 2.94s
+  -> Progress: 34/200 | model_ok=34 fallback=0 no_img=0 fetch_fail=0 | ETA 08:22
+
+[35/200] id=1248901 | super_category='美妆个护' | triad_hit=True | ETA 08:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, iridescent device is set against a softly lit, modern bathroom backdrop, with a...'  | elapsed 2.96s
+  -> Progress: 35/200 | model_ok=35 fallback=0 no_img=0 fetch_fail=0 | ETA 08:19
+
+[36/200] id=1563787 | super_category='服饰鞋包' | triad_hit=True | ETA 08:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The shoe is displayed on a sleek, dark wooden plinth, casting subtle shadows that add dept...'  | elapsed 3.05s
+  -> Progress: 36/200 | model_ok=36 fallback=0 no_img=0 fetch_fail=0 | ETA 08:16
+
+[37/200] id=95621 | super_category='美妆个护' | triad_hit=True | ETA 08:16
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The six jars of cream are arranged on a light beige tablecloth, which is slightly wrinkled...'  | elapsed 3.02s
+  -> Progress: 37/200 | model_ok=37 fallback=0 no_img=0 fetch_fail=0 | ETA 08:13
+
+[38/200] id=73651 | super_category='食品饮料' | triad_hit=True | ETA 08:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, cozy kitchen backdrop. A subtle shadow of a...'  | elapsed 2.89s
+  -> Progress: 38/200 | model_ok=38 fallback=0 no_img=0 fetch_fail=0 | ETA 08:09
+
+[39/200] id=83204 | super_category='玩乐兴趣文创礼品' | triad_hit=True | ETA 08:09
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant red mat is set against a soft, diffused light that creates gentle shadows, enh...'  | elapsed 3.09s
+  -> Progress: 39/200 | model_ok=39 fallback=0 no_img=0 fetch_fail=0 | ETA 08:07
+
+[40/200] id=1560641 | super_category='服饰鞋包' | triad_hit=True | ETA 08:07
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a minimalist studio setting, the denim shorts are displayed on a sleek, geometric plint...'  | elapsed 2.93s
+  -> Progress: 40/200 | model_ok=40 fallback=0 no_img=0 fetch_fail=0 | ETA 08:03
+
+[41/200] id=97650 | super_category='家电厨具' | triad_hit=True | ETA 08:03
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, modern tower air conditioner stands against a softly lit, minimalist backdrop, ...'  | elapsed 3.08s
+  -> Progress: 41/200 | model_ok=41 fallback=0 no_img=0 fetch_fail=0 | ETA 08:00
+
+[42/200] id=97015 | super_category='母婴亲子' | triad_hit=True | ETA 08:00
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The image is set against a softly lit, cozy living room with a warm, inviting ambiance. A ...'  | elapsed 2.92s
+  -> Progress: 42/200 | model_ok=42 fallback=0 no_img=0 fetch_fail=0 | ETA 07:57
+
+[43/200] id=110712 | super_category='母婴亲子' | triad_hit=True | ETA 07:57
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of body wash sits on a soft, light beige fabric that mimics the texture of a co...'  | elapsed 3.07s
+  -> Progress: 43/200 | model_ok=43 fallback=0 no_img=0 fetch_fail=0 | ETA 07:54
+
+[44/200] id=90680 | super_category='收纳日用' | triad_hit=True | ETA 07:54
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a soft, light blue background adorned with delicate flora...'  | elapsed 2.95s
+  -> Progress: 44/200 | model_ok=44 fallback=0 no_img=0 fetch_fail=0 | ETA 07:51
+
+[45/200] id=42044 | super_category='收纳日用' | triad_hit=True | ETA 07:51
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, pastel-toned backdrop that mimics a cozy ro...'  | elapsed 3.06s
+  -> Progress: 45/200 | model_ok=45 fallback=0 no_img=0 fetch_fail=0 | ETA 07:48
+
+[46/200] id=76197 | super_category='食品饮料' | triad_hit=True | ETA 07:48
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of soy sauce stands prominently on a rustic wooden table, its dark liquid contr...'  | elapsed 3.03s
+  -> Progress: 46/200 | model_ok=46 fallback=0 no_img=0 fetch_fail=0 | ETA 07:45
+
+[47/200] id=1554249 | super_category='收纳日用' | triad_hit=True | ETA 07:45
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toothpaste tube sits against a soft, light gray background, subtly textured to resembl...'  | elapsed 2.86s
+  -> Progress: 47/200 | model_ok=47 fallback=0 no_img=0 fetch_fail=0 | ETA 07:41
+
+[48/200] id=94619 | super_category='美妆个护' | triad_hit=True | ETA 07:41
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The products are set against a soft, light gray background, creating a clean and modern ae...'  | elapsed 2.89s
+  -> Progress: 48/200 | model_ok=48 fallback=0 no_img=0 fetch_fail=0 | ETA 07:38
+
+[49/200] id=1017 | super_category='食品饮料' | triad_hit=True | ETA 07:38
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The Tsingtao beer can is displayed against a backdrop of a rustic, sunlit patio. The warm,...'  | elapsed 2.98s
+  -> Progress: 49/200 | model_ok=49 fallback=0 no_img=0 fetch_fail=0 | ETA 07:35
+
+[50/200] id=36968 | super_category='玩乐兴趣文创礼品' | triad_hit=True | ETA 07:35
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The leather pouch is nestled on a rustic wooden surface, with the warm tones of the wood c...'  | elapsed 3.01s
+  -> Progress: 50/200 | model_ok=50 fallback=0 no_img=0 fetch_fail=0 | ETA 07:32
+
+[51/200] id=142030 | super_category='收纳日用' | triad_hit=True | ETA 07:32
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The green boxes of Deeyeo Baby Soft Towels are neatly stacked on a soft, textured surface,...'  | elapsed 3.14s
+  -> Progress: 51/200 | model_ok=51 fallback=0 no_img=0 fetch_fail=0 | ETA 07:29
+
+[52/200] id=34862 | super_category='服饰鞋包' | triad_hit=True | ETA 07:29
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sneaker is displayed on a minimalist white platform, with soft, diffused light casting...'  | elapsed 2.86s
+  -> Progress: 52/200 | model_ok=52 fallback=0 no_img=0 fetch_fail=0 | ETA 07:26
+
+[53/200] id=44646 | super_category='母婴亲子' | triad_hit=True | ETA 07:26
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toothpaste tube is set against a soft, light gray background, mimicking a cozy bathroo...'  | elapsed 3.08s
+  -> Progress: 53/200 | model_ok=53 fallback=0 no_img=0 fetch_fail=0 | ETA 07:23
+
+[54/200] id=98620 | super_category='服饰鞋包' | triad_hit=True | ETA 07:23
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The minimalist studio backdrop features a soft, ethereal gradient transitioning from a lig...'  | elapsed 2.96s
+  -> Progress: 54/200 | model_ok=54 fallback=0 no_img=0 fetch_fail=0 | ETA 07:20
+
+[55/200] id=53981 | super_category='服饰鞋包' | triad_hit=True | ETA 07:20
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant yellow sandal rests on a minimalist, soft gradient backdrop, which gently fade...'  | elapsed 2.96s
+  -> Progress: 55/200 | model_ok=55 fallback=0 no_img=0 fetch_fail=0 | ETA 07:17
+
+[56/200] id=25246 | super_category='美妆个护' | triad_hit=True | ETA 07:17
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product sits on a minimalist white surface, softly lit by natural light that casts gen...'  | elapsed 2.99s
+  -> Progress: 56/200 | model_ok=56 fallback=0 no_img=0 fetch_fail=0 | ETA 07:14
+
+[57/200] id=106061 | super_category='家电厨具' | triad_hit=True | ETA 07:14
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, modern electric pressure cooker sits on a wooden countertop, surrounded by the ...'  | elapsed 3.08s
+  -> Progress: 57/200 | model_ok=57 fallback=0 no_img=0 fetch_fail=0 | ETA 07:11
+
+[58/200] id=95823 | super_category='家电厨具' | triad_hit=True | ETA 07:11
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek coffee machine sits on a dark wooden table, surrounded by subtle, warm-toned lig...'  | elapsed 2.96s
+  -> Progress: 58/200 | model_ok=58 fallback=0 no_img=0 fetch_fail=0 | ETA 07:08
+
+[59/200] id=103093 | super_category='服饰鞋包' | triad_hit=True | ETA 07:08
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The minimalist studio backdrop features a soft gradient of neutral tones, subtly transitio...'  | elapsed 3.08s
+  -> Progress: 59/200 | model_ok=59 fallback=0 no_img=0 fetch_fail=0 | ETA 07:05
+
+[60/200] id=1556930 | super_category='宠物用品' | triad_hit=True | ETA 07:05
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, cozy living room backdrop. A neatly arrange...'  | elapsed 2.90s
+  -> Progress: 60/200 | model_ok=60 fallback=0 no_img=0 fetch_fail=0 | ETA 07:01
+
+[61/200] id=34344 | super_category='服饰鞋包' | triad_hit=True | ETA 07:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a minimalist white backdrop, with a soft gradient adding ...'  | elapsed 3.01s
+  -> Progress: 61/200 | model_ok=61 fallback=0 no_img=0 fetch_fail=0 | ETA 06:58
+
+[62/200] id=60418 | super_category='宠物用品' | triad_hit=True | ETA 06:58
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a serene mountain landscape under a soft, diffused light,...'  | elapsed 3.05s
+  -> Progress: 62/200 | model_ok=62 fallback=0 no_img=0 fetch_fail=0 | ETA 06:55
+
+[63/200] id=1548998 | super_category='母婴亲子' | triad_hit=True | ETA 06:55
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The socks are neatly arranged on a soft, light beige surface, which mimics the texture of ...'  | elapsed 3.01s
+  -> Progress: 63/200 | model_ok=63 fallback=0 no_img=0 fetch_fail=0 | ETA 06:52
+
+[64/200] id=78343 | super_category='服饰鞋包' | triad_hit=True | ETA 06:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The mustard-yellow sandal rests on a sleek, minimalist platform that mimics the texture of...'  | elapsed 3.10s
+  -> Progress: 64/200 | model_ok=64 fallback=0 no_img=0 fetch_fail=0 | ETA 06:50
+
+[65/200] id=74684 | super_category='家电厨具' | triad_hit=True | ETA 06:50
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, neutral-toned backdrop, featuring subtle sh...'  | elapsed 3.12s
+  -> Progress: 65/200 | model_ok=65 fallback=0 no_img=0 fetch_fail=0 | ETA 06:47
+
+[66/200] id=91618 | super_category='玩乐兴趣文创礼品' | triad_hit=True | ETA 06:47
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The egg-shaped object is placed on a rustic wooden surface, surrounded by a few scattered ...'  | elapsed 2.87s
+  -> Progress: 66/200 | model_ok=66 fallback=0 no_img=0 fetch_fail=0 | ETA 06:43
+
+[67/200] id=1560578 | super_category='服饰鞋包' | triad_hit=True | ETA 06:43
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The coat is displayed against a refined gradient backdrop, with soft beams of light castin...'  | elapsed 3.04s
+  -> Progress: 67/200 | model_ok=67 fallback=0 no_img=0 fetch_fail=0 | ETA 06:41
+
+[68/200] id=109923 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 06:41
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The watch is displayed against a refined gradient background, with soft light beams that e...'  | elapsed 2.94s
+  -> Progress: 68/200 | model_ok=68 fallback=0 no_img=0 fetch_fail=0 | ETA 06:37
+
+[69/200] id=1240343 | super_category='收纳日用' | triad_hit=True | ETA 06:37
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, natural backdrop, suggesting a serene home ...'  | elapsed 3.08s
+  -> Progress: 69/200 | model_ok=69 fallback=0 no_img=0 fetch_fail=0 | ETA 06:34
+
+[70/200] id=1086 | super_category='母婴亲子' | triad_hit=True | ETA 06:34
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a soft, light beige background, giving a clean and elegan...'  | elapsed 3.00s
+  -> Progress: 70/200 | model_ok=70 fallback=0 no_img=0 fetch_fail=0 | ETA 06:31
+
+[71/200] id=1547855 | super_category='母婴亲子' | triad_hit=True | ETA 06:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The products are displayed on a light, neutral-toned surface, giving a clean and minimalis...'  | elapsed 3.06s
+  -> Progress: 71/200 | model_ok=71 fallback=0 no_img=0 fetch_fail=0 | ETA 06:29
+
+[72/200] id=74246 | super_category='收纳日用' | triad_hit=True | ETA 06:29
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The pads are arranged neatly on a soft, beige fabric that mimics a cozy bedspread, with su...'  | elapsed 2.95s
+  -> Progress: 72/200 | model_ok=72 fallback=0 no_img=0 fetch_fail=0 | ETA 06:25
+
+[73/200] id=36182 | super_category='收纳日用' | triad_hit=True | ETA 06:25
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant orange boxes are arranged neatly on a light beige surface, with soft shadows i...'  | elapsed 2.97s
+  -> Progress: 73/200 | model_ok=73 fallback=0 no_img=0 fetch_fail=0 | ETA 06:22
+
+[74/200] id=35297 | super_category='数码电子' | triad_hit=True | ETA 06:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black cylindrical device stands out against a softly lit, modern office setting....'  | elapsed 2.92s
+  -> Progress: 74/200 | model_ok=74 fallback=0 no_img=0 fetch_fail=0 | ETA 06:19
+
+[75/200] id=65314 | super_category='美妆个护' | triad_hit=True | ETA 06:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant perfume bottles are displayed against a softly lit, cozy interior with warm, n...'  | elapsed 3.02s
+  -> Progress: 75/200 | model_ok=75 fallback=0 no_img=0 fetch_fail=0 | ETA 06:16
+
+[76/200] id=1238291 | super_category='母婴亲子' | triad_hit=True | ETA 06:16
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a serene, light blue background that mimics a softly lit, airy ...'  | elapsed 2.82s
+  -> Progress: 76/200 | model_ok=76 fallback=0 no_img=0 fetch_fail=0 | ETA 06:13
+
+[77/200] id=62551 | super_category='其他' | triad_hit=True | ETA 06:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black gaming PC case stands out against a subtly textured, light gray background...'  | elapsed 3.08s
+  -> Progress: 77/200 | model_ok=77 fallback=0 no_img=0 fetch_fail=0 | ETA 06:10
+
+[78/200] id=1559282 | super_category='食品饮料' | triad_hit=True | ETA 06:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of Hakubi White C sits on a wooden surface, surrounded by soft, natural light t...'  | elapsed 3.13s
+  -> Progress: 78/200 | model_ok=78 fallback=0 no_img=0 fetch_fail=0 | ETA 06:07
+
+[79/200] id=16549 | super_category='服饰鞋包' | triad_hit=True | ETA 06:07
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The t-shirt is displayed against a minimalist, soft-gradient backdrop that subtly transiti...'  | elapsed 3.13s
+  -> Progress: 79/200 | model_ok=79 fallback=0 no_img=0 fetch_fail=0 | ETA 06:04
+
+[80/200] id=95997 | super_category='户外运动装备交通' | triad_hit=True | ETA 06:04
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The black t-shirt is displayed against a minimalist backdrop, with soft, diffused lighting...'  | elapsed 3.17s
+  -> Progress: 80/200 | model_ok=80 fallback=0 no_img=0 fetch_fail=0 | ETA 06:01
+
+[81/200] id=48122 | super_category='汽车摩托出行' | triad_hit=True | ETA 06:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The red power inverter stands prominently against a backdrop of a dimly lit workshop, its ...'  | elapsed 3.12s
+  -> Progress: 81/200 | model_ok=81 fallback=0 no_img=0 fetch_fail=0 | ETA 05:59
+
+[82/200] id=1541905 | super_category='食品饮料' | triad_hit=True | ETA 05:59
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a rustic wooden table, with natural light filtering through a ...'  | elapsed 2.94s
+  -> Progress: 82/200 | model_ok=82 fallback=0 no_img=0 fetch_fail=0 | ETA 05:55
+
+[83/200] id=1253892 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 05:55
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The pearl necklace is displayed against a refined gradient background, with soft light bea...'  | elapsed 2.89s
+  -> Progress: 83/200 | model_ok=83 fallback=0 no_img=0 fetch_fail=0 | ETA 05:52
+
+[84/200] id=44172 | super_category='母婴亲子' | triad_hit=True | ETA 05:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a serene, light blue background with soft, geometric patt...'  | elapsed 3.09s
+  -> Progress: 84/200 | model_ok=84 fallback=0 no_img=0 fetch_fail=0 | ETA 05:49
+
+[85/200] id=58561 | super_category='收纳日用' | triad_hit=True | ETA 05:49
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The soft tissue packaging sits on a light, neutral-toned surface, subtly textured to sugge...'  | elapsed 3.21s
+  -> Progress: 85/200 | model_ok=85 fallback=0 no_img=0 fetch_fail=0 | ETA 05:47
+
+[86/200] id=1240907 | super_category='食品饮料' | triad_hit=True | ETA 05:47
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tea can is placed on a wooden surface with a subtle texture, giving a natural and rust...'  | elapsed 3.10s
+  -> Progress: 86/200 | model_ok=86 fallback=0 no_img=0 fetch_fail=0 | ETA 05:44
+
+[87/200] id=107524 | super_category='户外运动装备交通' | triad_hit=True | ETA 05:44
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bicycle is displayed against a serene backdrop of a lush, green forest with dappled su...'  | elapsed 2.92s
+  -> Progress: 87/200 | model_ok=87 fallback=0 no_img=0 fetch_fail=0 | ETA 05:41
+
+[88/200] id=1559585 | super_category='服饰鞋包' | triad_hit=True | ETA 05:41
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'A minimalist studio setting showcases the sneakers against a soft, off-white gradient back...'  | elapsed 3.00s
+  -> Progress: 88/200 | model_ok=88 fallback=0 no_img=0 fetch_fail=0 | ETA 05:38
+
+[89/200] id=43439 | super_category='家装建材工业五金' | triad_hit=True | ETA 05:38
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black cylindrical object stands prominently against a soft, textured wooden tabl...'  | elapsed 2.95s
+  -> Progress: 89/200 | model_ok=89 fallback=0 no_img=0 fetch_fail=0 | ETA 05:34
+
+[90/200] id=106077 | super_category='家电厨具' | triad_hit=True | ETA 05:34
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek white chest freezer stands against a softly lit, modern kitchen backdrop. The wa...'  | elapsed 2.97s
+  -> Progress: 90/200 | model_ok=90 fallback=0 no_img=0 fetch_fail=0 | ETA 05:31
+
+[91/200] id=109295 | super_category='户外运动装备交通' | triad_hit=True | ETA 05:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a minimalist backdrop, with soft, diffused lighting casti...'  | elapsed 3.12s
+  -> Progress: 91/200 | model_ok=91 fallback=0 no_img=0 fetch_fail=0 | ETA 05:28
+
+[92/200] id=27884 | super_category='家电厨具' | triad_hit=True | ETA 05:28
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, modern ironing machine stands against a backdrop of a cozy, well-lit living roo...'  | elapsed 2.99s
+  -> Progress: 92/200 | model_ok=92 fallback=0 no_img=0 fetch_fail=0 | ETA 05:25
+
+[93/200] id=96252 | super_category='户外运动装备交通' | triad_hit=True | ETA 05:25
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The jacket is displayed against a blurred, natural outdoor setting with soft, diffused lig...'  | elapsed 3.05s
+  -> Progress: 93/200 | model_ok=93 fallback=0 no_img=0 fetch_fail=0 | ETA 05:22
+
+[94/200] id=1236193 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 05:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bracelet rests on a refined gradient background, transitioning from soft white to a su...'  | elapsed 3.06s
+  -> Progress: 94/200 | model_ok=94 fallback=0 no_img=0 fetch_fail=0 | ETA 05:19
+
+[95/200] id=104665 | super_category='美妆个护' | triad_hit=True | ETA 05:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The Mentholatum Acnes patches are displayed against a soft, light gray background that mim...'  | elapsed 3.02s
+  -> Progress: 95/200 | model_ok=95 fallback=0 no_img=0 fetch_fail=0 | ETA 05:16
+
+[96/200] id=1385 | super_category='食品饮料' | triad_hit=True | ETA 05:16
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bag of rice is set against a serene, snow-covered mountain landscape, evoking a sense ...'  | elapsed 2.96s
+  -> Progress: 96/200 | model_ok=96 fallback=0 no_img=0 fetch_fail=0 | ETA 05:13
+
+[97/200] id=97680 | super_category='家电厨具' | triad_hit=True | ETA 05:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant orange and yellow Tupperware containers are nestled on a rustic wooden table, ...'  | elapsed 2.93s
+  -> Progress: 97/200 | model_ok=97 fallback=0 no_img=0 fetch_fail=0 | ETA 05:10
+
+[98/200] id=100187 | super_category='美妆个护' | triad_hit=True | ETA 05:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottles of RYO Hair Strength Shampoo are set against a soft, light gray background tha...'  | elapsed 3.01s
+  -> Progress: 98/200 | model_ok=98 fallback=0 no_img=0 fetch_fail=0 | ETA 05:07
+
+[99/200] id=95817 | super_category='文教办公与图书' | triad_hit=True | ETA 05:07
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant book stands out against a cozy, lived-in living room setting. The soft, natura...'  | elapsed 3.01s
+  -> Progress: 99/200 | model_ok=99 fallback=0 no_img=0 fetch_fail=0 | ETA 05:04
+
+[100/200] id=73948 | super_category='食品饮料' | triad_hit=True | ETA 05:04
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of sparkling water sits on a clean, minimalist surface, with soft, natural ligh...'  | elapsed 2.99s
+  -> Progress: 100/200 | model_ok=100 fallback=0 no_img=0 fetch_fail=0 | ETA 05:01
+
+[101/200] id=103935 | super_category='母婴亲子' | triad_hit=True | ETA 05:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The image of the Huggies diapers is set against a softly lit, cozy bedroom scene. The ligh...'  | elapsed 3.01s
+  -> Progress: 101/200 | model_ok=101 fallback=0 no_img=0 fetch_fail=0 | ETA 04:58
+
+[102/200] id=1237373 | super_category='医药保健计生' | triad_hit=True | ETA 04:58
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of Wen Dan Tang is set against a serene kitchen counter with a soft, natural li...'  | elapsed 2.96s
+  -> Progress: 102/200 | model_ok=102 fallback=0 no_img=0 fetch_fail=0 | ETA 04:55
+
+[103/200] id=82162 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 04:55
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a softly lit studio, the golden skull and crossbones figurine stands out against a subt...'  | elapsed 3.17s
+  -> Progress: 103/200 | model_ok=103 fallback=0 no_img=0 fetch_fail=0 | ETA 04:52
+
+[104/200] id=52732 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 04:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The necklace rests elegantly on a subtly textured, light beige surface, reminiscent of fin...'  | elapsed 3.10s
+  -> Progress: 104/200 | model_ok=104 fallback=0 no_img=0 fetch_fail=0 | ETA 04:49
+
+[105/200] id=64131 | super_category='食品饮料' | triad_hit=True | ETA 04:49
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottles of Yaxi Jiaojiu are arranged on a polished wooden table, surrounded by soft, n...'  | elapsed 3.06s
+  -> Progress: 105/200 | model_ok=105 fallback=0 no_img=0 fetch_fail=0 | ETA 04:46
+
+[106/200] id=1564788 | super_category='其他' | triad_hit=True | ETA 04:46
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toothpaste bottles are set against a soft, light pink background, creating a gentle an...'  | elapsed 2.94s
+  -> Progress: 106/200 | model_ok=106 fallback=0 no_img=0 fetch_fail=0 | ETA 04:43
+
+[107/200] id=1546977 | super_category='家装建材工业五金' | triad_hit=True | ETA 04:43
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The cordless drill is positioned on a smooth, dark wooden tabletop, showcasing its sleek d...'  | elapsed 3.06s
+  -> Progress: 107/200 | model_ok=107 fallback=0 no_img=0 fetch_fail=0 | ETA 04:40
+
+[108/200] id=102982 | super_category='家电厨具' | triad_hit=True | ETA 04:40
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek white air conditioner is mounted on a modern wall in a cozy living room. The bac...'  | elapsed 2.97s
+  -> Progress: 108/200 | model_ok=108 fallback=0 no_img=0 fetch_fail=0 | ETA 04:37
+
+[109/200] id=21722 | super_category='食品饮料' | triad_hit=True | ETA 04:37
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'On a cozy kitchen counter, a plate of fresh, juicy mango slices sits under warm, natural l...'  | elapsed 2.82s
+  -> Progress: 109/200 | model_ok=109 fallback=0 no_img=0 fetch_fail=0 | ETA 04:34
+
+[110/200] id=1562519 | super_category='服饰鞋包' | triad_hit=True | ETA 04:34
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black sunglasses rest on a minimalist white surface, with soft, diffused light c...'  | elapsed 2.91s
+  -> Progress: 110/200 | model_ok=110 fallback=0 no_img=0 fetch_fail=0 | ETA 04:31
+
+[111/200] id=1559704 | super_category='收纳日用' | triad_hit=True | ETA 04:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'Stacked neatly on a warm-toned wooden surface, these boxes are surrounded by soft, natural...'  | elapsed 3.04s
+  -> Progress: 111/200 | model_ok=111 fallback=0 no_img=0 fetch_fail=0 | ETA 04:28
+
+[112/200] id=1537571 | super_category='服饰鞋包' | triad_hit=True | ETA 04:28
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant beige flat shoe is displayed against a soft, gradient background that transiti...'  | elapsed 3.08s
+  -> Progress: 112/200 | model_ok=112 fallback=0 no_img=0 fetch_fail=0 | ETA 04:25
+
+[113/200] id=23215 | super_category='收纳日用' | triad_hit=True | ETA 04:25
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a soft, neutral-toned background that mimics a clean, mod...'  | elapsed 3.08s
+  -> Progress: 113/200 | model_ok=113 fallback=0 no_img=0 fetch_fail=0 | ETA 04:22
+
+[114/200] id=4733 | super_category='家电厨具' | triad_hit=True | ETA 04:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant spatula rests on a softly lit, neutral-toned surface, suggesting a cozy kitche...'  | elapsed 3.08s
+  -> Progress: 114/200 | model_ok=114 fallback=0 no_img=0 fetch_fail=0 | ETA 04:19
+
+[115/200] id=108057 | super_category='美妆个护' | triad_hit=True | ETA 04:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, modern hair straightener is displayed against a soft, neutral-toned backdrop th...'  | elapsed 3.12s
+  -> Progress: 115/200 | model_ok=115 fallback=0 no_img=0 fetch_fail=0 | ETA 04:16
+
+[116/200] id=1391606 | super_category='收纳日用' | triad_hit=True | ETA 04:16
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tissues are displayed against a soft, light gray backdrop, mimicking a cozy living roo...'  | elapsed 2.91s
+  -> Progress: 116/200 | model_ok=116 fallback=0 no_img=0 fetch_fail=0 | ETA 04:13
+
+[117/200] id=1538958 | super_category='美妆个护' | triad_hit=True | ETA 04:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant red shampoo bottle sits on a soft, textured surface that mimics the look of a ...'  | elapsed 3.14s
+  -> Progress: 117/200 | model_ok=117 fallback=0 no_img=0 fetch_fail=0 | ETA 04:10
+
+[118/200] id=30268 | super_category='家纺软装' | triad_hit=True | ETA 04:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The apple is displayed against a soft, light gray background, giving it a clean and modern...'  | elapsed 3.05s
+  -> Progress: 118/200 | model_ok=118 fallback=0 no_img=0 fetch_fail=0 | ETA 04:07
+
+[119/200] id=101501 | super_category='食品饮料' | triad_hit=True | ETA 04:07
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of NFC coconut water is set against a serene tropical beach scene, with gentle ...'  | elapsed 3.24s
+  -> Progress: 119/200 | model_ok=119 fallback=0 no_img=0 fetch_fail=0 | ETA 04:04
+
+[120/200] id=52643 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 04:04
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The necklace rests on a luxurious, subtly textured surface, its soft white sheen complemen...'  | elapsed 2.93s
+  -> Progress: 120/200 | model_ok=120 fallback=0 no_img=0 fetch_fail=0 | ETA 04:01
+
+[121/200] id=1255712 | super_category='美妆个护' | triad_hit=True | ETA 04:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek device is positioned against a softly lit, minimalist backdrop, suggesting a mod...'  | elapsed 3.10s
+  -> Progress: 121/200 | model_ok=121 fallback=0 no_img=0 fetch_fail=0 | ETA 03:58
+
+[122/200] id=15032 | super_category='家电厨具' | triad_hit=True | ETA 03:58
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The mint green frying pan rests on a rustic wooden surface, surrounded by soft, natural li...'  | elapsed 3.03s
+  -> Progress: 122/200 | model_ok=122 fallback=0 no_img=0 fetch_fail=0 | ETA 03:55
+
+[123/200] id=103125 | super_category='收纳日用' | triad_hit=True | ETA 03:55
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a soft, light gray background, mimicking a serene outdoor setti...'  | elapsed 3.04s
+  -> Progress: 123/200 | model_ok=123 fallback=0 no_img=0 fetch_fail=0 | ETA 03:52
+
+[124/200] id=59722 | super_category='收纳日用' | triad_hit=True | ETA 03:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The floral tissue boxes are displayed against a softly lit, natural setting with a hint of...'  | elapsed 3.06s
+  -> Progress: 124/200 | model_ok=124 fallback=0 no_img=0 fetch_fail=0 | ETA 03:49
+
+[125/200] id=596 | super_category='收纳日用' | triad_hit=True | ETA 03:49
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed in a realistic kitchen setting, with soft natural light casting g...'  | elapsed 2.96s
+  -> Progress: 125/200 | model_ok=125 fallback=0 no_img=0 fetch_fail=0 | ETA 03:46
+
+[126/200] id=1247064 | super_category='食品饮料' | triad_hit=True | ETA 03:46
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant gift box is nestled on a wooden table, surrounded by soft, natural light that ...'  | elapsed 2.93s
+  -> Progress: 126/200 | model_ok=126 fallback=0 no_img=0 fetch_fail=0 | ETA 03:43
+
+[127/200] id=142207 | super_category='收纳日用' | triad_hit=True | ETA 03:43
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is placed on a cozy, lived-in surface with a warm, inviting ambiance. The back...'  | elapsed 3.10s
+  -> Progress: 127/200 | model_ok=127 fallback=0 no_img=0 fetch_fail=0 | ETA 03:40
+
+[128/200] id=764 | super_category='收纳日用' | triad_hit=True | ETA 03:40
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The floral-patterned food cover is displayed over a white plate, which holds a variety of ...'  | elapsed 2.93s
+  -> Progress: 128/200 | model_ok=128 fallback=0 no_img=0 fetch_fail=0 | ETA 03:37
+
+[129/200] id=1394480 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 03:37
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The necklace is elegantly displayed against a luxurious, warm-toned backdrop of soft gold ...'  | elapsed 3.06s
+  -> Progress: 129/200 | model_ok=129 fallback=0 no_img=0 fetch_fail=0 | ETA 03:34
+
+[130/200] id=110796 | super_category='家纺软装' | triad_hit=True | ETA 03:34
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The down comforter is displayed on a neatly made bed with a tufted headboard, surrounded b...'  | elapsed 2.99s
+  -> Progress: 130/200 | model_ok=130 fallback=0 no_img=0 fetch_fail=0 | ETA 03:31
+
+[131/200] id=1239829 | super_category='服饰鞋包' | triad_hit=True | ETA 03:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The pink clog with playful decorations sits on a clean, minimalist surface, casting soft s...'  | elapsed 3.02s
+  -> Progress: 131/200 | model_ok=131 fallback=0 no_img=0 fetch_fail=0 | ETA 03:28
+
+[132/200] id=1558984 | super_category='收纳日用' | triad_hit=True | ETA 03:28
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The neatly stacked rolls of tissue paper are set against a softly lit, cozy living room ba...'  | elapsed 3.07s
+  -> Progress: 132/200 | model_ok=132 fallback=0 no_img=0 fetch_fail=0 | ETA 03:25
+
+[133/200] id=102908 | super_category='美妆个护' | triad_hit=True | ETA 03:25
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black hair straightener is positioned against a softly lit, minimalist backdrop,...'  | elapsed 3.24s
+  -> Progress: 133/200 | model_ok=133 fallback=0 no_img=0 fetch_fail=0 | ETA 03:22
+
+[134/200] id=37763 | super_category='母婴亲子' | triad_hit=True | ETA 03:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a soft, textured surface that resembles a cozy living room tab...'  | elapsed 2.97s
+  -> Progress: 134/200 | model_ok=134 fallback=0 no_img=0 fetch_fail=0 | ETA 03:19
+
+[135/200] id=92479 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 03:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The golden ring is set against a refined gradient background, with soft light beams castin...'  | elapsed 2.96s
+  -> Progress: 135/200 | model_ok=135 fallback=0 no_img=0 fetch_fail=0 | ETA 03:16
+
+[136/200] id=90649 | super_category='收纳日用' | triad_hit=True | ETA 03:16
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The products are displayed on a soft, light gray background that mimics a cozy living room...'  | elapsed 3.06s
+  -> Progress: 136/200 | model_ok=136 fallback=0 no_img=0 fetch_fail=0 | ETA 03:13
+
+[137/200] id=5631 | super_category='家电厨具' | triad_hit=True | ETA 03:13
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The orange perforated spoon is placed on a light gray background, which subtly fades into ...'  | elapsed 2.92s
+  -> Progress: 137/200 | model_ok=137 fallback=0 no_img=0 fetch_fail=0 | ETA 03:10
+
+[138/200] id=1550515 | super_category='母婴亲子' | triad_hit=True | ETA 03:10
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a cozy, lived-in room with soft, natural light streaming in fro...'  | elapsed 3.11s
+  -> Progress: 138/200 | model_ok=138 fallback=0 no_img=0 fetch_fail=0 | ETA 03:07
+
+[139/200] id=1252019 | super_category='服饰鞋包' | triad_hit=True | ETA 03:07
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The white crocs are displayed against a soft, gradient backdrop that transitions from a li...'  | elapsed 3.11s
+  -> Progress: 139/200 | model_ok=139 fallback=0 no_img=0 fetch_fail=0 | ETA 03:04
+
+[140/200] id=38126 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 03:04
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The necklace is set against a refined gradient background, with narrow light beams creatin...'  | elapsed 3.05s
+  -> Progress: 140/200 | model_ok=140 fallback=0 no_img=0 fetch_fail=0 | ETA 03:01
+
+[141/200] id=19892 | super_category='美妆个护' | triad_hit=True | ETA 03:01
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tubes of Bioderma Atoderm Ultra-nourishing balm are displayed on a soft, light gray ba...'  | elapsed 3.03s
+  -> Progress: 141/200 | model_ok=141 fallback=0 no_img=0 fetch_fail=0 | ETA 02:58
+
+[142/200] id=1551782 | super_category='食品饮料' | triad_hit=True | ETA 02:58
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a cozy living room, a child's bookshelf stands in the corner, filled with colorful book...'  | elapsed 2.86s
+  -> Progress: 142/200 | model_ok=142 fallback=0 no_img=0 fetch_fail=0 | ETA 02:55
+
+[143/200] id=1234464 | super_category='家纺软装' | triad_hit=True | ETA 02:55
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is nestled in a rustic tree stump, surrounded by a soft, diffused light that e...'  | elapsed 2.97s
+  -> Progress: 143/200 | model_ok=143 fallback=0 no_img=0 fetch_fail=0 | ETA 02:52
+
+[144/200] id=1562048 | super_category='服饰鞋包' | triad_hit=True | ETA 02:52
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vest is displayed against a minimalist studio background with a soft gradient, creatin...'  | elapsed 2.95s
+  -> Progress: 144/200 | model_ok=144 fallback=0 no_img=0 fetch_fail=0 | ETA 02:49
+
+[145/200] id=94329 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 02:49
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bracelet is displayed against a soft, diffused light that casts gentle shadows, highli...'  | elapsed 2.96s
+  -> Progress: 145/200 | model_ok=145 fallback=0 no_img=0 fetch_fail=0 | ETA 02:46
+
+[146/200] id=1252345 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 02:46
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The golden bracelet gleams against a soft, ethereal gradient backdrop, with subtle light b...'  | elapsed 3.18s
+  -> Progress: 146/200 | model_ok=146 fallback=0 no_img=0 fetch_fail=0 | ETA 02:43
+
+[147/200] id=25372 | super_category='美妆个护' | triad_hit=True | ETA 02:43
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The eyeshadow palette rests on a soft, textured surface that mimics the look of a cozy liv...'  | elapsed 3.22s
+  -> Progress: 147/200 | model_ok=147 fallback=0 no_img=0 fetch_fail=0 | ETA 02:40
+
+[148/200] id=1387838 | super_category='收纳日用' | triad_hit=True | ETA 02:40
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a cozy, lived-in room bathed in natural light, the feather duster rests against a backd...'  | elapsed 3.08s
+  -> Progress: 148/200 | model_ok=148 fallback=0 no_img=0 fetch_fail=0 | ETA 02:37
+
+[149/200] id=105789 | super_category='家电厨具' | triad_hit=True | ETA 02:37
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek stainless steel pressure cooker stands against a softly lit kitchen backdrop, wh...'  | elapsed 3.03s
+  -> Progress: 149/200 | model_ok=149 fallback=0 no_img=0 fetch_fail=0 | ETA 02:34
+
+[150/200] id=2168 | super_category='收纳日用' | triad_hit=True | ETA 02:34
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tissue package is displayed against a softly lit, cozy room with a warm, inviting ambi...'  | elapsed 3.10s
+  -> Progress: 150/200 | model_ok=150 fallback=0 no_img=0 fetch_fail=0 | ETA 02:31
+
+[151/200] id=109182 | super_category='美妆个护' | triad_hit=True | ETA 02:31
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek JOVS device rests on a polished, light beige surface, surrounded by soft, ambien...'  | elapsed 2.94s
+  -> Progress: 151/200 | model_ok=151 fallback=0 no_img=0 fetch_fail=0 | ETA 02:28
+
+[152/200] id=52468 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 02:28
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a softly lit room, the butterfly earrings rest on a delicate, textured surface that mim...'  | elapsed 3.05s
+  -> Progress: 152/200 | model_ok=152 fallback=0 no_img=0 fetch_fail=0 | ETA 02:25
+
+[153/200] id=1561100 | super_category='食品饮料' | triad_hit=True | ETA 02:25
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of Co Q-10 sits on a wooden surface, surrounded by soft, natural light that cas...'  | elapsed 2.97s
+  -> Progress: 153/200 | model_ok=153 fallback=0 no_img=0 fetch_fail=0 | ETA 02:22
+
+[154/200] id=100858 | super_category='收纳日用' | triad_hit=True | ETA 02:22
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The packaging is set against a serene beach backdrop, with soft, natural light filtering t...'  | elapsed 3.11s
+  -> Progress: 154/200 | model_ok=154 fallback=0 no_img=0 fetch_fail=0 | ETA 02:19
+
+[155/200] id=69147 | super_category='服饰鞋包' | triad_hit=True | ETA 02:19
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a softly lit minimalist studio, the shoe rests on a clean, geometric plinth with crisp ...'  | elapsed 2.91s
+  -> Progress: 155/200 | model_ok=155 fallback=0 no_img=0 fetch_fail=0 | ETA 02:15
+
+[156/200] id=1539046 | super_category='食品饮料' | triad_hit=True | ETA 02:15
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of Casillero del Diablo Merlot Reserve stands against a backdrop of a cozy, rus...'  | elapsed 2.95s
+  -> Progress: 156/200 | model_ok=156 fallback=0 no_img=0 fetch_fail=0 | ETA 02:12
+
+[157/200] id=95875 | super_category='母婴亲子' | triad_hit=True | ETA 02:12
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed against a softly lit, neutral-toned backdrop that mimics a cozy l...'  | elapsed 3.11s
+  -> Progress: 157/200 | model_ok=157 fallback=0 no_img=0 fetch_fail=0 | ETA 02:09
+
+[158/200] id=78232 | super_category='家电厨具' | triad_hit=True | ETA 02:09
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek Haier washing machine stands in a modern kitchen with a minimalist design. The c...'  | elapsed 3.03s
+  -> Progress: 158/200 | model_ok=158 fallback=0 no_img=0 fetch_fail=0 | ETA 02:06
+
+[159/200] id=98201 | super_category='服饰鞋包' | triad_hit=True | ETA 02:06
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The beige bra is displayed against a soft, gradient background that transitions from a lig...'  | elapsed 2.96s
+  -> Progress: 159/200 | model_ok=159 fallback=0 no_img=0 fetch_fail=0 | ETA 02:03
+
+[160/200] id=1544372 | super_category='食品饮料' | triad_hit=True | ETA 02:03
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The three packs of Samyang noodle snacks are displayed against a backdrop of a cozy kitche...'  | elapsed 3.07s
+  -> Progress: 160/200 | model_ok=160 fallback=0 no_img=0 fetch_fail=0 | ETA 02:00
+
+[161/200] id=107884 | super_category='服饰鞋包' | triad_hit=True | ETA 02:00
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant white high-heeled sandal is displayed against a minimalist backdrop, with a so...'  | elapsed 3.19s
+  -> Progress: 161/200 | model_ok=161 fallback=0 no_img=0 fetch_fail=0 | ETA 01:57
+
+[162/200] id=1251225 | super_category='母婴亲子' | triad_hit=True | ETA 01:57
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The jacket is displayed against a soft, neutral-toned backdrop, subtly textured to suggest...'  | elapsed 3.39s
+  -> Progress: 162/200 | model_ok=162 fallback=0 no_img=0 fetch_fail=0 | ETA 01:54
+
+[163/200] id=1259754 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 01:54
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The elegant pair of pearl earrings rests on a subtle gradient of soft beige, creating a wa...'  | elapsed 3.17s
+  -> Progress: 163/200 | model_ok=163 fallback=0 no_img=0 fetch_fail=0 | ETA 01:51
+
+[164/200] id=1540811 | super_category='玩乐兴趣文创礼品' | triad_hit=True | ETA 01:51
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toy laptop is set against a softly lit, cozy room with a gentle gradient of light. The...'  | elapsed 3.15s
+  -> Progress: 164/200 | model_ok=164 fallback=0 no_img=0 fetch_fail=0 | ETA 01:48
+
+[165/200] id=1235091 | super_category='美妆个护' | triad_hit=True | ETA 01:48
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek, white digital scale rests on a softly textured surface, subtly reflecting the a...'  | elapsed 2.99s
+  -> Progress: 165/200 | model_ok=165 fallback=0 no_img=0 fetch_fail=0 | ETA 01:45
+
+[166/200] id=1562152 | super_category='服饰鞋包' | triad_hit=True | ETA 01:45
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a minimalist studio setting, the shorts are displayed on a sleek, geometric plinth agai...'  | elapsed 2.99s
+  -> Progress: 166/200 | model_ok=166 fallback=0 no_img=0 fetch_fail=0 | ETA 01:42
+
+[167/200] id=81525 | super_category='母婴亲子' | triad_hit=True | ETA 01:42
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The tissue box is placed on a soft, light blue fabric that mimics a cozy living room setti...'  | elapsed 3.11s
+  -> Progress: 167/200 | model_ok=167 fallback=0 no_img=0 fetch_fail=0 | ETA 01:39
+
+[168/200] id=1552525 | super_category='服饰鞋包' | triad_hit=True | ETA 01:39
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek black leather shoe is displayed on a minimalist geometric plinth, set against a ...'  | elapsed 2.93s
+  -> Progress: 168/200 | model_ok=168 fallback=0 no_img=0 fetch_fail=0 | ETA 01:36
+
+[169/200] id=27392 | super_category='母婴亲子' | triad_hit=True | ETA 01:36
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The golden belly serums are nestled in a serene, softly lit kitchen setting, with the warm...'  | elapsed 3.08s
+  -> Progress: 169/200 | model_ok=169 fallback=0 no_img=0 fetch_fail=0 | ETA 01:33
+
+[170/200] id=41977 | super_category='收纳日用' | triad_hit=True | ETA 01:33
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The packaging sits on a soft, textured surface that resembles a wooden table, with natural...'  | elapsed 3.04s
+  -> Progress: 170/200 | model_ok=170 fallback=0 no_img=0 fetch_fail=0 | ETA 01:30
+
+[171/200] id=53112 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 01:30
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The gold ring rests on a smooth, reflective surface that captures subtle light reflections...'  | elapsed 3.04s
+  -> Progress: 171/200 | model_ok=171 fallback=0 no_img=0 fetch_fail=0 | ETA 01:27
+
+[172/200] id=27489 | super_category='家具' | triad_hit=True | ETA 01:27
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The desk and chair are set in a cozy, well-lit room with soft natural light streaming in f...'  | elapsed 3.11s
+  -> Progress: 172/200 | model_ok=172 fallback=0 no_img=0 fetch_fail=0 | ETA 01:24
+
+[173/200] id=105977 | super_category='美妆个护' | triad_hit=True | ETA 01:24
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The cushion compact rests on a delicate, white lace doily, its soft texture complementing ...'  | elapsed 3.04s
+  -> Progress: 173/200 | model_ok=173 fallback=0 no_img=0 fetch_fail=0 | ETA 01:21
+
+[174/200] id=77377 | super_category='家装建材工业五金' | triad_hit=True | ETA 01:21
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek smart lock is displayed against a minimalist backdrop of a textured stone wall, ...'  | elapsed 2.96s
+  -> Progress: 174/200 | model_ok=174 fallback=0 no_img=0 fetch_fail=0 | ETA 01:18
+
+[175/200] id=99197 | super_category='家电厨具' | triad_hit=True | ETA 01:18
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The sleek white water heater stands against a softly lit, modern kitchen backdrop. The war...'  | elapsed 2.97s
+  -> Progress: 175/200 | model_ok=175 fallback=0 no_img=0 fetch_fail=0 | ETA 01:15
+
+[176/200] id=13968 | super_category='数码电子' | triad_hit=True | ETA 01:15
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a softly lit, modern interior with a large window allowing natu...'  | elapsed 2.96s
+  -> Progress: 176/200 | model_ok=176 fallback=0 no_img=0 fetch_fail=0 | ETA 01:12
+
+[177/200] id=1257216 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 01:12
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The gold earrings rest on a soft, textured surface that mimics the appearance of polished ...'  | elapsed 2.96s
+  -> Progress: 177/200 | model_ok=177 fallback=0 no_img=0 fetch_fail=0 | ETA 01:09
+
+[178/200] id=1545516 | super_category='文教办公与图书' | triad_hit=True | ETA 01:09
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The document is neatly arranged on a wooden desk, surrounded by a few scattered papers and...'  | elapsed 3.05s
+  -> Progress: 178/200 | model_ok=178 fallback=0 no_img=0 fetch_fail=0 | ETA 01:06
+
+[179/200] id=1247275 | super_category='母婴亲子' | triad_hit=True | ETA 01:06
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed in a cozy kitchen setting with a warm, inviting ambiance. The can...'  | elapsed 3.07s
+  -> Progress: 179/200 | model_ok=179 fallback=0 no_img=0 fetch_fail=0 | ETA 01:03
+
+[180/200] id=49822 | super_category='收纳日用' | triad_hit=True | ETA 01:03
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The two bottles of detergent are placed on a light gray surface, which resembles a kitchen...'  | elapsed 3.02s
+  -> Progress: 180/200 | model_ok=180 fallback=0 no_img=0 fetch_fail=0 | ETA 01:00
+
+[181/200] id=80170 | super_category='收纳日用' | triad_hit=True | ETA 01:00
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The soft hanging paper towels are displayed against a clean, light gray background that mi...'  | elapsed 2.88s
+  -> Progress: 181/200 | model_ok=181 fallback=0 no_img=0 fetch_fail=0 | ETA 00:57
+
+[182/200] id=43124 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 00:57
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The vibrant red gemstones are set against a soft, diffused light that casts gentle shadows...'  | elapsed 2.94s
+  -> Progress: 182/200 | model_ok=182 fallback=0 no_img=0 fetch_fail=0 | ETA 00:54
+
+[183/200] id=98698 | super_category='服饰鞋包' | triad_hit=True | ETA 00:54
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The silver metallic shoe is set against a soft, gradient backdrop, creating a sleek and mo...'  | elapsed 3.02s
+  -> Progress: 183/200 | model_ok=183 fallback=0 no_img=0 fetch_fail=0 | ETA 00:51
+
+[184/200] id=105303 | super_category='家电厨具' | triad_hit=True | ETA 00:51
+C:\Users\25863\AppData\Local\Programs\Python\Python311\Lib\site-packages\PIL\Image.py:1045: UserWarning: Palette images with Transparency expressed in bytes should be converted to RGBA images
+  warnings.warn(
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The scene is set on a light wooden table, with the roll of plastic food wrap placed diagon...'  | elapsed 3.19s
+  -> Progress: 184/200 | model_ok=184 fallback=0 no_img=0 fetch_fail=0 | ETA 00:48
+
+[185/200] id=17648 | super_category='家电厨具' | triad_hit=True | ETA 00:48
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The set of mint green silicone spatulas rests on a softly textured, neutral-toned kitchen ...'  | elapsed 3.02s
+  -> Progress: 185/200 | model_ok=185 fallback=0 no_img=0 fetch_fail=0 | ETA 00:45
+
+[186/200] id=1247484 | super_category='服饰鞋包' | triad_hit=True | ETA 00:45
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'In a minimalist studio, a soft gradient backdrop frames the vibrant pink clogs, casting cr...'  | elapsed 3.00s
+  -> Progress: 186/200 | model_ok=186 fallback=0 no_img=0 fetch_fail=0 | ETA 00:42
+
+[187/200] id=1396488 | super_category='母婴亲子' | triad_hit=True | ETA 00:42
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is set against a soft, light blue background that mimics a serene garden. Deli...'  | elapsed 3.01s
+  -> Progress: 187/200 | model_ok=187 fallback=0 no_img=0 fetch_fail=0 | ETA 00:39
+
+[188/200] id=103803 | super_category='医药保健计生' | triad_hit=True | ETA 00:39
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product rests on a soft, textured surface, likely a piece of fabric or a decorative ru...'  | elapsed 3.17s
+  -> Progress: 188/200 | model_ok=188 fallback=0 no_img=0 fetch_fail=0 | ETA 00:36
+
+[189/200] id=100318 | super_category='美妆个护' | triad_hit=True | ETA 00:36
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is placed on a light beige surface, which appears to be a natural stone or woo...'  | elapsed 3.01s
+  -> Progress: 189/200 | model_ok=189 fallback=0 no_img=0 fetch_fail=0 | ETA 00:33
+
+[190/200] id=92941 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 00:33
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The golden bracelet rests on a soft, textured surface that mimics the feel of fine sand, a...'  | elapsed 3.11s
+  -> Progress: 190/200 | model_ok=190 fallback=0 no_img=0 fetch_fail=0 | ETA 00:30
+
+[191/200] id=1563998 | super_category='其他' | triad_hit=True | ETA 00:30
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a clean, light gray background with soft falloff, creating a m...'  | elapsed 3.05s
+  -> Progress: 191/200 | model_ok=191 fallback=0 no_img=0 fetch_fail=0 | ETA 00:27
+
+[192/200] id=4032 | super_category='母婴亲子' | triad_hit=True | ETA 00:27
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The product is displayed on a softly lit windowsill, with the warm glow of sunlight stream...'  | elapsed 3.07s
+  -> Progress: 192/200 | model_ok=192 fallback=0 no_img=0 fetch_fail=0 | ETA 00:24
+
+[193/200] id=28056 | super_category='服饰鞋包' | triad_hit=True | ETA 00:24
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The handbag is displayed against a soft, muted gradient backdrop, with subtle geometric sh...'  | elapsed 3.07s
+  -> Progress: 193/200 | model_ok=193 fallback=0 no_img=0 fetch_fail=0 | ETA 00:21
+
+[194/200] id=1232733 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 00:21
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The ring rests on a polished silver surface, reflecting the soft, diffused light that enha...'  | elapsed 2.96s
+  -> Progress: 194/200 | model_ok=194 fallback=0 no_img=0 fetch_fail=0 | ETA 00:18
+
+[195/200] id=1393960 | super_category='户外运动装备交通' | triad_hit=True | ETA 00:18
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The two pairs of men's cycling shorts are displayed against a backdrop of a serene forest,...'  | elapsed 3.04s
+  -> Progress: 195/200 | model_ok=195 fallback=0 no_img=0 fetch_fail=0 | ETA 00:15
+
+[196/200] id=1547502 | super_category='珠宝钟表奢品' | triad_hit=True | ETA 00:15
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The luxurious watch is set against a refined gradient background, with soft light beams cr...'  | elapsed 2.89s
+  -> Progress: 196/200 | model_ok=196 fallback=0 no_img=0 fetch_fail=0 | ETA 00:12
+
+[197/200] id=1548656 | super_category='食品饮料' | triad_hit=True | ETA 00:12
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottles of soy sauce are arranged neatly on a wooden table, with the warm tones of the...'  | elapsed 3.14s
+  -> Progress: 197/200 | model_ok=197 fallback=0 no_img=0 fetch_fail=0 | ETA 00:09
+
+[198/200] id=73685 | super_category='汽车摩托出行' | triad_hit=True | ETA 00:09
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The image showcases two boxes of soft tissue, each adorned with a charming cartoon rabbit ...'  | elapsed 2.96s
+  -> Progress: 198/200 | model_ok=198 fallback=0 no_img=0 fetch_fail=0 | ETA 00:06
+
+[199/200] id=1552916 | super_category='食品饮料' | triad_hit=True | ETA 00:06
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The bottle of lemon-flavored drink is set against a rustic kitchen backdrop, with warm, na...'  | elapsed 2.96s
+  -> Progress: 199/200 | model_ok=199 fallback=0 no_img=0 fetch_fail=0 | ETA 00:03
+
+[200/200] id=1437 | super_category='收纳日用' | triad_hit=True | ETA 00:03
+  - Image: OK  | calling VLM(prompt) ...
+  - Prompt OK: 'The toothpaste tubes are displayed against a soft, light gray background, with subtle shad...'  | elapsed 2.97s
+  -> Progress: 200/200 | model_ok=200 fallback=0 no_img=0 fetch_fail=0 | ETA 00:00
+
+[Write] Saving Excel ...
+
+===> [DONE] Prompt generation (Part2)
+Output Excel : out_step1\step1_prompts.xlsx
+Summary      : total=200, model_ok=200, fallback=0, no_img=0, fetch_fail=0
+Timing       : total_elapsed=605.33s, avg_per_row=3.03s
+
+END: 2025-09-12 14:14:41
+ELAPSED: 608.01s
