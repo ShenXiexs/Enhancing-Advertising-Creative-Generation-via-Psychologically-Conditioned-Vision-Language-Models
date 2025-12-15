@@ -352,6 +352,10 @@ def main():
                         help="MBTI personas CSV 路径。")
     parser.add_argument("--step1-csv", default="白底商品信息类目.csv",
                         help="Step1 输入 CSV/XLSX。")
+    parser.add_argument("--experiment-csv", default="白底商品信息类目_experiment.csv",
+                        help="已筛选样本的 Step1 输入 CSV/XLSX（默认同目录下白底商品信息类目_experiment.csv）。")
+    parser.add_argument("--use-experiment-csv", action="store_true",
+                        help="启用后忽略 --step1-csv，改用 --experiment-csv 作为 Step1 输入。")
     parser.add_argument("--step1-model", choices=["7b", "32b"], default="7b",
                         help="Step1 生成标题所用的模型规格。")
     parser.add_argument("--step1-sample-num", type=int, default=0,
@@ -396,6 +400,16 @@ def main():
                         help="仅打印将执行的命令，不真正运行。")
     args = parser.parse_args()
     set_dry_run(args.dry_run)
+
+    if args.use_experiment_csv:
+        exp_path = Path(args.experiment_csv)
+        if not exp_path.exists():
+            raise FileNotFoundError(f"找不到 experiment CSV：{exp_path}（可用 --experiment-csv 指定路径）")
+        args.step1_csv = str(exp_path)
+        if args.skip_step1:
+            print("[WARN] --use-experiment-csv 与 --skip-step1 同时使用：将复用现有 step1_titles.xlsx，"
+                  "可能不是由 experiment CSV 生成。")
+
     args.mbti_types = _parse_mbti_list(args.mbti_types)
     if args.limit_mbti and args.limit_mbti > 0:
         args.mbti_types = args.mbti_types[:args.limit_mbti]
