@@ -77,7 +77,29 @@ def read_table_auto(path: str) -> pd.DataFrame:
 def load_category_map(map_path: str, orig_col: str, target_col: str) -> dict:
     df = read_table_auto(map_path)
     if orig_col not in df.columns or target_col not in df.columns:
-        raise ValueError(f"分类映射缺少列：{orig_col}/{target_col}")
+        # Try case-insensitive / partial matches, then fall back to first two columns.
+        def pick(name: str):
+            name_l = str(name).strip().lower()
+            exact = next((c for c in df.columns if str(c).strip().lower() == name_l), None)
+            if exact:
+                return exact
+            partial = next((c for c in df.columns if name_l and name_l in str(c).strip().lower()), None)
+            return partial
+
+        resolved_orig = pick(orig_col)
+        resolved_target = pick(target_col)
+        if not resolved_orig or not resolved_target:
+            cols = list(df.columns)
+            if len(cols) >= 2:
+                resolved_orig, resolved_target = cols[0], cols[1]
+                print(
+                    f"[WARN] 分类映射表缺少列名 {orig_col}/{target_col}，"
+                    f"将使用前两列作为映射：{resolved_orig}/{resolved_target}",
+                    flush=True,
+                )
+            else:
+                raise ValueError(f"分类映射缺少列：{orig_col}/{target_col}")
+        orig_col, target_col = resolved_orig, resolved_target
 
     def norm(x):
         return str(x).strip()
@@ -105,6 +127,32 @@ def run_cmd(cmd: Sequence[str], desc: str) -> None:
     result = subprocess.run(cmd, cwd=REPO_ROOT)
     if result.returncode != 0:
         raise RuntimeError(f"Command failed ({desc}): {cmd_disp}")
+
+
+def ensure_create_prompts_supports_big5(python_exe: str) -> None:
+    """Fail fast if create_categorical_prompts.py is an old MBTI-only version."""
+    cmd = [python_exe, "create_categorical_prompts.py", "-h"]
+    result = subprocess.run(
+        cmd,
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    help_text = (result.stdout or "") + "\n" + (result.stderr or "")
+    if result.returncode != 0:
+        raise RuntimeError(
+            "无法执行 create_categorical_prompts.py 以检查参数支持，"
+            f"请确认文件存在且可运行：{REPO_ROOT / 'create_categorical_prompts.py'}"
+        )
+    required_flags = ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode")
+    if not all(flag in help_text for flag in required_flags):
+        raise RuntimeError(
+            "当前目录下的 create_categorical_prompts.py 版本过旧（仅支持 MBTI），"
+            "不支持 Big Five 参数："
+            f"{', '.join(required_flags)}。\n"
+            "解决方式：在运行机器上同步最新代码（git pull / 重新拷贝仓库），"
+            "或用本仓库中的 create_categorical_prompts.py 覆盖旧文件后再跑。"
+        )
 
 
 def prepare_step1_source(args, suffix_tag: str) -> str:
@@ -413,6 +461,7 @@ def main():
     args = parser.parse_args()
 
     set_dry_run(args.dry_run)
+    ensure_create_prompts_supports_big5(sys.executable)
     if args.use_experiment_csv:
         exp_path = Path(args.experiment_csv)
         if not exp_path.exists():

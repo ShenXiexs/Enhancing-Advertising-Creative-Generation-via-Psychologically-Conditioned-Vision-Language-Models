@@ -3,6 +3,7 @@
 import argparse
 import os, re, io, json, base64, time, random, pandas as pd, requests, chardet
 from datetime import datetime
+from pathlib import Path
 from PIL import Image
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
@@ -194,9 +195,27 @@ def read_any(path: str) -> pd.DataFrame:
     return pd.read_csv(path, encoding=enc, errors="ignore")
 
 def _find_col(df: pd.DataFrame, candidates):
+    cols = list(df.columns)
+    lower_to_col = {}
+    for c in cols:
+        key = str(c).strip().lower()
+        if key and key not in lower_to_col:
+            lower_to_col[key] = c
+
+    # 1) exact (case-insensitive) match first
     for cand in candidates:
-        for c in df.columns:
-            if cand.lower() == c.lower() or cand.lower() in c.lower():
+        cand_key = str(cand).strip().lower()
+        if cand_key and cand_key in lower_to_col:
+            return lower_to_col[cand_key]
+
+    # 2) fuzzy match (substring / token-ish)
+    for cand in candidates:
+        cand_key = str(cand).strip().lower()
+        if not cand_key:
+            continue
+        for c in cols:
+            c_key = str(c).strip().lower()
+            if cand_key and cand_key in c_key:
                 return c
     return None
 
@@ -391,15 +410,80 @@ def parse_big5_tokens(raw: str):
 
 
 def load_big5_profiles(path: str, join_key: str):
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"big_five_profiles file not found: {path}")
-    df = read_any(path)
+    def _read_csv_sniff_sep(csv_path: str) -> pd.DataFrame:
+        # Only used as a fallback when columns look wrong (e.g., wrong delimiter).
+        for enc in ("utf-8-sig", "gb18030", "utf-8", "latin1"):
+            try:
+                return pd.read_csv(csv_path, encoding=enc, sep=None, engine="python")
+            except UnicodeDecodeError:
+                continue
+            except Exception:
+                continue
+        with open(csv_path, "rb") as f:
+            enc = chardet.detect(f.read(65536)).get("encoding") or "utf-8"
+        return pd.read_csv(csv_path, encoding=enc, sep=None, engine="python")
+
+    p = Path(path)
+    if not p.exists():
+        script_dir = Path(__file__).resolve().parent
+        searched = []
+        if not p.is_absolute():
+            alt = script_dir / p
+            searched.append(str(alt))
+            if alt.exists():
+                p = alt
+        if not p.exists():
+            patterns = ("big_five_profiles*.csv", "big*five*profiles*.csv", "big5*profiles*.csv")
+            candidates = []
+            for pat in patterns:
+                candidates.extend(script_dir.glob(pat))
+            # Prefer case-insensitive basename match, else accept a single unique candidate.
+            by_name = [c for c in candidates if c.name.lower() == p.name.lower()]
+            uniq = sorted({c.resolve() for c in (by_name or candidates)})
+            if len(uniq) == 1:
+                p = uniq[0]
+                print(f"[WARN] big_five_profiles not found at '{path}', auto-using '{p}'", flush=True)
+            else:
+                cwd = Path.cwd()
+                hint = (
+                    f"big_five_profiles file not found: {path}\n"
+                    f"cwd={cwd}\n"
+                    f"script_dir={script_dir}\n"
+                    f"searched={searched or 'n/a'}\n"
+                    f"candidates={[c.name for c in candidates]}\n"
+                    "请把 big_five_profiles.csv 放到当前目录/脚本目录，或显式传入 --big5-profiles <path>"
+                )
+                raise FileNotFoundError(hint)
+    df = read_any(str(p))
+    df.columns = [str(c).strip() for c in df.columns]
     trait_col = _find_col(df, ["big_five_type", "trait", "dimension"])
     level_col = _find_col(df, ["Type", "level", "high_low", "polarity"])
     do_col = _find_col(df, ["big_five_do", "do", "positive"])
     avoid_col = _find_col(df, ["big_five_avoid", "avoid", "negative"])
+    # If the CSV was read with the wrong delimiter, multiple keys may match the same single column.
+    if (p.suffix.lower() in (".csv", ".txt")) and (
+        (not trait_col) or (not level_col) or (not do_col) or (len({trait_col, level_col, do_col}) < 3)
+    ):
+        df2 = _read_csv_sniff_sep(str(p))
+        df2.columns = [str(c).strip() for c in df2.columns]
+        trait_col2 = _find_col(df2, ["big_five_type", "trait", "dimension"])
+        level_col2 = _find_col(df2, ["Type", "level", "high_low", "polarity"])
+        do_col2 = _find_col(df2, ["big_five_do", "do", "positive"])
+        avoid_col2 = _find_col(df2, ["big_five_avoid", "avoid", "negative"])
+        if trait_col2 and level_col2 and do_col2 and len({trait_col2, level_col2, do_col2}) >= 3:
+            df, trait_col, level_col, do_col, avoid_col = df2, trait_col2, level_col2, do_col2, avoid_col2
+            print(f"[WARN] big_five_profiles delimiter auto-detected; columns={list(df.columns)}", flush=True)
     if not trait_col or not level_col or not do_col:
-        raise ValueError("big_five_profiles 缺少必要列：big_five_type/Type/big_five_do")
+        raise ValueError(
+            "big_five_profiles 缺少必要列：big_five_type/Type/big_five_do。"
+            f"实际读取到的列：{list(df.columns)}。"
+            "请确认该文件是带表头的 CSV（逗号分隔，含引号转义），或用 --big5-profiles 指向正确文件。"
+        )
+    if len({trait_col, level_col, do_col}) < 3:
+        raise ValueError(
+            "big_five_profiles 列名匹配发生冲突（通常是 CSV 分隔符不对导致整行被读成一列）。"
+            f"trait_col={trait_col}, level_col={level_col}, do_col={do_col}, columns={list(df.columns)}。"
+        )
     rename_map = {
         trait_col: "big5_trait",
         level_col: "big5_level",
@@ -407,8 +491,9 @@ def load_big5_profiles(path: str, join_key: str):
     }
     if avoid_col:
         rename_map[avoid_col] = "big5_avoid"
-    if join_key and join_key in df.columns and join_key not in rename_map:
-        rename_map[join_key] = "__big5_join_key__"
+    join_col = _resolve_col(df, join_key) if join_key else None
+    if join_col and join_col in df.columns and join_col not in rename_map:
+        rename_map[join_col] = "__big5_join_key__"
     keep_cols = list(rename_map.keys())
     subset = df[keep_cols].rename(columns=rename_map).copy()
     subset["big5_trait"] = subset["big5_trait"].map(normalize_big5_trait)
@@ -659,10 +744,25 @@ def main():
     print(f"[Info] Rows to process: {total}")
 
     # 构建大类映射
-    assert {"level_one_category_name","super_category"} <= set(map_df.columns), \
-        "level_one_to_super_category_map.csv 需含: level_one_category_name, super_category"
-    m = map_df.set_index("level_one_category_name")["super_category"].to_dict()
-    base["super_category"] = base["level_one_category_name"].map(m).fillna("其他")
+    map_df.columns = [str(c).strip() for c in map_df.columns]
+    base.columns = [str(c).strip() for c in base.columns]
+    map_src_col = _find_col(map_df, ["level_one_category_name", "level_one", "level1", "一级", "Column1", "orig"])
+    map_dst_col = _find_col(map_df, ["super_category", "super", "大类", "Column2", "target"])
+    if not map_src_col or not map_dst_col:
+        cols = list(map_df.columns)
+        if len(cols) >= 2:
+            map_src_col, map_dst_col = cols[0], cols[1]
+            print(
+                f"[WARN] 分类映射表列名不标准，使用前两列作为映射：{map_src_col}/{map_dst_col}",
+                flush=True,
+            )
+        else:
+            raise ValueError(f"step_one_to_super_category_map.csv 列不足，columns={cols}")
+    base_level_one_col = _find_col(base, ["level_one_category_name", "level_one", "Category", "category", "一级类目"])
+    if not base_level_one_col:
+        raise ValueError(f"step1_titles 缺少一级类目列，columns={list(base.columns)}")
+    m = map_df.set_index(map_src_col)[map_dst_col].to_dict()
+    base["super_category"] = base[base_level_one_col].map(m).fillna("其他")
 
     # 模型连通性
     sess = make_http_session()
