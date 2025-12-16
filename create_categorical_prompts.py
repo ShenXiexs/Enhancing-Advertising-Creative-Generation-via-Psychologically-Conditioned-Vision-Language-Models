@@ -192,7 +192,7 @@ def read_any(path: str) -> pd.DataFrame:
         except UnicodeDecodeError: continue
     with open(path,"rb") as f:
         enc = chardet.detect(f.read(65536)).get("encoding") or "utf-8"
-    return pd.read_csv(path, encoding=enc, errors="ignore")
+    return pd.read_csv(path, encoding=enc, encoding_errors="ignore")
 
 def _find_col(df: pd.DataFrame, candidates):
     cols = list(df.columns)
@@ -423,6 +423,19 @@ def load_big5_profiles(path: str, join_key: str):
             enc = chardet.detect(f.read(65536)).get("encoding") or "utf-8"
         return pd.read_csv(csv_path, encoding=enc, sep=None, engine="python")
 
+    def _read_csv_noquote(csv_path: str, sep: str) -> pd.DataFrame:
+        # Handles files where each whole row is quoted, e.g. "a,b,c" (single-column under default parser).
+        for enc in ("utf-8-sig", "gb18030", "utf-8", "latin1"):
+            try:
+                return pd.read_csv(csv_path, encoding=enc, sep=sep, engine="python", quotechar="\0")
+            except UnicodeDecodeError:
+                continue
+            except Exception:
+                continue
+        with open(csv_path, "rb") as f:
+            enc = chardet.detect(f.read(65536)).get("encoding") or "utf-8"
+        return pd.read_csv(csv_path, encoding=enc, encoding_errors="ignore", sep=sep, engine="python", quotechar="\0")
+
     p = Path(path)
     if not p.exists():
         script_dir = Path(__file__).resolve().parent
@@ -456,6 +469,23 @@ def load_big5_profiles(path: str, join_key: str):
                 raise FileNotFoundError(hint)
     df = read_any(str(p))
     df.columns = [str(c).strip() for c in df.columns]
+    # Special case: some exports wrap each whole line in quotes, resulting in one big column like:
+    # columns=['id,big_five_type,Type,big_five_do,big_five_avoid']
+    if len(df.columns) == 1:
+        sole = df.columns[0]
+        sole_l = sole.lower()
+        # Only attempt when it looks like the header is embedded in the single column name.
+        if "big_five_type" in sole_l and ("type" in sole_l) and ("big_five_do" in sole_l):
+            sep = "\t" if ("\t" in sole and "," not in sole) else ","
+            df_fix = _read_csv_noquote(str(p), sep=sep)
+            # Strip surrounding quotes introduced by disabling quote parsing
+            df_fix.columns = [str(c).strip().strip('"').strip("'") for c in df_fix.columns]
+            for c in df_fix.columns:
+                if df_fix[c].dtype == object:
+                    df_fix[c] = df_fix[c].map(lambda x: x.strip().strip('"').strip("'") if isinstance(x, str) else x)
+            df = df_fix
+            df.columns = [str(c).strip() for c in df.columns]
+            print(f"[WARN] big_five_profiles parsed as whole-line-quoted; re-read with quote disabled (sep={sep!r}).", flush=True)
     trait_col = _find_col(df, ["big_five_type", "trait", "dimension"])
     level_col = _find_col(df, ["Type", "level", "high_low", "polarity"])
     do_col = _find_col(df, ["big_five_do", "do", "positive"])
