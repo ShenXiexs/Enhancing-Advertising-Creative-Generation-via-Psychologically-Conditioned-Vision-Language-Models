@@ -70,6 +70,11 @@ BIG5_TRAIT_ALIASES   = {
     "neuroticism": "Neuroticism",
 }
 
+# ======== Schwartz Value 默认设置 ========
+SCHWARTZ_PROFILES_PATH = "schwartz_value_profiles.csv"
+SCHWARTZ_JOIN_KEY      = "id"
+SCHWARTZ_MODE_CHOICES  = MBTI_MODE_CHOICES
+
 # ======== system prompt 模板 ========
 BASE = (
     "You are an art director for product photography and image editing.\n\n"
@@ -83,6 +88,21 @@ TAIL = (
     'English only, ending with "4k".'
 )
 
+# ======== Schwartz Value prompt ========
+SCHWARTZ_VALUE_REFERENCE_LINES = (
+    "Picture Value: Ten basic values of Schwartz's theory:",
+    "1. Universalism: Refers to understanding, appreciating, tolerating, and protecting the welfare of all people and nature. For example: social justice, broad-mindedness, world peace, wisdom, a world of beauty, unity with nature, environmental protection, fairness.",
+    "2. Benevolence: Refers to preserving and enhancing the welfare of those with whom one is in frequent personal contact. For example: helpful, forgiving, loyal, honest, true friendship.",
+    "3. Power: Refers to social status and prestige, control or dominance over people and resources. For example: social power, wealth, authority.",
+    "4. Achievement: Refers to personal success achieved through demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.",
+    "5. Tradition: Refers to respect, commitment, and acceptance of the customs and ideas provided by one's culture or religion. For example: accepting my portion in life, devotion, respect for tradition, humbleness, moderation.",
+    "6. Conformity: Refers to the restraint of actions, inclinations, and impulses that may upset or harm others and violate social expectations or norms. For example: obedient, self-disciplined, polite, honoring parents and elders.",
+    "7. Security: Refers to the safety, harmony, and stability of society, relationships, and self. For example: family security, national security, social order, cleanliness, reciprocation of favors.",
+    "8. Self-Direction: Refers to independent thought and action - choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.",
+    "9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.",
+    "10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.",
+)
+
 # ======== I/O & HTTP ========
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -90,9 +110,9 @@ def parse_args():
     )
     parser.add_argument(
         "--persona-kind",
-        choices=["auto", "mbti", "big5", "none"],
+        choices=["auto", "mbti", "big5", "schwartz", "schwartz_value", "none"],
         default="auto",
-        help="Select persona source: mbti, big5, or none. auto infers from other args.",
+        help="Select persona source: mbti, big5, schwartz, or none. auto infers from other args.",
     )
     parser.add_argument(
         "--model",
@@ -159,6 +179,27 @@ def parse_args():
         choices=BIG5_MODE_CHOICES,
         default="concat",
         help="How to apply Big Five persona: concat or inline.",
+    )
+    parser.add_argument(
+        "--schwartz-profiles",
+        default=SCHWARTZ_PROFILES_PATH,
+        help="CSV file that maps IDs to Schwartz value metadata.",
+    )
+    parser.add_argument(
+        "--schwartz-key",
+        default=SCHWARTZ_JOIN_KEY,
+        help="Column used to join schwartz_value_profiles onto step1_titles (default: id).",
+    )
+    parser.add_argument(
+        "--schwartz-type",
+        default="",
+        help="Optional Schwartz value type override (e.g. Universalism). When provided, all rows use the same value row.",
+    )
+    parser.add_argument(
+        "--schwartz-mode",
+        choices=SCHWARTZ_MODE_CHOICES,
+        default="concat",
+        help="How to apply Schwartz value prompt: concat or inline.",
     )
     parser.add_argument(
         "--disable-triad",
@@ -238,6 +279,15 @@ def _text_or_empty(val) -> str:
         pass
     s = str(val).strip()
     return "" if not s or s.lower() == "nan" else s
+
+
+def _ensure_sentence_end(text: str) -> str:
+    text = (text or "").strip()
+    if not text:
+        return ""
+    if text[-1] in ".!?":
+        return text
+    return text + "."
 
 def make_http_session() -> requests.Session:
     s = requests.Session()
@@ -599,6 +649,59 @@ def big5_label_from_tokens(tokens) -> str:
         codes.append(f"{code}{level_code(level)}")
     return "_".join(codes)
 
+
+# ======== Schwartz Value helpers ========
+def _norm_schwartz_type(name: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (name or "").strip().lower())
+
+
+def load_schwartz_profiles(path: str, join_key: str):
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"schwartz_value_profiles file not found: {path}")
+    df = read_any(path)
+    df.columns = [str(c).strip() for c in df.columns]
+    type_col = _find_col(df, ["schwartz_value_type", "value_type", "schwartz_type", "value", "type"])
+    do_col = _find_col(df, ["schwartz_value_do", "value_do", "value_meaning", "meaning", "description", "do"])
+    if not type_col or not do_col:
+        raise ValueError(
+            "schwartz_value_profiles 缺少必要列：schwartz_value_type/schwartz_value_do。"
+            f"实际读取到的列：{list(df.columns)}。"
+        )
+    rename_map = {
+        type_col: "schwartz_value_type",
+        do_col: "schwartz_value_do",
+    }
+    join_col = _resolve_col(df, join_key) if join_key else None
+    if join_col and join_col in df.columns and join_col not in rename_map:
+        rename_map[join_col] = "__schwartz_join_key__"
+    subset = df[list(rename_map.keys())].rename(columns=rename_map).copy()
+    return subset
+
+
+def select_schwartz_row(df: pd.DataFrame, value_type: str):
+    target = _norm_schwartz_type(value_type)
+    if not target:
+        raise ValueError("schwartz_type 为空")
+    norm = df["schwartz_value_type"].map(_norm_schwartz_type)
+    hit = df[norm == target]
+    if hit.empty:
+        raise ValueError(f"schwartz_value_profiles 中找不到 {value_type}")
+    return hit.iloc[0]
+
+
+def build_schwartz_block(row: pd.Series) -> str:
+    value_type = _text_or_empty(row.get("schwartz_value_type"))
+    value_do = _text_or_empty(row.get("schwartz_value_do"))
+    if not value_type or not value_do:
+        return ""
+    value_do = _ensure_sentence_end(value_do)
+    lines = list(SCHWARTZ_VALUE_REFERENCE_LINES)
+    lines.extend([
+        "For this ad picture:",
+        f"You prioritize the value of {value_type} above all other values, which signifies {value_do}",
+    ])
+    return "\n".join(lines)
+
 # ======== triad & style 映射 ========
 def load_triad(triad_path: str) -> dict:
     df = read_any(triad_path)
@@ -662,18 +765,21 @@ def main():
     seed_everything(args.seed)
     global MODEL_PROMPT
     MODEL_PROMPT = f"qwen2.5vl:{args.model}"
-    persona_kind = args.persona_kind
+    persona_kind = (args.persona_kind or "auto").strip().lower()
+    if persona_kind == "schwartz_value":
+        persona_kind = "schwartz"
     big5_hint = (args.big5_plan != "none") or bool((args.big5_types or "").strip())
     mbti_hint = args.mbti_plan != "none"
+    schwartz_hint = bool((args.schwartz_type or "").strip())
     if persona_kind == "auto":
-        if big5_hint and mbti_hint:
-            raise ValueError("MBTI 与 Big Five 参数同时提供，请用 --persona-kind 选择其一")
-        if big5_hint:
-            persona_kind = "big5"
-        elif mbti_hint:
-            persona_kind = "mbti"
-        else:
-            persona_kind = "none"
+        active = [name for name, flag in (
+            ("mbti", mbti_hint),
+            ("big5", big5_hint),
+            ("schwartz", schwartz_hint),
+        ) if flag]
+        if len(active) > 1:
+            raise ValueError("MBTI / Big Five / Schwartz 参数同时提供，请用 --persona-kind 选择其一")
+        persona_kind = active[0] if active else "none"
 
     raw_plan = args.mbti_plan
     mbti_plan = raw_plan if raw_plan == "none" else raw_plan.upper()
@@ -693,6 +799,12 @@ def main():
     big5_tokens = []
     big5_block = ""
     big5_label = ""
+    schwartz_mode = args.schwartz_mode
+    schwartz_type = (args.schwartz_type or "").strip()
+    if persona_kind != "schwartz":
+        schwartz_type = ""
+    schwartz_block = ""
+    schwartz_label = ""
 
     exp_tag = _sanitize_tag(args.exp_name)
     triad_enabled = not args.disable_triad
@@ -701,6 +813,8 @@ def main():
             exp_tag = f"{mbti_plan.lower()}_{datetime.now():%m%d%H%M}"
         elif persona_kind == "big5":
             exp_tag = f"big5_{datetime.now():%m%d%H%M}"
+        elif persona_kind == "schwartz":
+            exp_tag = f"schwartz_{datetime.now():%m%d%H%M}"
     out_name = DEFAULT_PROMPTS_NAME
     if exp_tag:
         out_name = f"step1_prompts_{exp_tag}.xlsx"
@@ -713,6 +827,7 @@ def main():
         f"USE_MODEL_PROMPT={USE_MODEL_PROMPT}, MODEL_PROMPT={MODEL_PROMPT}, "
         f"PERSONA={persona_kind}, MBTI_PLAN={mbti_plan}, MBTI_TYPE={persona_mbti_type if persona_kind=='mbti' else 'n/a'}, MBTI_MODE={mbti_mode}, "
         f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, "
+        f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, "
         f"TRIAD_ENABLED={triad_enabled}, EXP_TAG={exp_tag or 'default'}"
     )
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -736,6 +851,7 @@ def main():
     base_key = _resolve_col(base, args.mbti_key)
     big5_enabled = persona_kind == "big5"
     big5_rows = []
+    schwartz_enabled = persona_kind == "schwartz"
 
     if mbti_enabled:
         print(f"[MBTI] Loading profiles from: {args.mbti_profiles}")
@@ -767,6 +883,17 @@ def main():
         big5_block = build_big5_block(big5_rows, big5_plan)
         big5_label = big5_label_from_tokens(big5_tokens)
         print(f"[Big5] Profiles: {big5_label} | plan={big5_plan} | mode={big5_mode} | tokens={big5_tokens}")
+    if schwartz_enabled:
+        if not schwartz_type:
+            raise ValueError("--schwartz-type 不能为空；示例：Universalism")
+        print(f"[Schwartz] Loading profiles from: {args.schwartz_profiles}")
+        schwartz_df = load_schwartz_profiles(args.schwartz_profiles, args.schwartz_key)
+        schwartz_row = select_schwartz_row(schwartz_df, schwartz_type)
+        schwartz_block = build_schwartz_block(schwartz_row)
+        if not schwartz_block:
+            raise ValueError("schwartz_value_profiles 缺少 schwartz_value_type 或 schwartz_value_do")
+        schwartz_label = _text_or_empty(schwartz_row.get("schwartz_value_type")) or schwartz_type
+        print(f"[Schwartz] Value={schwartz_label} | mode={schwartz_mode}")
     if exp_tag:
         base["experiment_tag"] = exp_tag
 
@@ -808,6 +935,7 @@ def main():
     cnt_model_ok, cnt_fallback, cnt_noimg, cnt_fetch_fail = 0, 0, 0, 0
     cnt_mbti_attached, cnt_mbti_missing = 0, 0
     cnt_big5_attached, cnt_big5_missing = 0, 0
+    cnt_schwartz_attached, cnt_schwartz_missing = 0, 0
 
     t_start = time.time()
     for i, r in base.iterrows():
@@ -823,6 +951,9 @@ def main():
         elif big5_enabled:
             persona_instruction = big5_block
             persona_mode_current = big5_mode
+        elif schwartz_enabled:
+            persona_instruction = schwartz_block
+            persona_mode_current = schwartz_mode
         sys_prompt_inline = sys_prompt
         if persona_instruction and persona_mode_current == "inline":
             sys_prompt_inline = (sys_prompt + "\n\n" + persona_instruction).strip()
@@ -866,22 +997,28 @@ def main():
                 one_line = combined or one_line
                 if mbti_enabled:
                     cnt_mbti_attached += 1
-                else:
+                elif big5_enabled:
                     cnt_big5_attached += 1
+                else:
+                    cnt_schwartz_attached += 1
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print(f"  - Persona appended (concat, kind={persona_kind})")
             else:
                 if mbti_enabled:
                     cnt_mbti_attached += 1
-                else:
+                elif big5_enabled:
                     cnt_big5_attached += 1
+                else:
+                    cnt_schwartz_attached += 1
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print(f"  - Persona applied inline (kind={persona_kind})")
         elif persona_mode_current:
             if mbti_enabled:
                 cnt_mbti_missing += 1
-            else:
+            elif big5_enabled:
                 cnt_big5_missing += 1
+            else:
+                cnt_schwartz_missing += 1
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                 print("  - Persona missing → skip")
 
@@ -910,6 +1047,8 @@ def main():
         print(f"MBTI        : plan={mbti_plan}, appended={cnt_mbti_attached}, missing_profile={cnt_mbti_missing}")
     if big5_enabled:
         print(f"BigFive     : plan={big5_plan}, appended={cnt_big5_attached}, missing_profile={cnt_big5_missing}, profile={big5_label or args.big5_types}")
+    if schwartz_enabled:
+        print(f"Schwartz    : value={schwartz_label or schwartz_type}, appended={cnt_schwartz_attached}, missing_profile={cnt_schwartz_missing}")
     print(f"Timing       : total_elapsed={total_elapsed:.2f}s, avg_per_row={avg:.2f}s")
 
 if __name__ == "__main__":
