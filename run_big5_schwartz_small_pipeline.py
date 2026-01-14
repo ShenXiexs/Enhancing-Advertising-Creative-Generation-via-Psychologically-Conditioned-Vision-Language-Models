@@ -3,6 +3,7 @@
 """
 Small experiment pipeline:
 - 10 products from 白底商品信息类目_experiment_small.csv
+- No persona: 10 images
 - Big Five: 5 traits x (High/Low) = 10 profiles -> 100 images
 - Schwartz values: 10 values -> 100 images
 """
@@ -292,9 +293,51 @@ def process_schwartz_value(value_type: str, args, seed: int) -> dict:
     return {"kind": "schwartz", "label": f"schwartz_{value_type}", "exp_tag": exp_tag, "subset": subset_path}
 
 
+def process_no_persona(args, seed: int) -> dict:
+    exp_tag = args.nopersona_exp_prefix
+    prompts_path = Path(args.prompts_dir) / f"{PROMPT_PREFIX}_{exp_tag}.xlsx"
+
+    if args.skip_prompts:
+        if not prompts_path.exists():
+            raise FileNotFoundError(f"[ERR] prompts file not found for --skip-prompts: {prompts_path}")
+        print(f"[SKIP] --skip-prompts active, using: {prompts_path}")
+    elif args.resume and prompts_path.exists():
+        print(f"[SKIP] reuse existing prompts: {prompts_path}")
+    else:
+        cmd = [
+            sys.executable, "create_categorical_prompts.py",
+            "--model", args.prompt_model,
+            "--persona-kind", "none",
+            "--exp-name", exp_tag,
+            "--seed", str(seed),
+        ]
+        if args.no_background:
+            cmd.append("--disable-triad")
+        run_cmd(cmd, "generate prompts (no persona)")
+
+    subset_path = prompts_path
+    if not subset_path.exists():
+        raise FileNotFoundError(f"[ERR] prompts file missing: {subset_path}")
+
+    if args.skip_normalize:
+        print(f"[SKIP] --skip-normalize active: {subset_path}")
+    else:
+        if args.resume and not args.force_normalize:
+            print(f"[SKIP] resume mode, reuse normalized images: {subset_path}")
+        else:
+            norm_cmd = [
+                sys.executable, "normalize_scale_and_canvas.py",
+                "--excel", str(subset_path),
+                "--out-dir", args.prompts_dir,
+            ]
+            run_cmd(norm_cmd, "normalize white background (no persona)")
+
+    return {"kind": "none", "label": "nopersona", "exp_tag": exp_tag, "subset": subset_path}
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Small pipeline: 10 products -> 200 images (Big Five + Schwartz)."
+        description="Small pipeline: 10 products -> 210 images (no persona + Big Five + Schwartz)."
     )
     parser.add_argument("--step1-csv", default=DEFAULT_STEP1_CSV,
                         help="Step1 input CSV/XLSX (default: experiment_small).")
@@ -324,6 +367,8 @@ def main():
                         help="Limit to first N Schwartz values (0 = all).")
     parser.add_argument("--schwartz-exp-prefix", default="schwartz_small",
                         help="Prefix for Schwartz outputs.")
+    parser.add_argument("--nopersona-exp-prefix", default="nopersona_small",
+                        help="Prefix for no-persona outputs.")
     parser.add_argument("--prompts-dir", default="out_step1",
                         help="Step1/Step2 Excel output dir.")
     parser.add_argument("--render-root", default="out_step2",
@@ -377,11 +422,12 @@ def main():
         schwartz_values = schwartz_values[:args.limit_schwartz]
 
     jobs = []
+    jobs.append(process_no_persona(args, seed=args.seed))
     for idx, profile in enumerate(big5_jobs):
         job = process_big5_profile(profile, args, seed=args.seed + idx * 101)
         jobs.append(job)
 
-    offset = len(big5_jobs)
+    offset = len(big5_jobs) + 1
     for idx, value_type in enumerate(schwartz_values):
         job = process_schwartz_value(value_type, args, seed=args.seed + (offset + idx) * 101)
         jobs.append(job)
