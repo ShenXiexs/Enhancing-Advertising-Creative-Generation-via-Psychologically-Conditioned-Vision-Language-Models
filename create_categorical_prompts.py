@@ -23,7 +23,6 @@ TRIAD_PROMPTS_PATH   = "step_one_triad_prompts_22cats.csv"      # 含: Category,
 STYLE_DESC_PATH      = "step_one_background_description.csv"    # 含: background style, description
 OUT_DIR              = "out_step1"
 DEFAULT_PROMPTS_NAME = "step1_prompts.xlsx"
-PROMPT_RANDOM_TAG    = "0114"
 
 # —— VLM（仅用于背景一句话）——
 OLLAMA_HOST          = "http://localhost:11434"
@@ -210,7 +209,7 @@ def parse_args():
     parser.add_argument(
         "--seed",
         type=int,
-        default=20260114,
+        default=114,
         help="Set a deterministic seed for Python, NumPy, and Torch (<=0 to skip).",
     )
     return parser.parse_args()
@@ -328,17 +327,6 @@ def normalize_background_line(s: str) -> str:
     return re.sub(r'^\s*BACKGROUND\s*:\s*', '', s, flags=re.I)
 
 
-def append_prompt_random_tag(prompt: str, tag: str = PROMPT_RANDOM_TAG) -> str:
-    if not prompt:
-        return prompt
-    if tag and tag in prompt:
-        return prompt
-    tail = re.search(r"(?:,\s*)?4k\s*$", prompt, flags=re.I)
-    if tail:
-        prefix = prompt[:tail.start()].rstrip()
-        suffix = prompt[tail.start():]
-        return (prefix + f" {tag}" + suffix).strip()
-    return (prompt.rstrip() + f" {tag}").strip()
 
 
 # ======== MBTI persona helpers ========
@@ -1004,8 +992,6 @@ def main():
                 cnt_fallback += 1
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print("  - VLM off → use fallback")
-
-        one_line = append_prompt_random_tag(one_line)
 
         if persona_instruction and persona_mode_current:
             if persona_mode_current == "concat":
