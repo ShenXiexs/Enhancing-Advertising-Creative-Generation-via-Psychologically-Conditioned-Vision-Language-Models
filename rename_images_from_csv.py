@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-批量重命名图片：以 CSV 中的 ori_title 替换文件名。
+Batch-rename images by replacing filenames with ori_title from a CSV.
 
-用法（默认路径已经写好，如需调整可通过参数传入）:
+Usage (defaults are prefilled; override via args if needed):
     python scripts/rename_images_from_csv.py
     python scripts/rename_images_from_csv.py --dry-run
     python scripts/rename_images_from_csv.py \
@@ -64,7 +64,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def sanitize_title(title: str) -> str:
-    """去掉非法字符，并把连续空白压缩为单个下划线。"""
+    """Remove invalid characters and collapse consecutive whitespace to underscores."""
     cleaned = INVALID_CHAR_PATTERN.sub("", title)
     cleaned = cleaned.strip()
     if not cleaned:
@@ -74,7 +74,7 @@ def sanitize_title(title: str) -> str:
 
 
 def build_title_mapping(csv_path: Path, encoding: str = "utf-8") -> Dict[str, str]:
-    """读取 CSV，返回 id -> 清洗后的 ori_title 映射。"""
+    """Read CSV and return an id -> sanitized ori_title mapping."""
     if not csv_path.exists():
         raise FileNotFoundError(f"CSV 文件不存在: {csv_path}")
 
@@ -108,8 +108,8 @@ def build_title_mapping(csv_path: Path, encoding: str = "utf-8") -> Dict[str, st
 
 def iter_target_files(base_dirs: Iterable[Path]) -> Iterable[Tuple[Path, Path]]:
     """
-    遍历 base_dir/子目录/*.* 文件，返回 (目录, 文件)。
-    仅处理“第二层”文件（即 base_dir 的直接子目录里的文件）。
+    Iterate base_dir/subdir/*.* and yield (parent_dir, file_path).
+    Only processes files in the direct child directories of base_dir.
     """
     for base_dir in base_dirs:
         if not base_dir.exists():

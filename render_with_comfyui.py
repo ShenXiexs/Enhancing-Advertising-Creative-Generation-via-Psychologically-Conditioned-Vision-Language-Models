@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Batch render with ComfyUI API（根据实验标签输出到 out_step2/<exp_tag>/）
+Batch render with the ComfyUI API (outputs to out_step2/<exp_tag>/).
 """
 import argparse
 import json
@@ -40,11 +40,11 @@ SAMPLE_NUM       = None
 FORCE_COPY_TO_INPUT = True
 DRY_RUN_MINIMAL     = False
 
-# 保存 API 输出到当前目录/out_step2/<exp_tag>
+# Save API outputs to ./out_step2/<exp_tag>
 SAVE_ROOT = os.path.join(os.getcwd(), "out_step2")
 SAVE_DIR = SAVE_ROOT
 
-# 调试输出目录
+# Debug output directory
 DEBUG_DIR = "api_debug"
 os.makedirs(DEBUG_DIR, exist_ok=True)
 
@@ -79,7 +79,7 @@ def _sanitize_tag(tag: str) -> str:
     return cleaned
 
 
-# ---------------- HTTP / 基础 ----------------
+# ---------------- HTTP / basics ----------------
 def make_session():
     s = requests.Session()
     s.headers["User-Agent"] = "Mozilla/5.0"
@@ -111,7 +111,7 @@ def parse_io_dirs(stats):
     return base, input_dir, output_dir
 
 
-# ---------------- 数据加载 ----------------
+# ---------------- Data loading ----------------
 def read_prompts(path):
     df = pd.read_excel(path)
     if SAMPLE_NUM:
@@ -128,9 +128,9 @@ def load_workflow(path):
     return wf
 
 
-# ---------------- 关键：图片放入 input 根目录 + 注入到 LoadImage ----------------
+# ---------------- Key: copy image to input root + inject into LoadImage ----------------
 def ensure_in_input(fp, input_dir):
-    """将源图复制到 ComfyUI 的 input 根目录（LoadImage 仅按文件名在 input 根目录找）"""
+    """Copy source image to ComfyUI input root (LoadImage resolves by filename)."""
     fp = os.path.abspath(fp)
     if not FORCE_COPY_TO_INPUT or not input_dir:
         return fp
@@ -142,7 +142,7 @@ def ensure_in_input(fp, input_dir):
     return dst
 
 def inject_params(wf, img_abs_path, prompt, neg, out_pref):
-    """仅给 LoadImage/Load Image 写入文件名；其它占位符照旧。"""
+    """Only write filenames for LoadImage/Load Image; keep other placeholders."""
     wf2 = copy.deepcopy(wf)
     for _, node in wf2.items():
         c   = node.get("class_type")
@@ -160,7 +160,7 @@ def inject_params(wf, img_abs_path, prompt, neg, out_pref):
         if c == "SaveImage" and ins.get("filename_prefix") == "{{OUT}}":
             ins["filename_prefix"] = out_pref
 
-        # LoadImage / Load Image → 只填文件名
+        # LoadImage / Load Image -> filename only
         if c in ("LoadImage", "Load Image") and "image" in ins:
             ins["image"] = os.path.basename(img_abs_path)
 
@@ -173,7 +173,7 @@ def inject_params(wf, img_abs_path, prompt, neg, out_pref):
     return wf2
 
 
-# ---------------- 执行与轮询 ----------------
+# ---------------- Execution & polling ----------------
 def print_error_messages(rec):
     try:
         msgs = (rec or {}).get("status", {}).get("messages", []) or []
@@ -209,9 +209,9 @@ def wait_history(sess, pid, max_wait=3600):
             return ("timeout", time.time() - t0, data)
 
 
-# ---------------- 下载输出到 ./out_step2 ----------------
+# ---------------- Download outputs to ./out_step2 ----------------
 def _unique_path(dirpath, filename):
-    """避免重名覆盖：存在则自动加 _1/_2..."""
+    """Avoid overwrite: add _1/_2... if file already exists."""
     name, ext = os.path.splitext(filename)
     cand = os.path.join(dirpath, filename)
     idx = 1
@@ -221,7 +221,7 @@ def _unique_path(dirpath, filename):
     return cand
 
 def _download_view(sess, filename, subfolder, ftype):
-    """通过 /view 下载输出文件（通常是 type=output）"""
+    """Download output via /view (usually type=output)."""
     url = f"{COMFY_HOST}/view?filename={quote(filename)}&subfolder={quote(subfolder or '')}&type={quote(ftype or 'output')}"
     r = sess.get(url, timeout=(CONNECT_TIMEOUT, READ_TIMEOUT), stream=True)
     r.raise_for_status()
@@ -230,11 +230,11 @@ def _download_view(sess, filename, subfolder, ftype):
 
 def save_outputs(sess, history_obj, save_dir, prefer_basename=None):
     """
-    从 /history 里找到所有图片并下载到 save_dir。
-    如果提供 prefer_basename（不含扩展名），则优先用它命名：
-      - 第一张：{prefer_basename}{ext}
-      - 其后：  {prefer_basename}_{n}{ext}
-    否则使用 ComfyUI 原始文件名。
+    Download all images from /history into save_dir.
+    If prefer_basename (no extension) is provided, name them as:
+      - First: {prefer_basename}{ext}
+      - Others: {prefer_basename}_{n}{ext}
+    Otherwise, keep the original ComfyUI filenames.
     """
     saved = []
     outputs = (history_obj or {}).get("outputs", {}) or {}
@@ -251,7 +251,7 @@ def save_outputs(sess, history_obj, save_dir, prefer_basename=None):
                 content = _download_view(sess, fn, sub, ftyp)
                 ext = os.path.splitext(fn)[1] or ".png"
                 if prefer_basename:
-                    # 第一张不带序号，其后带 _2, _3...
+                    # First image has no suffix; then _2, _3...
                     if counter == 1:
                         target_name = f"{prefer_basename}{ext}"
                     else:
@@ -268,7 +268,7 @@ def save_outputs(sess, history_obj, save_dir, prefer_basename=None):
     return saved
 
 
-# ---------------- 主流程 ----------------
+# ---------------- Main flow ----------------
 def main():
     args = parse_args()
     excel_path = args.prompts_file
@@ -314,15 +314,15 @@ def main():
         if not fn or (not DRY_RUN_MINIMAL and not prompt):
             print(" skip (missing data)"); fail += 1; continue
 
-        src_img = fn  # 绝对/相对路径皆可
+        src_img = fn  # Absolute or relative path
         if not os.path.exists(src_img):
             print(" skip (file not found)"); fail += 1; continue
 
-        # 复制到 input 根，并取复制后的绝对路径
+        # Copy to input root and use the copied absolute path
         img_in_input = ensure_in_input(src_img, inp_dir)
         out_pref     = OUT_PREFIX_FMT.format(id=pid)
 
-        # 注入：仅对 LoadImage/Load Image 写入 basename
+        # Inject: only write basename for LoadImage/Load Image
         wf = (
             {"1": {"class_type": "LoadImage", "inputs": {"image": os.path.basename(img_in_input)}},
              "2": {"class_type": "SaveImage", "inputs": {"filename_prefix": out_pref, "images": ["1", 0]}}}
@@ -330,17 +330,17 @@ def main():
             inject_params(wf_template, img_in_input, prompt, neg, out_pref)
         )
 
-        # === 唯一改动：从 Excel 读取 qwen_image_filenames 用作保存基名 ===
+        # === Only change: use qwen_image_filenames from Excel as save basename ===
         qwen_name = str(rec.get("qwen_image_filenames") or "").strip()
         prefer_basename = qwen_name
 
-        # 打印关键注入信息
+        # Log key injected values
         print("  [debug] inputs going into workflow:")
         print(f"    image_src : {src_img}")
         print(f"    copied_to : {img_in_input}")
         print(f"    used_name : {os.path.basename(img_in_input)}  # for LoadImage")
         print(f"    out_prefix: {out_pref}")
-        print(f"    save_name : {prefer_basename}{{ext}}  # 输出落地到 out_step2 时采用")
+        print(f"    save_name : {prefer_basename}{{ext}}  # Used for out_step2 output names")
         print(f"    prompt    : {str(prompt)[:160]}")
         print(f"    neg       : {str(neg)[:160]}")
 
@@ -358,7 +358,7 @@ def main():
             status, dur, hist = wait_history(sess, job_id)
             if status == "ok":
                 durations.append(dur)
-                # 下载输出到 ./out_step2，用 prefer_basename 命名
+                # Download outputs to ./out_step2, named by prefer_basename
                 saved_paths = save_outputs(sess, hist, SAVE_DIR, prefer_basename=prefer_basename)
                 if saved_paths:
                     print(f" done ✅ ({dur:.1f}s) saved ->")
@@ -370,7 +370,7 @@ def main():
             else:
                 print(f" error: status={status} ({dur:.1f}s)")
                 print_error_messages(hist)
-                # 落盘 prompt/history 便于复现
+                # Save prompt/history for reproducibility
                 with open(os.path.join(DEBUG_DIR, f"{pid}_prompt.json"), "w", encoding="utf-8") as f:
                     json.dump(wf, f, ensure_ascii=False, indent=2)
                 with open(os.path.join(DEBUG_DIR, f"{pid}_history.json"), "w", encoding="utf-8") as f:
@@ -385,7 +385,7 @@ def main():
                 pass
             fail += 1
 
-    # 平均耗时
+    # Average duration
     if durations:
         avg = sum(durations) / len(durations)
         print(f"\n[info] 平均渲染时间：{avg:.2f} 秒/张")

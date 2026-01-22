@@ -16,15 +16,15 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - optional dep
     torch = None
 
-# ======== 基础配置 ========
-TITLES_XLSX          = "out_step1/step1_titles.xlsx"            # Part1 输出
-MAP_CSV_PATH         = "step_one_to_super_category_map.csv"     # 含: level_one_category_name, super_category
-TRIAD_PROMPTS_PATH   = "step_one_triad_prompts_22cats.csv"      # 含: Category, Style Priority 1/2/3
-STYLE_DESC_PATH      = "step_one_background_description.csv"    # 含: background style, description
+# ======== Basic config ========
+TITLES_XLSX          = "out_step1/step1_titles.xlsx"            # Part1 output
+MAP_CSV_PATH         = "step_one_to_super_category_map.csv"     # Contains: level_one_category_name, super_category
+TRIAD_PROMPTS_PATH   = "step_one_triad_prompts_22cats.csv"      # Contains: Category, Style Priority 1/2/3
+STYLE_DESC_PATH      = "step_one_background_description.csv"    # Contains: background style, description
 OUT_DIR              = "out_step1"
 DEFAULT_PROMPTS_NAME = "step1_prompts.xlsx"
 
-# —— VLM（仅用于背景一句话）——
+# -- VLM (one-line background only) --
 OLLAMA_HOST          = "http://localhost:11434"
 MODEL_PROMPT         = "qwen2.5vl:7b"
 USE_MODEL_PROMPT     = True
@@ -32,11 +32,11 @@ MAX_SEND_WIDTH       = 1200
 JPEG_QUALITY         = 92
 REQUEST_TIMEOUT      = 180
 
-# —— 日志/打印频率 ——
+# -- Logging / print frequency --
 DEBUG_PRINT          = True
-PRINT_EVERY          = 1    # 每多少条打印一次（1=每条都打）
+PRINT_EVERY          = 1    # Print every N rows (1 = every row)
 
-# ======== MBTI 相关默认设置 ========
+# ======== MBTI defaults ========
 MBTI_PROFILES_PATH   = "mbti_profiles.csv"
 MBTI_JOIN_KEY        = "id"
 MBTI_PLAN_CHOICES    = ("none", "A", "B")
@@ -46,7 +46,7 @@ MBTI_TYPE_CHOICES    = (
 )
 MBTI_MODE_CHOICES    = ("concat", "inline")
 
-# ======== Big Five 默认设置 ========
+# ======== Big Five defaults ========
 BIG5_PROFILES_PATH   = "big_five_profiles.csv"
 BIG5_JOIN_KEY        = "id"
 BIG5_PLAN_CHOICES    = ("none", "A", "B")
@@ -70,12 +70,12 @@ BIG5_TRAIT_ALIASES   = {
     "neuroticism": "Neuroticism",
 }
 
-# ======== Schwartz Value 默认设置 ========
+# ======== Schwartz Value defaults ========
 SCHWARTZ_PROFILES_PATH = "schwartz_value_profiles.csv"
 SCHWARTZ_JOIN_KEY      = "id"
 SCHWARTZ_MODE_CHOICES  = MBTI_MODE_CHOICES
 
-# ======== system prompt 模板 ========
+# ======== System prompt template ========
 BASE = (
     "You are an art director for product photography and image editing.\n\n"
     "INPUTS: one product PHOTO.\n"
@@ -704,7 +704,7 @@ def build_schwartz_block(row: pd.Series) -> str:
     ])
     return "\n".join(lines)
 
-# ======== triad & style 映射 ========
+# ======== Triad & style mapping ========
 def load_triad(triad_path: str) -> dict:
     df = read_any(triad_path)
     cat = _find_col(df, ["Category"]); s1=_find_col(df,["Style Priority 1"]); s2=_find_col(df,["Style Priority 2"]); s3=_find_col(df,["Style Priority 3"])
@@ -739,7 +739,7 @@ def build_system_prompt(category: str, triad_map: dict, style_desc_map: dict) ->
     return (BASE + "\n\n" + "Choose ONE background style by product type:\n" +
             "\n".join(items) + "\n" + TAIL).strip()
 
-# ======== 进度 & 统计 ========
+# ======== Progress & stats ========
 def _fmt_eta(done, total, start_ts):
     if done == 0: return "ETA --:--"
     elapsed = time.time() - start_ts
@@ -761,7 +761,7 @@ def seed_everything(seed: int):
                 torch.cuda.manual_seed_all(seed)
         print(f"[Seed] Global seed set to {seed}")
 
-# ======== 主流程（生成 super_category + prompt，并并回） ========
+# ======== Main flow (build super_category + prompt, then merge back) ========
 def main():
     args = parse_args()
     seed_everything(args.seed)
@@ -834,9 +834,9 @@ def main():
     )
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    # 载入数据
+    # Load data
     print(f"[Load] Titles from: {TITLES_XLSX}")
-    base   = read_any(TITLES_XLSX)  # 来自 Part1
+    base   = read_any(TITLES_XLSX)  # From Part1
     print(f"[Load] Map from: {MAP_CSV_PATH}")
     map_df = read_any(MAP_CSV_PATH)
     if triad_enabled:
@@ -902,7 +902,7 @@ def main():
     total = len(base)
     print(f"[Info] Rows to process: {total}")
 
-    # 构建大类映射
+    # Build category mapping
     map_df.columns = [str(c).strip() for c in map_df.columns]
     base.columns = [str(c).strip() for c in base.columns]
     map_src_col = _find_col(map_df, ["level_one_category_name", "level_one", "level1", "一级", "Column1", "orig"])
@@ -923,7 +923,7 @@ def main():
     m = map_df.set_index(map_src_col)[map_dst_col].to_dict()
     base["super_category"] = base[base_level_one_col].map(m).fillna("其他")
 
-    # 模型连通性
+    # Model connectivity
     sess = make_http_session()
     if USE_MODEL_PROMPT:
         try:
@@ -932,7 +932,7 @@ def main():
         except Exception as e:
             print(f"[Warn] Ollama not reachable: {e}  → prompts will fall back")
 
-    # 统计
+    # Stats
     prompts = []
     cnt_model_ok, cnt_fallback, cnt_noimg, cnt_fetch_fail = 0, 0, 0, 0
     cnt_mbti_attached, cnt_mbti_missing = 0, 0
@@ -1032,11 +1032,11 @@ def main():
 
     base["prompt"] = prompts
 
-    # === 新增：local_image 列（格式：id_qwen_image；若无 id 列，用行号） ===
+    # === New: local_image column (format: id_qwen_image; fallback to row index) ===
 
     base["qwen_image_filenames"] = base["id"].astype(str) + "_qwen_image"
 
-    # 写盘
+    # Write output
     print("\n[Write] Saving Excel ...")
     base.to_excel(out_xlsx_path, index=False)
 

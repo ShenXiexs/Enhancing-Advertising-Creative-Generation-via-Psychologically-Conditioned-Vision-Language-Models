@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-把 ComfyUI output 的产品图（800×800）当底图，
-再将模板图（780×800）贴到左上角 (0,0)。
-文案从 Excel 的 promotion 列读取，文字统一放在左下角，按顺序依次向上排列。
-输出到 out_step4，并打印平均用时。
+Use ComfyUI output product images (800×800) as the base,
+then paste the template (780×800) at the top-left corner (0,0).
+Copy is read from the Excel "promotion" column, and all text is placed in
+the bottom-left, stacked upward in order. Outputs to out_step4 and prints
+average runtime.
 """
 
 import argparse
@@ -12,60 +13,60 @@ import time
 import glob
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
-import re  # ← 为识别英文字母新增
+import re  # Added for English-letter detection.
 
-# ------------ 配置区（请根据需要微调） ------------
+# ------------ Configuration (tune as needed) ------------
 
-EXCEL_PATH    = "out_step1/step1_prompts.xlsx"  # Excel 路径，需包含：id, price, promo_title_final, promotion
-COMFY_OUTPUT  = "out_step2"                     # ComfyUI 输出目录
-TEMPLATE_PATH = "template_39_40.png"             # 模板图 (780×800)，保留透明通道
-RESULT_DIR    = "output_39_40"                     # 结果保存目录
-FONT_PATH     = r"/root/aicloud-data/yoyo_image_gen_mbti/fonts/msyh.ttc"    # 微软雅黑
+EXCEL_PATH    = "out_step1/step1_prompts.xlsx"  # Excel path; requires: id, price, promo_title_final, promotion
+COMFY_OUTPUT  = "out_step2"                     # ComfyUI output directory
+TEMPLATE_PATH = "template_39_40.png"             # Template image (780×800) with alpha
+RESULT_DIR    = "output_39_40"                     # Output directory
+FONT_PATH     = r"/root/aicloud-data/yoyo_image_gen_mbti/fonts/msyh.ttc"    # Microsoft YaHei
 FONT_PATH_BOLD = r"/root/aicloud-data/yoyo_image_gen_mbti/fonts/msyhbd.ttc"
-# 文字颜色
-PROMO_COLOR   = "red"    # promotion 文案使用红色
-OTHER_COLOR   = "white"  # 价格和标题使用白色
+# Text colors
+PROMO_COLOR   = "red"    # Promotion text in red
+OTHER_COLOR   = "white"  # Price and title in white
 
-# 字号
+# Font sizes
 FONT_SIZE_PROMO = 28
 FONT_SIZE_PRICE = 48
-FONT_SIZE_TITLE = 58      # 标题初始字号
-FONT_SIZE_TITLE_MIN = 12  # 标题允许缩小的最小字号（保证不换行、不截断）
+FONT_SIZE_TITLE = 58      # Initial title size
+FONT_SIZE_TITLE_MIN = 12  # Min title size (keep single line; no truncation)
 
-# 左下角内边距
+# Bottom-left padding
 MARGIN_X = 20
 MARGIN_Y = 60
 
-# 模板整体透明度（0~1），这里设为 0.8（80%）
+# Template opacity (0~1). 0.8 means 80%.
 TEMPLATE_OPACITY = 0.8
 
 # ------------------------------------------------
 
 def safe_text(v: object) -> str:
-    """将任意值安全地转为字符串；None/NaN → 空串。"""
+    """Safely cast any value to string; None/NaN -> empty string."""
     try:
         return "" if pd.isna(v) else str(v)
     except Exception:
         return "" if v is None else str(v)
 
 def fmt_price(v: object) -> str:
-    """价格显示规则：
-       - 先按常规格式生成（至多两位小数，去尾零）
-       - 若带小数点的价格字符串长度（包含小数点）≥ 5，则仅显示整数部分
-       - 解析失败则原样返回
+    """Price formatting rules:
+       - Use standard format (up to 2 decimals, trim trailing zeros).
+       - If decimal form length (including dot) >= 5, show integer only.
+       - On parse failure, return the original string.
     """
     s = safe_text(v).strip()
     if not s:
         return ""
     try:
         f = float(s)
-        # 先生成常规显示（两位小数，去尾零）
+        # Build the standard display (2 decimals, trim trailing zeros).
         if f.is_integer():
             candidate = f"{int(f)}"
         else:
             candidate = f"{f:.2f}".rstrip("0").rstrip(".")
         cand = candidate.replace(",", "")
-        # 规则：若包含小数点且总长度（含小数点）≥ 5 → 只显示整数
+        # Rule: if decimal string length (incl. dot) >= 5, show integer only.
         if "." in cand and len(cand) >= 5:
             return f"{int(f)}"
         return candidate
@@ -81,7 +82,7 @@ def load_prompts(path):
     return df.to_dict("records")
 
 def find_output_image(output_dir, id_):
-    # 允许任意扩展名（png/jpg/webp等）
+    # Allow any extension (png/jpg/webp, etc.).
     files = glob.glob(os.path.join(output_dir, f"*{id_}*.*"))
     return files[0] if files else None
 
@@ -91,13 +92,13 @@ def load_font(size: int):
     except Exception:
         return ImageFont.load_default()
 
-# ===== 新增：标题单行自适应（英文字母比中文小两个字号） =====
+# ===== New: fit title on one line (English letters two sizes smaller) =====
 
 def _is_eng_letter(ch: str) -> bool:
     return bool(re.match(r"[A-Za-z]", ch))
 
 def _measure_mixed_width(draw: ImageDraw.ImageDraw, text: str, font_base, font_eng) -> float:
-    """逐字测量宽度：英文字母用更小的字体，其余用基准字体。"""
+    """Measure width per character: English uses smaller font; others use base font."""
     w = 0.0
     for ch in text:
         font = font_eng if _is_eng_letter(ch) else font_base
@@ -107,16 +108,16 @@ def _measure_mixed_width(draw: ImageDraw.ImageDraw, text: str, font_base, font_e
 def fit_title_font_one_line_mixed(draw: ImageDraw.ImageDraw, text: str,
                                   start_size: int, min_size: int, max_width: int):
     """
-    仅缩小字号（不换行），直到整段文本宽度 <= max_width 或降到 min_size。
-    中文用基准字号；英文字母使用（基准字号-2）。
-    返回：(font_base, font_eng)
+    Only reduce font size (no wrapping) until width <= max_width or min_size.
+    Chinese uses the base size; English letters use base size - 2.
+    Returns (font_base, font_eng).
     """
     for sz in range(start_size, min_size - 1, -1):
         font_base = load_font(sz)
-        font_eng  = load_font(max(min_size, sz - 1))  # 英文字母小两个字号（不低于 min_size）
+        font_eng  = load_font(max(min_size, sz - 1))  # English letters two sizes smaller.
         if _measure_mixed_width(draw, text, font_base, font_eng) <= max_width:
             return font_base, font_eng
-    # 放不下就用最小字号（英文字母同最小字号）
+    # If it still doesn't fit, use min size for both.
     return load_font(min_size), load_font(min_size)
 
 # =================================================
@@ -157,18 +158,18 @@ def main():
     os.makedirs(RESULT_DIR, exist_ok=True)
     records = load_prompts(excel_path)
 
-    # 加载并调整模板到 780×800
+    # Load and resize the template to 780×800.
     tmpl = Image.open(template_path).convert("RGBA")
     if tmpl.size != (780,800):
         tmpl = tmpl.resize((780,800), Image.LANCZOS)
 
-    # 模板整体透明度 80%
+    # Apply 80% opacity to the template.
     if TEMPLATE_OPACITY < 1.0:
         a = tmpl.getchannel("A")
         a = a.point(lambda p: int(p * TEMPLATE_OPACITY))
         tmpl.putalpha(a)
 
-    # 固定字号的字体（promotion / price）
+    # Fixed-size fonts (promotion / price).
     try:
         font_p  = ImageFont.truetype(FONT_PATH, FONT_SIZE_PROMO)
         font_pr = ImageFont.truetype(FONT_PATH, FONT_SIZE_PRICE)
@@ -182,7 +183,7 @@ def main():
         id_     = safe_text(rec.get("id"))
         price   = fmt_price(rec.get("price"))
         title   = safe_text(rec.get("promo_title_final"))
-        promo   = safe_text(rec.get("promotion"))  # 从 Excel 读取文案（安全转字符串）
+        promo   = safe_text(rec.get("promotion"))  # Read copy from Excel (safe cast).
         print(f"\n[开始] id={id_}")
 
         src = find_output_image(comfy_output, id_)
@@ -192,47 +193,47 @@ def main():
 
         t0 = time.time()
         prod = Image.open(src).convert("RGBA")
-        # 确保底图 800×800
+        # Ensure base image is 800×800.
         if prod.size != (800,800):
             prod = prod.resize((800,800), Image.LANCZOS)
 
-        # 1. 直接用产品图做底
+        # 1. Use the product image as the base.
         canvas = prod.copy()
 
-        # 2. 将模板贴到左上 (0,0)，保留透明（已设置 80% 透明度）
+        # 2. Paste the template at (0,0) with alpha (80% opacity).
         canvas.paste(tmpl, (0,0), tmpl)
 
-        # 3. 在左下角依次写三行文案 —— 位置保持不变
+        # 3. Draw three lines of copy in the bottom-left; positions unchanged.
         draw = ImageDraw.Draw(canvas)
         y_price = 800 - MARGIN_Y - FONT_SIZE_TITLE
         y_title = y_price - 5 - FONT_SIZE_PRICE*0.5
         y_promo = y_title - 10 - FONT_SIZE_PROMO
 
-        # —— promotion（位置/字号不变）
+        # -- promotion (position/size unchanged)
         if promo:
             draw.text((MARGIN_X+5,  y_promo-15),  promo,        font=font_p,  fill=PROMO_COLOR)
 
-        # —— price（位置/字号不变；fmt_price 已实现 ≥10000 仅整数）
+        # -- price (position/size unchanged; fmt_price handles >=10000 as int)
         if price:
             draw.text((MARGIN_X+10, y_price),    f"¥{price}",  font=font_pr, fill=OTHER_COLOR)
 
-        # —— title：英文字母小两个字号；只缩放字号以适配一行宽度，不换行，不截断，位置不变
+        # -- title: English letters two sizes smaller; only shrink size to fit one line.
         if title:
             title_x = MARGIN_X + 210
-            max_width = 800 - title_x  # 允许绘制的最大宽度（到右边界）
+            max_width = 800 - title_x  # Max drawable width (to right edge).
 
             font_base, font_eng = fit_title_font_one_line_mixed(
                 draw, title, FONT_SIZE_TITLE, FONT_SIZE_TITLE_MIN, max_width
             )
 
-            # 逐字绘制（英文字母用小两号字体）
+            # Draw per character (English letters use smaller font).
             x = title_x
             for ch in title:
                 fnt = font_eng if _is_eng_letter(ch) else font_base
                 draw.text((x, y_title), ch, font=fnt, fill=OTHER_COLOR)
                 x += draw.textlength(ch, font=fnt)
 
-        # 4. 保存
+        # 4. Save
         out_path = os.path.join(result_dir, f"{id_}_final.png")
         canvas.convert("RGB").save(out_path, quality=95)
 

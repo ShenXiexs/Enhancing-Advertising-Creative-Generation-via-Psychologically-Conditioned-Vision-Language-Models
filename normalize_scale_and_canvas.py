@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Step 2: 读取 Step1 的 Excel -> 下载原图 -> 抠图 + 白底居中留白 -> 以 id_WxH.jpg 命名保存
-并将文件名写回 Excel 的 white_bg_image 列（覆盖），同时把 qwen_image_filenames 也改为带尺寸后缀。
+Step 2: Read Step1 Excel -> download source image -> cutout + center on white canvas ->
+save as id_WxH.jpg, then write back to the Excel white_bg_image column (overwrite),
+and update qwen_image_filenames with the size suffix.
 """
 
 import argparse
@@ -19,25 +20,25 @@ from tqdm import tqdm
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-# =============== 可配参数 ===============
+# =============== Configurable params ===============
 EXCEL_PATH  = os.path.join("out_step1", "step1_prompts.xlsx")
-OUT_DIR     = "out_step1"          # 与 Step1 同目录，保持“Excel 与图片同夹”
+OUT_DIR     = "out_step1"          # Same folder as Step1: keep Excel + images together
 
-CANVAS_WH   = (960, 640)           # 使用3：2模板
-CANVAS_WH = (800, 800)             # 使用其他模板
+CANVAS_WH   = (960, 640)           # Use 3:2 template
+CANVAS_WH = (800, 800)             # Use other templates
 
-MARGIN      = 0.15                 # ≥12.5% 留白
-WHITE_THR   = 250                  # 固定阈值参与联合
-DILATE      = True                 # 掩码膨胀（用于边缘/线条补全）
+MARGIN      = 0.15                 # >=12.5% padding
+WHITE_THR   = 250                  # Fixed threshold used in merging masks
+DILATE      = True                 # Mask dilation (fill thin edges/lines)
 DILATE_KSZ  = 5
 DEBUG_PRINT = True
 
-# —— 多线索抠图的额外参数（可按素材微调）——
-BBOX_PAD_RATIO  = 0.015            # 对最终 bbox 外扩比例（避免裁太紧）
-MIN_COMP_RATIO  = 0.0005           # 连通域最小占比（过滤小噪点），0.05%
-SAT_THRESH      = 20               # HSV 饱和度阈值（>则认为可能是前景）
-DARK_V_THRESH   = 245              # HSV 明度阈值（<则认为可能是前景）
-CANNY_T1, CANNY_T2 = 50, 150       # Canny 边缘阈值
+# -- Extra params for multi-signal cutout (tune per data) --
+BBOX_PAD_RATIO  = 0.015            # Expand final bbox to avoid over-tight crop
+MIN_COMP_RATIO  = 0.0005           # Min component ratio (filter noise), 0.05%
+SAT_THRESH      = 20               # HSV saturation threshold (> means likely foreground)
+DARK_V_THRESH   = 245              # HSV value threshold (< means likely foreground)
+CANNY_T1, CANNY_T2 = 50, 150       # Canny thresholds
 # ======================================
 
 def read_excel_any(excel_path: str) -> pd.DataFrame:
@@ -53,7 +54,7 @@ def make_http_session() -> requests.Session:
     s.mount("https://", HTTPAdapter(max_retries=retry))
     return s
 
-# ---------------- 多线索联合：稳健找 bbox（保留多商品） ----------------
+# ---------------- Multi-signal union: robust bbox (keeps multiple items) ----------------
 def crop_bbox_robust(img: Image.Image,
                      thr=250,
                      dilate=False,
@@ -66,7 +67,7 @@ def crop_bbox_robust(img: Image.Image,
                      canny_t2=150) -> Image.Image:
     W, H = img.size
 
-    # 透明 PNG → 白底，并拿 alpha
+    # Transparent PNG -> white background; extract alpha
     alpha_mask = None
     if img.mode in ("RGBA", "LA"):
         a = np.array(img.split()[-1])
@@ -80,35 +81,35 @@ def crop_bbox_robust(img: Image.Image,
     arr  = np.array(rgb)
     gray = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
 
-    # 固定阈值 + Otsu
+    # Fixed threshold + Otsu
     _, bin_fixed = cv2.threshold(gray, thr, 255, cv2.THRESH_BINARY_INV)
     try:
         _, bin_otsu = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     except Exception:
         bin_otsu = np.zeros_like(bin_fixed)
 
-    # HSV 线索（高饱和 or 较暗）
+    # HSV cues (high saturation or dark)
     hsv = cv2.cvtColor(arr, cv2.COLOR_RGB2HSV)
     S, V = hsv[:, :, 1], hsv[:, :, 2]
     sat_mask  = (S > SAT_THRESH).astype(np.uint8) * 255
     dark_mask = (V < DARK_V_THRESH).astype(np.uint8) * 255
     bin_hsv = cv2.bitwise_or(sat_mask, dark_mask)
 
-    # 边缘（+可选膨胀）
+    # Edges (+ optional dilation)
     edges = cv2.Canny(gray, canny_t1, canny_t2)
     if dilate:
         kernel = np.ones((ksz, ksz), np.uint8)
         edges = cv2.dilate(edges, kernel, iterations=1)
 
-    # 合并
+    # Merge masks
     mask = bin_fixed | bin_otsu | bin_hsv | edges
     if alpha_mask is not None:
         mask = mask | alpha_mask
 
-    # 闭运算
+    # Closing operation
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8), iterations=1)
 
-    # 连通域过滤：保留“大块”
+    # Connected components: keep large blobs
     total_pixels = W * H
     min_area = max(32, int(total_pixels * min_comp_ratio))
     num, labels, stats, _ = cv2.connectedComponentsWithStats((mask > 0).astype(np.uint8), connectivity=8)
@@ -130,7 +131,7 @@ def crop_bbox_robust(img: Image.Image,
     x0, x1 = xs.min(), xs.max()
     y0, y1 = ys.min(), ys.max()
 
-    # bbox 外扩
+    # Expand bbox
     pad_x = int((x1 - x0 + 1) * bbox_pad)
     pad_y = int((y1 - y0 + 1) * bbox_pad)
     x0 = max(0, x0 - pad_x); y0 = max(0, y0 - pad_y)
@@ -160,7 +161,7 @@ def _normalize_id(v, fallback_idx: int) -> str:
         return str(v).replace(".", "_")
     return str(v).strip()
 
-# --------- 文件名尺寸后缀工具（对列 qwen_image_filenames 使用） ----------
+# --------- Filename size suffix helper (for qwen_image_filenames) ----------
 def _add_size_suffix_to_path(path_str: str, wh_tag: str) -> str:
     if not path_str:
         return path_str
@@ -201,8 +202,8 @@ def _transform_qwen_cell(val, wh_tag: str):
 
 def _format_path_for_excel(p: str) -> str:
     """
-    将路径规范化，Windows 下使用反斜杠，其它系统使用正斜杠。
-    方便在不同平台读取时都能定位到实际文件。
+    Normalize paths: backslashes on Windows, forward slashes elsewhere.
+    This keeps paths readable across platforms.
     """
     norm = os.path.normpath(p)
     if os.sep == "\\":
@@ -231,7 +232,7 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
     df = read_excel_any(excel_path)
 
-    # 若没有目标列则创建
+    # Create target columns if missing
     if "white_bg_image" not in df.columns:
         df["white_bg_image"] = ""
     if "qwen_image_filenames" not in df.columns:
@@ -242,14 +243,14 @@ def main():
     updated_rows = 0
 
     W, H = CANVAS_WH
-    wh_tag = f"{W}x{H}"  # 用于文件名后缀
+    wh_tag = f"{W}x{H}"  # Filename suffix
 
     for i, row in tqdm(df.iterrows(), total=len(df), desc="Step2"):
         t0 = time.time()
         pid = _normalize_id(row.get("id", i + 1), i + 1)
         url = str(row.get("image_url", "")).strip()
 
-        # 标准化 URL
+        # Normalize URL
         if url.startswith("//"):
             url = "https:" + url
         if not url:
@@ -257,7 +258,7 @@ def main():
                 print(f"× 缺少 URL: id={pid}")
             continue
 
-        # 下载
+        # Download
         try:
             r = sess.get(url, timeout=10)
             r.raise_for_status()
@@ -266,7 +267,7 @@ def main():
             print(f"× 下载失败 id={pid}: {e}")
             continue
 
-        # 抠图 + 放置
+        # Cutout + place on canvas
         try:
             fg = crop_bbox_robust(
                 img,
@@ -284,22 +285,22 @@ def main():
             print(f"× 处理失败 id={pid}: {e}")
             continue
 
-        # 生成标准化文件名：id_WxH.jpg
+        # Build normalized filename: id_WxH.jpg
         new_filename = f"{pid}_{wh_tag}.jpg"
         save_path = os.path.join(out_dir, new_filename)
 
-        # 保存到 OUT_DIR/new_filename
+        # Save to OUT_DIR/new_filename
         try:
             out.save(save_path, "JPEG", quality=95, subsampling=0, optimize=True)
         except Exception as e:
             print(f"× 保存失败 id={pid}: {e}")
             continue
 
-        # —— 成功后：写回两列 —— #
-        # 1) white_bg_image：写回标准化路径（跨平台使用）
+        # -- On success: write back two columns --
+        # 1) white_bg_image: normalized path (cross-platform)
         df.at[i, "white_bg_image"] = _format_path_for_excel(os.path.join(out_dir, new_filename))
 
-        # 2) qwen_image_filenames（仅改文本，不改磁盘文件名）
+        # 2) qwen_image_filenames: text only, do not rename on disk
         old_qwen = row.get("qwen_image_filenames", "")
         df.at[i, "qwen_image_filenames"] = _transform_qwen_cell(old_qwen, wh_tag)
 
@@ -308,7 +309,7 @@ def main():
         dt = time.time() - t0
         durations.append(dt)
 
-    # 写回 Excel（只要有任何成功项）
+    # Write back to Excel (if any succeeded)
     if updated_rows > 0:
         try:
             df.to_excel(excel_path, index=False)

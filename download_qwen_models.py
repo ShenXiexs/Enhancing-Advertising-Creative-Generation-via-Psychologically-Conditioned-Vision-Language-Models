@@ -3,14 +3,14 @@ import os
 import requests
 from tqdm import tqdm
 
-# ---- 必须加在最顶部（防系统盘爆满） ----
+# ---- Must be at the very top (avoid filling system disk) ----
 os.environ["TMPDIR"] = "/root/aicloud-data/tmp"
 os.environ["TEMP"] = "/root/aicloud-data/tmp"
 os.environ["TMP"] = "/root/aicloud-data/tmp"
 os.makedirs("/root/aicloud-data/tmp", exist_ok=True)
 
 # -------------------------------
-# 配置：你的 ComfyUI 路径
+# Config: your ComfyUI path
 # -------------------------------
 COMFYUI_DIR = "/workspace/ComfyUI"
 MODEL_DIR = f"{COMFYUI_DIR}/models"
@@ -19,7 +19,7 @@ VAE_DIR = f"{MODEL_DIR}/vae"
 os.makedirs(VAE_DIR, exist_ok=True)
 
 # -------------------------------
-# 你的全部模型 URL（你给的）
+# All model URLs you provided
 # -------------------------------
 FILES = {
     "qwen_image_edit_fp8_e4m3fn.safetensors":

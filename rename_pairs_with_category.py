@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-根据 Step1/Step2 的 Excel，将 out_step3/... 下的 {id}_pair.jpg
-重命名为 {id}_{super_category}_pair.jpg，方便按大类管理。
+Use the Step1/Step2 Excel file to rename {id}_pair.jpg under out_step3/...
+to {id}_{super_category}_pair.jpg for easier category-based management.
 """
 import argparse
 import os
@@ -75,7 +75,7 @@ def sanitize_category(cat: str) -> str:
     cat = (cat or "").strip()
     if not cat:
         return "unknown"
-    # 替换非法文件字符
+    # Replace invalid filename characters.
     cat = re.sub(r"[\\/:*?\"<>|]", "_", cat)
     cat = re.sub(r"\s+", "_", cat)
     cat = cat.strip("_")

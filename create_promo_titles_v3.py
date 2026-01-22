@@ -1,4 +1,4 @@
-# part1_titles_first_min_no_category_lenflag.py — 去除“仅品类兜底” + 保留 is_over_length 标记列（彻底移除 normalize 版本）
+# part1_titles_first_min_no_category_lenflag.py — remove “category-only fallback” + keep is_over_length flag (normalize removed)
 # -*- coding: utf-8 -*-
 import os, re, io, time, json, base64, chardet, pandas as pd, requests
 from PIL import Image
@@ -6,24 +6,24 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 # =========================
-# 基础配置
+# Basic config
 # =========================
-CSV_PATH = "白底商品信息类目.csv"  # 需包含: id, ori_title, brand(或 creative_id_brand), image_url, level_one_category_name...
+CSV_PATH = "白底商品信息类目.csv"  # Requires: id, ori_title, brand (or creative_id_brand), image_url, level_one_category_name...
 OUT_DIR = os.path.join("out_step1")
 OUT_XLSX = os.path.join(OUT_DIR, "step1_titles.xlsx")
 OUT_JSONL = os.path.join(OUT_DIR, "step1_titles.jsonl")
 
-FILENAME_FMT = "{id}.jpg"  # 生成 out_step1/{id}.jpg
-SAMPLE_NUM = 100         # 若需抽样，填整数；否则设为 None
+FILENAME_FMT = "{id}.jpg"  # Saves to out_step1/{id}.jpg
+SAMPLE_NUM = 100         # Set an int to sample; set None for full data
 RAND_SEED = 5
 
-# 结果保留策略
-# True  : 最终导出保留所有样本（含 is_over_length==True）
-# False : 最终导出会过滤掉 is_over_length==True 的样本
+# Output retention policy
+# True  : keep all rows in final export (including is_over_length==True)
+# False : filter out rows where is_over_length==True
 KEEP_OVER_LENGTH = True
 
 # =========================
-# 模型设置（本步骤仅文本，不送图）
+# Model settings (text-only step)
 # =========================
 OLLAMA_HOST = "http://localhost:11434"
 MODEL_TITLE = "qwen2.5vl:7b"
@@ -36,7 +36,7 @@ DEBUG_PRINT = True
 PRINT_EVERY = 1
 
 # =========================
-# 标题合规口径
+# Title compliance rules
 # =========================
 MIN_FINAL_VISIBLE_LEN = 8
 MAX_FINAL_VISIBLE_LEN = 12
@@ -45,7 +45,7 @@ ALLOWED_CHARS_RE = re.compile(r'^[A-Za-z\u4e00-\u9fa5\s]+$')
 MAX_OPTIMIZATION_ROUNDS = 5
 
 # =========================
-# 提示词（严格按你的版本）
+# Prompts (use your exact version)
 # =========================
 SYSTEM_PROMPT_FOR_TITLE_JSON = (
     "你是电商文案助手。结合商品的标题和品牌名称生成一个“品牌+品类”的短标题。要求：\n"
@@ -76,18 +76,18 @@ SYSTEM_PROMPT_FOR_EXPAND_JSON = (
 )
 
 # =========================
-# 映射配置
+# Mapping config
 # =========================
-SUPER_MAP_CSV = "step_one_to_super_category_map.csv"  # 必含: level_one_category_name, super_category
-FONT_MAP_CSV  = "font_mapping_universal.csv"         # 支持两种列方案（见下）
-# 回退：项目内置或系统稳妥文件
-# 回退：项目内置或系统稳妥文件（改为 Windows 系统字体路径）
-DEFAULT_FONT_CN = r"C:\Windows\Fonts\msyh.ttc"     # 微软雅黑 Regular
+SUPER_MAP_CSV = "step_one_to_super_category_map.csv"  # Required: level_one_category_name, super_category
+FONT_MAP_CSV  = "font_mapping_universal.csv"         # Supports two column schemes (see below)
+# Fallback: project default or system-safe fonts
+# Fallback: project default or system-safe fonts (Windows path)
+DEFAULT_FONT_CN = r"C:\Windows\Fonts\msyh.ttc"     # Microsoft YaHei Regular
 DEFAULT_FONT_EN = r"C:\Windows\Fonts\segoeui.ttf"  # Segoe UI Regular
 DEFAULT_SUPER   = "其他"
 
 # =========================
-# 工具函数
+# Utilities
 # =========================
 def read_any_table(path: str) -> pd.DataFrame:
     ext = os.path.splitext(path)[1].lower()
@@ -189,7 +189,7 @@ def expand_title_again_via_vlm(b64_image: str, cand: str, brand: str,
     return raw or "", val
 
 # =========================
-# 映射读取（修正：支持文件路径列 & 家族名列）
+# Mapping load (supports file path columns & font family columns)
 # =========================
 def load_super_category_map(path: str) -> dict:
     try:
@@ -207,12 +207,12 @@ def load_super_category_map(path: str) -> dict:
 
 def load_font_mapping(path: str) -> dict:
     """
-    读取 font_mapping_universal.csv，优先文件路径列：
+    Read font_mapping_universal.csv, prefer file path columns:
       - Category
-      - font_cn_file_regular, font_en_file_regular  （优先）
-      - font_cn, font_en                            （次之）
-    返回 {Category: (font_cn, font_en)}
-    注：这里把“文件路径”直接写入返回值，后续脚本会直接写到输出列。
+      - font_cn_file_regular, font_en_file_regular (preferred)
+      - font_cn, font_en (fallback)
+    Returns {Category: (font_cn, font_en)}.
+    Note: file paths are returned directly for downstream scripts to write out.
     """
     try:
         df = read_any_table(path)
@@ -223,7 +223,7 @@ def load_font_mapping(path: str) -> dict:
 
         df["Category"] = df["Category"].map(_n)
 
-        # 兼容两种方案
+        # Support two column schemes
         has_file_cols = {"font_cn_file_regular", "font_en_file_regular"}.issubset(df.columns)
         has_family    = {"font_cn", "font_en"}.issubset(df.columns)
 
@@ -236,7 +236,7 @@ def load_font_mapping(path: str) -> dict:
                 cn = _n(r.get("font_cn_file_regular", ""))
                 en = _n(r.get("font_en_file_regular", ""))
             if (not cn or not en) and has_family:
-                # 家族名作为兜底（若你用家族名也希望写入，可在渲染端自己解析）
+                # Use font family names as fallback (renderer can resolve if needed)
                 cn = cn or _n(r.get("font_cn", ""))
                 en = en or _n(r.get("font_en", ""))
 
@@ -250,7 +250,7 @@ def load_font_mapping(path: str) -> dict:
         return {}
 
 # =========================
-# 进度 & 统计
+# Progress & stats
 # =========================
 def _fmt_eta(done, total, start_ts):
     if done == 0: return "ETA --:--"
@@ -260,7 +260,7 @@ def _fmt_eta(done, total, start_ts):
     return f"ETA {mm:02d}:{ss:02d}"
 
 # =========================
-# 主流程
+# Main flow
 # =========================
 def main():
     print("===> [START] Title generation (Part1)")
@@ -278,7 +278,7 @@ def main():
     super_map = load_super_category_map(SUPER_MAP_CSV)
     font_map  = load_font_mapping(FONT_MAP_CSV)
 
-    # 增量刷新：读取历史标题
+    # Incremental refresh: load previous titles
     cached_titles = {}
     if os.path.exists(OUT_XLSX):
         try:
@@ -317,7 +317,7 @@ def main():
         # 1) super_category
         super_category = super_map.get(lvl1, DEFAULT_SUPER)
 
-        # 2) 字体（先 super_category 命中 → 再 lvl1 → 再回退默认）
+        # 2) Fonts (super_category -> lvl1 -> default)
         if super_category in font_map:
             font_cn, font_en = font_map[super_category]
             font_src = "super"
@@ -339,7 +339,7 @@ def main():
             print(f"\n[{idx}/{total}] id={pid} | title='{title[:30]}' | brand='{brand[:20]}' | {_fmt_eta(idx - 1, total, t_start)}", flush=True)
 
         t0 = time.time()
-        # 读图并保存白底图
+        # Read image and save white background image
         b64_img, white_bg_path = "", ""
         if url:
             try:
@@ -359,7 +359,7 @@ def main():
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                 print("  - Image: SKIP (no URL)")
 
-        # 标题生成（支持缓存跳过）
+        # Title generation (supports cache skip)
         promo_title_final, promo_title_reason = "", "empty"
         title_visible_len = 0.0
 
@@ -444,7 +444,7 @@ def main():
             "white_bg_image": white_bg_path,
             "is_over_length": is_over_length,
             "title_visible_len": title_visible_len,
-            # 写出“可直接调用”的值（文件路径或家族名；取决于 CSV）
+            # Write a directly usable value (file path or family name; depends on CSV)
             "font_cn": font_cn,
             "font_en": font_en,
         })

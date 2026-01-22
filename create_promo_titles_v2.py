@@ -1,4 +1,4 @@
-# part1_titles_first_min_no_category_lenflag.py — 去除“仅品类兜底” + 保留 is_over_length 标记列（彻底移除 normalize 版本）
+# part1_titles_first_min_no_category_lenflag.py — remove “category-only fallback” + keep is_over_length flag (normalize removed)
 # -*- coding: utf-8 -*-
 import os, re, io, time, json, base64, chardet, pandas as pd, requests
 from PIL import Image
@@ -6,24 +6,24 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 # =========================
-# 基础配置
+# Basic config
 # =========================
-CSV_PATH = "白底商品信息类目.csv"  # 需包含: id, ori_title, brand(或 creative_id_brand), image_url, level_one_category_name...
+CSV_PATH = "白底商品信息类目.csv"  # Requires: id, ori_title, brand (or creative_id_brand), image_url, level_one_category_name...
 OUT_DIR = os.path.join("out_step1")
 OUT_XLSX = os.path.join(OUT_DIR, "step1_titles.xlsx")
 OUT_JSONL = os.path.join(OUT_DIR, "step1_titles.jsonl")
 
-FILENAME_FMT = "{id}.jpg"  # 生成 out_step1/{id}.jpg
-SAMPLE_NUM = 20         # 若需抽样，填整数；否则设为 None
+FILENAME_FMT = "{id}.jpg"  # Saves to out_step1/{id}.jpg
+SAMPLE_NUM = 20         # Set an int to sample; set None for full data
 RAND_SEED = 5
 
-# 结果保留策略
-# True  : 最终导出保留所有样本（含 is_over_length==True）
-# False : 最终导出会过滤掉 is_over_length==True 的样本
+# Output retention policy
+# True  : keep all rows in final export (including is_over_length==True)
+# False : filter out rows where is_over_length==True
 KEEP_OVER_LENGTH = True
 
 # =========================
-# 模型设置（本步骤仅文本，不送图）
+# Model settings (text-only step)
 # =========================
 OLLAMA_HOST = "http://localhost:11434"
 MODEL_TITLE = "qwen2.5vl:7b"
@@ -36,23 +36,23 @@ DEBUG_PRINT = True
 PRINT_EVERY = 1
 
 # =========================
-# 标题合规口径
-# - 中文=1；英文字母=0.5；空格=0.5；数字与任意符号=0.5（※本次更新）
-# - 硬性合规：≤12
-# - 理想区间：8–12（非强制，仅用于优化牵引与质量指标）
-# - 正则口径（校验用）：仅允许 [中文/英文字母/空格]；不允许“·”与其它标点/数字（提示词口径一致）
-#   注：即使校验不允许数字/符号，长度计算仍会把数字/符号按 0.5 计入，避免统计偏小
+# Title compliance rules
+# - Chinese=1; English letters=0.5; spaces=0.5; digits/symbols=0.5 (updated)
+# - Hard limit: <=12
+# - Ideal range: 8–12 (not enforced; for quality guidance)
+# - Regex check: only [Chinese/English letters/spaces]; disallow "·" and other punctuation/digits
+#   Note: even if regex disallows digits/symbols, length still counts them as 0.5
 # =========================
 MIN_FINAL_VISIBLE_LEN = 8
 MAX_FINAL_VISIBLE_LEN = 12
 MAX_FINAL_LEN = 12
 ALLOWED_CHARS_RE = re.compile(r'^[A-Za-z\u4e00-\u9fa5\s]+$')
 
-# 迭代纠偏最多轮数（通常 1–2 轮即可收敛）
+# Max correction iterations (usually converges in 1–2 rounds)
 MAX_OPTIMIZATION_ROUNDS = 5
 
 # =========================
-# 提示词（严格按你的版本，不做任何改动）
+# Prompts (use your exact version, no edits)
 # =========================
 SYSTEM_PROMPT_FOR_TITLE_JSON = (
     "你是电商文案助手。结合商品的标题和品牌名称生成一个“品牌+品类”的短标题。要求：\n"
@@ -85,7 +85,7 @@ SYSTEM_PROMPT_FOR_EXPAND_JSON = (
 )
 
 # =========================
-# 工具函数
+# Utilities
 # =========================
 def read_any_table(path: str) -> pd.DataFrame:
     ext = os.path.splitext(path)[1].lower()
@@ -132,7 +132,7 @@ def save_image_original(img: Image.Image, save_path: str, quality: int = 95):
 
 def vlm_chat_json(model: str, b64_image: str, system_prompt: str, user_text: str,
                   num_predict=80, temperature=0.2):
-    # 本步骤不把图片传给模型（仅文本）
+    # This step does not send images to the model (text only).
     payload = {
         "model": model,
         "messages": [
@@ -158,13 +158,13 @@ def normalize_spaces(s: str) -> str:
 
 def visible_units(s: str) -> float:
     """
-    等价长度计数（对统计与执法统一口径）：
-      - 中文字符：+1.0
-      - 空白（空格/制表/换行等）：+0.5
-      - 其它任意非空白字符（英文字母、数字、标点、Emoji、各种符号等）：+0.5
-    说明：
-      * 这样即便模型偶发输出数字/符号，长度也会被如实计入，避免统计偏小。
-      * 校验层仍由 ALLOWED_CHARS_RE 控制是否允许这些字符（当前不允许），两者口径独立。
+    Equivalent length counting (used consistently for stats & enforcement):
+      - Chinese characters: +1.0
+      - Whitespace (space/tab/newline): +0.5
+      - Any other non-whitespace (English letters, digits, punctuation, emoji, symbols): +0.5
+    Notes:
+      * This counts occasional digits/symbols so lengths aren't underestimated.
+      * Character allowlist is still enforced by ALLOWED_CHARS_RE (currently disallowing them).
     """
     if not s:
         return 0.0
@@ -175,16 +175,16 @@ def visible_units(s: str) -> float:
         elif re.match(r'[\u4e00-\u9fa5]', ch):
             total += 1.0
         else:
-            # 英文、数字以及任意其它可见符号统一按 0.5 计
+            # English letters, digits, and any other visible symbols count as 0.5
             total += 0.5
     return total
 
 def validate_title(raw: str):
     """
-    合规校验（硬性）：
-      1) 字符集：仅中文/英文字母/空格（由 ALLOWED_CHARS_RE 控制）
-      2) 长度：visible_units ≤ 12
-    不强制下限（短于 8 也算合规，只在优化阶段尝试拉近）。
+    Compliance check (hard rules):
+      1) Charset: Chinese/English letters/spaces only (via ALLOWED_CHARS_RE)
+      2) Length: visible_units <= 12
+    No hard minimum (shorter than 8 is allowed; optimization tries to stretch).
     """
     s = normalize_spaces(str(raw or ""))
     if not s:
@@ -225,7 +225,7 @@ def expand_title_again_via_vlm(b64_image: str, cand: str, brand: str,
     return raw or "", val
 
 # =========================
-# 进度 & 统计
+# Progress & stats
 # =========================
 def _fmt_eta(done, total, start_ts):
     if done == 0: return "ETA --:--"
@@ -235,7 +235,7 @@ def _fmt_eta(done, total, start_ts):
     return f"ETA {mm:02d}:{ss:02d}"
 
 # =========================
-# 主流程
+# Main flow
 # =========================
 def main():
     print("===> [START] Title generation (Part1)")
@@ -279,7 +279,7 @@ def main():
             print(f"\n[{idx}/{total}] id={pid} | title='{title[:30]}' | brand='{brand[:20]}' | {_fmt_eta(idx - 1, total, t_start)}", flush=True)
 
         t0 = time.time()
-        # 读图 + 保存白底图（留给后续环节，当前不送图给模型）
+        # Read image + save white background image (for later steps; no image sent now)
         b64_img, white_bg_path = "", ""
         if url:
             try:
@@ -290,7 +290,7 @@ def main():
                 save_image_original(im, white_bg_path, quality=95)
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print(f"  - Saved white BG: {white_bg_path}")
-                # b64_img = to_b64(im)   # 当前步骤不送图给模型，如需启用可解注
+                # b64_img = to_b64(im)   # No image sent in this step; uncomment to enable
             except Exception as e:
                 cnt_img_fail += 1
                 white_bg_path = ""
@@ -300,7 +300,7 @@ def main():
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                 print("  - Image: SKIP (no URL)")
 
-        # 标题生成流水线（无“仅品类兜底”）
+        # Title generation pipeline (no category-only fallback)
         promo_title_final, promo_title_reason = "", "empty"
         title_visible_len = 0.0
 
@@ -317,17 +317,17 @@ def main():
                                        user_text=user_fields, num_predict=80, temperature=0.2)
                 cand = normalize_spaces(str(obj.get("promo_title", "")).strip()) if isinstance(obj, dict) else ""
 
-                # 迭代纠偏：>12 必精简；<8 先增补并复检；8–12 直接收敛
+                # Iterative correction: >12 shorten; <8 expand; 8–12 accept
                 for _ in range(MAX_OPTIMIZATION_ROUNDS):
                     vu = visible_units(cand)
 
-                    # 1) 超长 → 精简并继续复检
+                    # 1) Too long -> simplify and recheck
                     if vu > MAX_FINAL_VISIBLE_LEN:  # >12
                         _, s_val = simplify_title_again_via_vlm("", cand, brand, MAX_FINAL_VISIBLE_LEN)
                         cand = s_val or cand
                         continue
 
-                    # 2) 过短 → 增补后复检；若过头则当场精简
+                    # 2) Too short -> expand then recheck; simplify if over
                     if vu < MIN_FINAL_VISIBLE_LEN:  # <8
                         _, e_val = expand_title_again_via_vlm("", cand, brand,
                                                               MIN_FINAL_VISIBLE_LEN, MAX_FINAL_VISIBLE_LEN,
@@ -340,15 +340,15 @@ def main():
                             cand = s_val or cand
                             continue
                     else:
-                        # 3) 8–12：直接收敛
+                        # 3) 8–12: accept
                         break
 
-                # 循环结束后的保底精简（极少数仍可能超长）
+                # Final fallback simplification (rare remaining overlong)
                 if visible_units(cand) > MAX_FINAL_VISIBLE_LEN:
                     _, s_val = simplify_title_again_via_vlm("", cand, brand, MAX_FINAL_VISIBLE_LEN)
                     cand = s_val or cand
 
-                ok, promo_title_reason = validate_title(cand)  # ≤12 合规
+                ok, promo_title_reason = validate_title(cand)  # <=12 is compliant
                 promo_title_final = cand
                 title_visible_len = round(visible_units(promo_title_final), 1)
 
@@ -361,13 +361,13 @@ def main():
             promo_title_reason = "offline_or_no_image"
             title_visible_len = 0.0
 
-        # 是否超字数（基于最终 promo_title_final）
+        # Over-length check (based on final promo_title_final)
         is_over_length = False
         if promo_title_final:
             is_over_length = (visible_units(promo_title_final) > MAX_FINAL_LEN)  # >12
             title_visible_len = round(visible_units(promo_title_final), 1)
 
-        # OK 的定义与执法口径一致：≤12 即 ok
+        # OK definition: <=12 is ok
         if promo_title_final and promo_title_reason == "ok":
             cnt_ok += 1
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
@@ -378,7 +378,7 @@ def main():
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                 print(f"  - Title NOT OK: reason={promo_title_reason} over_len={is_over_length} → final='{promo_title_final}' (units={title_visible_len:.1f}) | elapsed {time.time() - t0:.2f}s")
 
-        # 写入记录（不包含 compliant_len / ideal_len）
+        # Write record (no compliant_len / ideal_len)
         records.append({
             "id": pid,
             "ori_title": title,
@@ -389,22 +389,22 @@ def main():
             "promotion": promo,
             "promo_title_final": promo_title_final,
             "white_bg_image": white_bg_path,
-            "is_over_length": is_over_length,        # True/False（>12）
-            "title_visible_len": title_visible_len,  # 可见等价长度
+            "is_over_length": is_over_length,        # True/False (>12)
+            "title_visible_len": title_visible_len,  # Visible equivalent length
         })
 
         durations.append(time.time() - t0)
 
         if idx % PRINT_EVERY == 0:
             done = idx
-            # 进度行不再打印 invalid 数量
+            # Progress line no longer prints invalid count
             print(f"  -> Progress: {done}/{total} | OK(≤12)={cnt_ok} offline/noimg={cnt_offline} img_fail={cnt_img_fail} | {_fmt_eta(done, total, t_start)}", flush=True)
 
     if not records:
         print("⚠️ 没有有效记录")
         return
 
-    # 写盘（根据 KEEP_OVER_LENGTH 过滤）
+    # Write output (filter based on KEEP_OVER_LENGTH)
     print("\n[Write] Saving outputs ...")
     os.makedirs(OUT_DIR, exist_ok=True)
     df_out_all = pd.DataFrame(records)
@@ -413,13 +413,13 @@ def main():
     else:
         df_out = df_out_all[~df_out_all["is_over_length"].astype(bool)].copy()
 
-    # 导出 Excel / JSONL
+    # Export Excel / JSONL
     df_out.to_excel(OUT_XLSX, index=False)
     with open(OUT_JSONL, "w", encoding="utf-8") as f:
         for r in df_out.to_dict("records"):
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    # 汇总质量指标（仅输出合规与理想区间的占比）
+    # Summary metrics (only compliant/ideal rates)
     total_elapsed = time.time() - t_start
     avg = sum(durations) / len(durations) if durations else 0.0
     dropped_len = len(df_out_all) - len(df_out)
@@ -429,7 +429,7 @@ def main():
     print("\n===> [DONE] Title generation (Part1)")
     print(f"Output Excel : {OUT_XLSX}")
     print(f"Output JSONL : {OUT_JSONL}")
-    # 不再打印 invalid 数量
+    # No invalid count printed
     print(f"Summary      : total_processed={len(records)}, OK(≤12)={cnt_ok}, offline/noimg={cnt_offline}, img_fail={cnt_img_fail}")
     print(f"Post-filter  : kept={len(df_out)}, dropped_by_len_filter={dropped_len} (KEEP_OVER_LENGTH={KEEP_OVER_LENGTH})")
     print(f"Quality      : compliant_rate(≤12)={compliant_rate:.3f}, ideal_rate(8–12)={ideal_rate:.3f}")

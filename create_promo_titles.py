@@ -6,18 +6,18 @@ from PIL import Image
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
-# ======== 基础配置 ========
-CSV_PATH        = "白底商品信息类目.csv"   # 需包含: id, ori_title, brand(或 creative_id_brand), image_url, level_one_category_name...
+# ======== Basic config ========
+CSV_PATH        = "白底商品信息类目.csv"   # Requires: id, ori_title, brand (or creative_id_brand), image_url, level_one_category_name...
 OUT_DIR         = "out_step1"
 OUT_XLSX        = os.path.join(OUT_DIR, "step1_titles.xlsx")
 OUT_JSONL       = os.path.join(OUT_DIR, "step1_titles.jsonl")
 
-FILENAME_FMT    = "{id}.jpg"   # 生成 out_step1/white_bg/{id}.jpg
+FILENAME_FMT    = "{id}.jpg"   # Saves to out_step1/white_bg/{id}.jpg
 
-SAMPLE_NUM      = 10          # 若需抽样，填整数；否则设为 None
+SAMPLE_NUM      = 10          # Set an int to sample; set None for full data
 RAND_SEED       = 125
 
-# —— VLM（仅用于标题）——
+# -- VLM (titles only) --
 OLLAMA_HOST     = "http://localhost:11434"
 MODEL_TITLE     = "qwen2.5vl:7b"
 USE_MODEL_TITLE = True
@@ -28,9 +28,9 @@ REQUEST_TIMEOUT = 180
 DEBUG_PRINT     = True
 
 
-PRINT_EVERY     = 1          # 每多少条打印一次进度（1 = 每条都打）
+PRINT_EVERY     = 1          # Print progress every N rows (1 = every row)
 
-# —— 标题规范 ——（中文=1；英文字母=0.5；忽略空格与“·”）
+# -- Title rules -- (Chinese=1; English letters=0.5; ignore spaces and "·")
 MIN_FINAL_VISIBLE_LEN = 8
 MAX_FINAL_VISIBLE_LEN = 12
 MAX_FINAL_LEN         = 12
@@ -64,7 +64,7 @@ SYSTEM_PROMPT_FOR_EXPAND_JSON = (
     "严格输出 JSON，如 {\"promo_title\":\"...\"}。"
 )
 
-# ======== 工具函数 ========
+# ======== Utilities ========
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Generate short promo titles (Part1)."
@@ -218,7 +218,7 @@ def expand_title_again_via_vlm(b64_image: str, cand: str, brand: str = "", ori_t
         val = normalize_spaces(str(obj.get("promo_title","")).strip())
     return raw or "", val
 
-# ======== 进度 & 统计 ========
+# ======== Progress & stats ========
 def _fmt_eta(done, total, start_ts):
     if done == 0: return "ETA --:--"
     elapsed = time.time() - start_ts
@@ -227,7 +227,7 @@ def _fmt_eta(done, total, start_ts):
     mm, ss = divmod(int(remain), 60)
     return f"ETA {mm:02d}:{ss:02d}"
 
-# ======== 主流程（仅做标题 + 保存白底图路径到 white_bg_image） ========
+# ======== Main flow (titles + write white_bg_image path) ========
 def main():
     args = parse_args()
     global MODEL_TITLE, CSV_PATH, OUT_DIR, OUT_XLSX, OUT_JSONL, SAMPLE_NUM, RAND_SEED
@@ -276,20 +276,20 @@ def main():
             print(f"\n[{idx}/{total}] id={pid} | title='{title[:30]}' | brand='{brand[:20]}' | { _fmt_eta(idx-1, total, t_start) }", flush=True)
 
         t0 = time.time()
-        # 读图 + 保存白底图本地文件
+        # Read image + save local white-background image
         b64_img = ""
-        white_bg_path = ""  # 新增：用于写入输出的白底图本地路径
+        white_bg_path = ""  # New: local white_bg path to write into output
         if url:
             try:
                 im = fetch_image(url, sess)
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print("  - Image: OK")
-                # 保存原尺寸 JPG 到 out_step1/white_bg/{id}.jpg
+                # Save original-size JPG to out_step1/white_bg/{id}.jpg
                 white_bg_path = os.path.join(OUT_DIR, FILENAME_FMT.format(id=pid))
                 save_image_original(im, white_bg_path, quality=95)
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print(f"  - Saved white BG: {white_bg_path}")
-                # 若需要标题推理，则转 b64
+                # Convert to b64 if title inference is enabled
                 if USE_MODEL_TITLE:
                     b64_img = to_b64(im)
             except Exception as e:
@@ -301,7 +301,7 @@ def main():
             if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                 print("  - Image: SKIP (no URL)")
 
-        # 标题生成
+        # Title generation
         promo_title_json_val = ""
         promo_title_candidate = ""
         promo_title_normalized = ""
@@ -402,7 +402,7 @@ def main():
             "promo_title_feedback": promo_title_feedback,
             "price": price,
             "promotion": promo,
-            # 新增：白底图本地路径
+            # New: local white_bg image path
             "white_bg_image": white_bg_path,
             "title_visible_len": title_visible_len,
             "is_over_length": str(is_over_length).upper(),
@@ -410,7 +410,7 @@ def main():
 
         durations.append(time.time() - t0)
 
-        # 简要进度行（每 PRINT_EVERY 条）
+        # Short progress line (every PRINT_EVERY rows)
         if idx % PRINT_EVERY == 0:
             done = idx
             print(f"  -> Progress: {done}/{total} | OK={cnt_ok} invalid={cnt_invalid} offline/noimg={cnt_offline} img_fail={cnt_img_fail} | { _fmt_eta(done, total, t_start) }", flush=True)
@@ -418,7 +418,7 @@ def main():
     if not records:
         print("⚠️ 没有有效记录"); return
 
-    # 写盘
+    # Write output
     print("\n[Write] Saving outputs ...")
     os.makedirs(OUT_DIR, exist_ok=True)
     df_out = pd.DataFrame(records)
