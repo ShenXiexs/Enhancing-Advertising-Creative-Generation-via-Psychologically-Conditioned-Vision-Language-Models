@@ -329,6 +329,7 @@ def process_schwartz_value(value_type: str,
             "--schwartz-profiles", args.schwartz_profiles,
             "--schwartz-type", value_type,
             "--schwartz-mode", args.schwartz_mode,
+            "--schwartz-persona-style", args.schwartz_persona_style,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -411,6 +412,8 @@ def main():
                         help="Only process first N values (order from profiles or input list).")
     parser.add_argument("--schwartz-mode", choices=["concat", "inline"], default="inline",
                         help="Persona mode for Schwartz value prompts.")
+    parser.add_argument("--schwartz-persona-style", choices=["legacy", "target"], default="legacy",
+                        help="Schwartz persona wording: legacy=You prioritize; target=Target audience.")
     parser.add_argument("--schwartz-profiles", default="schwartz_value_profiles.csv",
                         help="Schwartz value profiles CSV path.")
     parser.add_argument("--categories", default=",".join(DEFAULT_CATEGORIES),

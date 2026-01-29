@@ -334,6 +334,7 @@ def process_big5_profile(profile: dict,
             "--big5-profiles", args.big5_profiles,
             "--big5-types", profile["tokens"],
             "--big5-mode", args.big5_mode,
+            "--big5-persona-style", args.big5_persona_style,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -394,6 +395,8 @@ def main():
                         help="Big Five persona 版本，默认 A（详细），B 为精简。")
     parser.add_argument("--big5-mode", choices=["concat", "inline"], default="inline",
                         help="persona 拼接模式（create_categorical_prompts.py 对应参数）。")
+    parser.add_argument("--big5-persona-style", choices=["legacy", "target"], default="legacy",
+                        help="Big Five persona 文案模式：legacy=原始 As a picture；target=目标人群描述。")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="用于生成背景 prompt 的模型规格。")
     parser.add_argument("--disable-triad", dest="disable_triad", action="store_true",

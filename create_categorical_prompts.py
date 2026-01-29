@@ -184,6 +184,12 @@ def parse_args():
         help="How to apply Big Five persona: concat or inline.",
     )
     parser.add_argument(
+        "--big5-persona-style",
+        choices=["legacy", "target"],
+        default="legacy",
+        help="Big Five persona wording style: legacy (As a picture...) or target (Target audience...).",
+    )
+    parser.add_argument(
         "--schwartz-profiles",
         default=SCHWARTZ_PROFILES_PATH,
         help="CSV file that maps IDs to Schwartz value metadata.",
@@ -203,6 +209,12 @@ def parse_args():
         choices=SCHWARTZ_MODE_CHOICES,
         default="concat",
         help="How to apply Schwartz value prompt: concat or inline.",
+    )
+    parser.add_argument(
+        "--schwartz-persona-style",
+        choices=["legacy", "target"],
+        default="legacy",
+        help="Schwartz persona wording style: legacy (You prioritize...) or target (Target audience...).",
     )
     parser.add_argument(
         "--disable-triad",
@@ -291,6 +303,13 @@ def _ensure_sentence_end(text: str) -> str:
     if text[-1] in ".!?":
         return text
     return text + "."
+
+def _strip_as_a_picture(text: str) -> str:
+    text = (text or "").strip()
+    if not text:
+        return ""
+    text = re.sub(r"^\s*as a picture\s*,?\s*", "", text, flags=re.I)
+    return text.strip()
 
 def make_http_session() -> requests.Session:
     s = requests.Session()
@@ -599,44 +618,81 @@ def select_big5_rows(df: pd.DataFrame, tokens):
     return rows
 
 
-def build_big5_block(rows, plan: str) -> str:
+def build_big5_block(rows, plan: str, style: str = "legacy") -> str:
     if not rows:
         return ""
     plan = (plan or "A").upper()
     if plan not in ("A", "B"):
         plan = "A"
+    style = (style or "legacy").lower()
+    if style not in ("legacy", "target"):
+        style = "legacy"
     if plan == "B":
         lines = [
             "[Tone Hints]",
             "Blend these Big Five cues into tone and word choice; keep product facts unchanged.",
             "Focus on:",
         ]
-        for r in rows:
-            desc = _text_or_empty(r.get("big5_do")) or f"{r.get('big5_trait')} ({r.get('big5_level')})"
-            lines.append(f"- {r.get('big5_trait')} ({r.get('big5_level')}): {desc}")
-        avoid_items = [_text_or_empty(r.get("big5_avoid")) for r in rows if _text_or_empty(r.get("big5_avoid"))]
-        if avoid_items:
-            lines.append("Avoid:")
-            lines.extend(f"- {a}" for a in avoid_items)
+        if style == "legacy":
+            for r in rows:
+                desc = _text_or_empty(r.get("big5_do")) or f"{r.get('big5_trait')} ({r.get('big5_level')})"
+                lines.append(f"- {r.get('big5_trait')} ({r.get('big5_level')}): {desc}")
+            avoid_items = [_text_or_empty(r.get("big5_avoid")) for r in rows if _text_or_empty(r.get("big5_avoid"))]
+            if avoid_items:
+                lines.append("Avoid:")
+                lines.extend(f"- {a}" for a in avoid_items)
+        else:
+            for r in rows:
+                trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+                level = _text_or_empty(r.get("big5_level")) or "Level"
+                desc = _strip_as_a_picture(_text_or_empty(r.get("big5_do")))
+                if desc and desc[:1].islower():
+                    desc = desc[:1].upper() + desc[1:]
+                desc = _ensure_sentence_end(desc) if desc else ""
+                avoid = _text_or_empty(r.get("big5_avoid"))
+                lines.append(f"- Target audience: {trait} ({level}) personality (Big Five).")
+                if desc:
+                    lines.append(f"  Known personality: {desc}")
+                if avoid:
+                    lines.append(f"  Avoid: {avoid}")
         lines.append("Do not mention Big Five explicitly.")
         return "\n".join(lines)
 
-    lines = [
-        "[Persona Instruction]",
-        "Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.",
-        "Traits:",
-    ]
-    for r in rows:
-        trait = _text_or_empty(r.get("big5_trait")) or "Trait"
-        level = _text_or_empty(r.get("big5_level")) or "Level"
-        desc = _text_or_empty(r.get("big5_do"))
-        avoid = _text_or_empty(r.get("big5_avoid"))
-        if desc:
-            lines.append(f"- {trait} ({level}): {desc}")
-        else:
-            lines.append(f"- {trait} ({level})")
-        if avoid:
-            lines.append(f"  Avoid: {avoid}")
+    if style == "legacy":
+        lines = [
+            "[Persona Instruction]",
+            "Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.",
+            "Traits:",
+        ]
+        for r in rows:
+            trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+            level = _text_or_empty(r.get("big5_level")) or "Level"
+            desc = _text_or_empty(r.get("big5_do"))
+            avoid = _text_or_empty(r.get("big5_avoid"))
+            if desc:
+                lines.append(f"- {trait} ({level}): {desc}")
+            else:
+                lines.append(f"- {trait} ({level})")
+            if avoid:
+                lines.append(f"  Avoid: {avoid}")
+    else:
+        lines = [
+            "[Persona Instruction]",
+            "This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.",
+        ]
+        for r in rows:
+            trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+            level = _text_or_empty(r.get("big5_level")) or "Level"
+            desc = _strip_as_a_picture(_text_or_empty(r.get("big5_do")))
+            if desc and desc[:1].islower():
+                desc = desc[:1].upper() + desc[1:]
+            desc = _ensure_sentence_end(desc) if desc else ""
+            avoid = _text_or_empty(r.get("big5_avoid"))
+            lines.append(f"Target audience: {trait} ({level}) personality (Big Five).")
+            if desc:
+                lines.append(f"Known personality: {desc}")
+            if avoid:
+                lines.append(f"Avoid: {avoid}")
     lines.append("Important:")
     lines.append("- This affects tone only; do not invent or alter product facts.")
     lines.append("- Do not mention the Big Five or psychology terms unless requested.")
@@ -694,17 +750,27 @@ def select_schwartz_row(df: pd.DataFrame, value_type: str):
     return hit.iloc[0]
 
 
-def build_schwartz_block(row: pd.Series) -> str:
+def build_schwartz_block(row: pd.Series, style: str = "legacy") -> str:
     value_type = _text_or_empty(row.get("schwartz_value_type"))
     value_do = _text_or_empty(row.get("schwartz_value_do"))
     if not value_type or not value_do:
         return ""
     value_do = _ensure_sentence_end(value_do)
+    style = (style or "legacy").lower()
+    if style not in ("legacy", "target"):
+        style = "legacy"
     lines = list(SCHWARTZ_VALUE_REFERENCE_LINES)
-    lines.extend([
-        "For this ad picture:",
-        f"You prioritize the value of {value_type} above all other values, which signifies {value_do}",
-    ])
+    if style == "legacy":
+        lines.extend([
+            "For this ad picture:",
+            f"You prioritize the value of {value_type} above all other values, which signifies {value_do}",
+        ])
+    else:
+        lines.extend([
+            "For this ad picture:",
+            f"Target audience: people who prioritize {value_type} (Schwartz value).",
+            f"Known value orientation: {value_do}",
+        ])
     return "\n".join(lines)
 
 # ======== Triad & style mapping ========
@@ -801,10 +867,12 @@ def main():
     if persona_kind != "big5":
         big5_plan = "none"
     big5_mode = args.big5_mode
+    big5_style = args.big5_persona_style
     big5_tokens = []
     big5_block = ""
     big5_label = ""
     schwartz_mode = args.schwartz_mode
+    schwartz_style = args.schwartz_persona_style
     schwartz_type = (args.schwartz_type or "").strip()
     if persona_kind != "schwartz":
         schwartz_type = ""
@@ -831,8 +899,8 @@ def main():
         "Config: "
         f"USE_MODEL_PROMPT={USE_MODEL_PROMPT}, MODEL_PROMPT={MODEL_PROMPT}, "
         f"PERSONA={persona_kind}, MBTI_PLAN={mbti_plan}, MBTI_TYPE={persona_mbti_type if persona_kind=='mbti' else 'n/a'}, MBTI_MODE={mbti_mode}, "
-        f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, "
-        f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, "
+        f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, BIG5_STYLE={big5_style}, "
+        f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, SCHWARTZ_STYLE={schwartz_style}, "
         f"TRIAD_ENABLED={triad_enabled}, EXP_TAG={exp_tag or 'default'}"
     )
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -885,20 +953,20 @@ def main():
         big5_tokens = parse_big5_tokens(args.big5_types)
         big5_df = load_big5_profiles(args.big5_profiles, args.big5_key)
         big5_rows = select_big5_rows(big5_df, big5_tokens)
-        big5_block = build_big5_block(big5_rows, big5_plan)
+        big5_block = build_big5_block(big5_rows, big5_plan, style=big5_style)
         big5_label = big5_label_from_tokens(big5_tokens)
-        print(f"[Big5] Profiles: {big5_label} | plan={big5_plan} | mode={big5_mode} | tokens={big5_tokens}")
+        print(f"[Big5] Profiles: {big5_label} | plan={big5_plan} | mode={big5_mode} | style={big5_style} | tokens={big5_tokens}")
     if schwartz_enabled:
         if not schwartz_type:
             raise ValueError("--schwartz-type 不能为空；示例：Universalism")
         print(f"[Schwartz] Loading profiles from: {args.schwartz_profiles}")
         schwartz_df = load_schwartz_profiles(args.schwartz_profiles, args.schwartz_key)
         schwartz_row = select_schwartz_row(schwartz_df, schwartz_type)
-        schwartz_block = build_schwartz_block(schwartz_row)
+        schwartz_block = build_schwartz_block(schwartz_row, style=schwartz_style)
         if not schwartz_block:
             raise ValueError("schwartz_value_profiles 缺少 schwartz_value_type 或 schwartz_value_do")
         schwartz_label = _text_or_empty(schwartz_row.get("schwartz_value_type")) or schwartz_type
-        print(f"[Schwartz] Value={schwartz_label} | mode={schwartz_mode}")
+        print(f"[Schwartz] Value={schwartz_label} | mode={schwartz_mode} | style={schwartz_style}")
     if exp_tag:
         base["experiment_tag"] = exp_tag
 

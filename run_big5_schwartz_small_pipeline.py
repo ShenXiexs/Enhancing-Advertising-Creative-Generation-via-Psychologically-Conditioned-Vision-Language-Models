@@ -219,6 +219,7 @@ def process_big5_profile(profile: dict, args, seed: int) -> dict:
             "--big5-profiles", args.big5_profiles,
             "--big5-types", profile["tokens"],
             "--big5-mode", args.persona_mode,
+            "--big5-persona-style", args.big5_persona_style,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -266,6 +267,7 @@ def process_schwartz_value(value_type: str, args, seed: int) -> dict:
             "--schwartz-profiles", args.schwartz_profiles,
             "--schwartz-type", value_type,
             "--schwartz-mode", args.persona_mode,
+            "--schwartz-persona-style", args.schwartz_persona_style,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -355,6 +357,8 @@ def main():
                         help="Disable background style descriptions (triad).")
     parser.add_argument("--big5-plan", choices=["A", "B"], default="A",
                         help="Big Five persona plan.")
+    parser.add_argument("--big5-persona-style", choices=["legacy", "target"], default="legacy",
+                        help="Big Five persona wording: legacy=As a picture; target=Target audience.")
     parser.add_argument("--big5-profiles", default=DEFAULT_BIG5_PROFILES,
                         help="Big Five profiles CSV path.")
     parser.add_argument("--big5-exp-prefix", default="big5_small",
@@ -363,6 +367,8 @@ def main():
                         help="Schwartz profiles CSV path.")
     parser.add_argument("--schwartz-types", default="",
                         help="Comma/newline separated Schwartz value types; empty means all.")
+    parser.add_argument("--schwartz-persona-style", choices=["legacy", "target"], default="legacy",
+                        help="Schwartz persona wording: legacy=You prioritize; target=Target audience.")
     parser.add_argument("--limit-schwartz", type=int, default=0,
                         help="Limit to first N Schwartz values (0 = all).")
     parser.add_argument("--schwartz-exp-prefix", default="schwartz_small",
