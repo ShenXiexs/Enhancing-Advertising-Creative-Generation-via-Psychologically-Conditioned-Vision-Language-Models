@@ -82,6 +82,9 @@ BASE = (
     "TASK: Return EXACTLY FOUR English sentence that describes the environment/background AROUND the product, "
     "while keeping the product itself unchanged and fully visible. Avoid generic phrases like “on a clean white background”."
 )
+
+
+
 TAIL = (
     'Use cinematic lighting, depth, and realistic shadows. Include 3–8 tasteful props only when appropriate, '
     'and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter. '
