@@ -76,19 +76,25 @@ SCHWARTZ_JOIN_KEY      = "id"
 SCHWARTZ_MODE_CHOICES  = MBTI_MODE_CHOICES
 
 # ======== System prompt template ========
-BASE = (
+BASE_HEAD = (
     "You are an art director for product photography and image editing.\n\n"
-    "INPUTS: one product PHOTO.\n"
-    "TASK: Return EXACTLY FOUR English sentence that describes the environment/background AROUND the product, "
-    "while keeping the product itself unchanged and fully visible. Avoid generic phrases like “on a clean white background”."
+    "INPUTS: one product PHOTO."
 )
 
-
+TASK_LINE = (
+    "TASK: Return EXACTLY FOUR English sentence that describes the environment/background AROUND the product, "
+    "while keeping the product itself unchanged and fully visible. Avoid generic phrases like \"on a clean white background\"."
+)
 
 TAIL = (
     'Use cinematic lighting, depth, and realistic shadows. Include 3–8 tasteful props only when appropriate, '
     'and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter. '
     'English only, ending with "4k".'
+)
+
+BIG5_IMPORTANT_NOTE = (
+    "Important:\n"
+    "- This affects tone only; do not invent or alter product facts."
 )
 
 # ======== Schwartz Value prompt ========
@@ -310,6 +316,46 @@ def _strip_as_a_picture(text: str) -> str:
         return ""
     text = re.sub(r"^\s*as a picture\s*,?\s*", "", text, flags=re.I)
     return text.strip()
+
+def _to_audience_traits(text: str) -> str:
+    s = (text or "").strip()
+    if not s:
+        return ""
+    s = _strip_as_a_picture(s)
+    s = re.sub(r"^(the\s+)?image\s+should\s+(feel|be)\s+", "", s, flags=re.I)
+    s = re.sub(r"^(the\s+)?image\s+(feels|is)\s+", "", s, flags=re.I)
+    s = s.strip().rstrip(".")
+    return s
+
+def _to_audience_text(text: str) -> str:
+    s = (text or "").strip()
+    if not s:
+        return ""
+    s = _strip_as_a_picture(s)
+    # convert leading second-person to audience phrasing without shortening
+    s = re.sub(r"^You are not\b", "This audience is not", s)
+    s = re.sub(r"^You are\b", "This audience is", s)
+    s = re.sub(r"^You do not feel\b", "This audience does not feel", s)
+    s = re.sub(r"^You feel\b", "This audience feels", s)
+    s = re.sub(r"^You do not have\b", "This audience does not have", s)
+    s = re.sub(r"^You have\b", "This audience has", s)
+    # If it does not start with a subject, prepend a target-audience clause.
+    if not re.match(r"^(This audience|This audience's)\\b", s):
+        s = "This audience tends to be: " + s
+    return s
+
+def _to_audience_negative_text(text: str) -> str:
+    s = (text or "").strip()
+    if not s:
+        return ""
+    s = _strip_as_a_picture(s)
+    s = re.sub(r"^You are not\b", "This audience is not", s)
+    s = re.sub(r"^You do not feel\b", "This audience does not feel", s)
+    s = re.sub(r"^You do not have\b", "This audience does not have", s)
+    # If it does not start with a subject, prepend a target-audience clause.
+    if not re.match(r"^(This audience|This audience's)\\b", s):
+        s = "This audience does not tend to be: " + s
+    return s
 
 def make_http_session() -> requests.Session:
     s = requests.Session()
@@ -636,26 +682,35 @@ def build_big5_block(rows, plan: str, style: str = "legacy") -> str:
         if style == "legacy":
             for r in rows:
                 desc = _text_or_empty(r.get("big5_do")) or f"{r.get('big5_trait')} ({r.get('big5_level')})"
-                lines.append(f"- {r.get('big5_trait')} ({r.get('big5_level')}): {desc}")
+                lines.append(f"- {r.get('big5_trait')} ({r.get('big5_level')}): the picture tends to be {desc}")
             avoid_items = [_text_or_empty(r.get("big5_avoid")) for r in rows if _text_or_empty(r.get("big5_avoid"))]
             if avoid_items:
-                lines.append("Avoid:")
+                lines.append("This picture does not tend to be:")
                 lines.extend(f"- {a}" for a in avoid_items)
         else:
-            for r in rows:
+            if len(rows) == 1:
+                r = rows[0]
                 trait = _text_or_empty(r.get("big5_trait")) or "Trait"
                 level = _text_or_empty(r.get("big5_level")) or "Level"
-                desc = _strip_as_a_picture(_text_or_empty(r.get("big5_do")))
-                if desc and desc[:1].islower():
-                    desc = desc[:1].upper() + desc[1:]
-                desc = _ensure_sentence_end(desc) if desc else ""
+                desc = _to_audience_text(_text_or_empty(r.get("big5_do")))
                 avoid = _text_or_empty(r.get("big5_avoid"))
-                lines.append(f"- Target audience: {trait} ({level}) personality (Big Five).")
+                lines.append(f"Target audience Big Five: {trait} ({level}).")
                 if desc:
-                    lines.append(f"  Known personality: {desc}")
+                    lines.append(desc)
                 if avoid:
-                    lines.append(f"  Avoid: {avoid}")
-        lines.append("Do not mention Big Five explicitly.")
+                    lines.append(_to_audience_negative_text(avoid))
+            else:
+                lines.append("Target audience Big Five:")
+                for r in rows:
+                    trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+                    level = _text_or_empty(r.get("big5_level")) or "Level"
+                    desc = _to_audience_text(_text_or_empty(r.get("big5_do")))
+                    avoid = _text_or_empty(r.get("big5_avoid"))
+                    lines.append(f"- {trait} ({level})")
+                    if desc:
+                        lines.append(f"  {desc}")
+                    if avoid:
+                        lines.append(f"  {_to_audience_negative_text(avoid)}")
         return "\n".join(lines)
 
     if style == "legacy":
@@ -670,32 +725,38 @@ def build_big5_block(rows, plan: str, style: str = "legacy") -> str:
             desc = _text_or_empty(r.get("big5_do"))
             avoid = _text_or_empty(r.get("big5_avoid"))
             if desc:
-                lines.append(f"- {trait} ({level}): {desc}")
+                lines.append(f"- {trait} ({level}): the picture tends to be {desc}")
             else:
                 lines.append(f"- {trait} ({level})")
             if avoid:
-                lines.append(f"  Avoid: {avoid}")
+                lines.append(f"  This picture does not tend to be: {avoid}")
     else:
         lines = [
-            "[Persona Instruction]",
-            "This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.",
+            "[Target Audience Persona Instruction]",
         ]
-        for r in rows:
+        if len(rows) == 1:
+            r = rows[0]
             trait = _text_or_empty(r.get("big5_trait")) or "Trait"
             level = _text_or_empty(r.get("big5_level")) or "Level"
-            desc = _strip_as_a_picture(_text_or_empty(r.get("big5_do")))
-            if desc and desc[:1].islower():
-                desc = desc[:1].upper() + desc[1:]
-            desc = _ensure_sentence_end(desc) if desc else ""
+            desc = _to_audience_text(_text_or_empty(r.get("big5_do")))
             avoid = _text_or_empty(r.get("big5_avoid"))
-            lines.append(f"Target audience: {trait} ({level}) personality (Big Five).")
+            lines.append(f"Target audience Big Five: {trait} ({level}).")
             if desc:
-                lines.append(f"Known personality: {desc}")
+                lines.append(desc)
             if avoid:
-                lines.append(f"Avoid: {avoid}")
-    lines.append("Important:")
-    lines.append("- This affects tone only; do not invent or alter product facts.")
-    lines.append("- Do not mention the Big Five or psychology terms unless requested.")
+                lines.append(_to_audience_negative_text(avoid))
+        else:
+            lines.append("Target audience Big Five:")
+            for r in rows:
+                trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+                level = _text_or_empty(r.get("big5_level")) or "Level"
+                desc = _to_audience_text(_text_or_empty(r.get("big5_do")))
+                avoid = _text_or_empty(r.get("big5_avoid"))
+                lines.append(f"- {trait} ({level})")
+                if desc:
+                    lines.append(f"  {desc}")
+                if avoid:
+                    lines.append(f"  {_to_audience_negative_text(avoid)}")
     return "\n".join(lines)
 
 
@@ -756,6 +817,9 @@ def build_schwartz_block(row: pd.Series, style: str = "legacy") -> str:
     if not value_type or not value_do:
         return ""
     value_do = _ensure_sentence_end(value_do)
+    value_do_clean = value_do.rstrip()
+    if value_do_clean.endswith((".", "!", "?")):
+        value_do_clean = value_do_clean[:-1].rstrip()
     style = (style or "legacy").lower()
     if style not in ("legacy", "target"):
         style = "legacy"
@@ -763,13 +827,13 @@ def build_schwartz_block(row: pd.Series, style: str = "legacy") -> str:
     if style == "legacy":
         lines.extend([
             "For this ad picture:",
-            f"You prioritize the value of {value_type} above all other values, which signifies {value_do}",
+            f"This picture tends to prioritize the value of {value_type} above all other values, which signifies {value_do}",
         ])
     else:
         lines.extend([
             "For this ad picture:",
             f"Target audience: people who prioritize {value_type} (Schwartz value).",
-            f"Known value orientation: {value_do}",
+            f"This audience tends to be: {value_do_clean}.",
         ])
     return "\n".join(lines)
 
@@ -803,10 +867,30 @@ def build_system_prompt(category: str, triad_map: dict, style_desc_map: dict) ->
     for s in styles:
         desc = style_desc_map.get(s)
         if desc: items.append(f"- {s} — {desc}")
-    if not items:
-        return (BASE + "\n\n" + TAIL).strip()
-    return (BASE + "\n\n" + "Choose ONE background style by product type:\n" +
-            "\n".join(items) + "\n" + TAIL).strip()
+    parts = [BASE_HEAD]
+    if items:
+        parts.append("Choose ONE background style by product type:\n" + "\n".join(items))
+    parts.append(TASK_LINE)
+    parts.append(TAIL)
+    return "\n\n".join(parts).strip()
+
+def build_system_prompt_inline(category: str, triad_map: dict, style_desc_map: dict,
+                               persona_block: str, persona_important: str = "") -> str:
+    styles = triad_map.get(category, []) or []
+    items = []
+    for s in styles:
+        desc = style_desc_map.get(s)
+        if desc: items.append(f"- {s} — {desc}")
+    parts = [BASE_HEAD]
+    if items:
+        parts.append("Choose ONE background style by product type:\n" + "\n".join(items))
+    if persona_block:
+        parts.append(persona_block.strip())
+    if persona_important:
+        parts.append(persona_important.strip())
+    parts.append(TASK_LINE)
+    parts.append(TAIL)
+    return "\n\n".join(parts).strip()
 
 # ======== Progress & stats ========
 def _fmt_eta(done, total, start_ts):
@@ -1027,9 +1111,12 @@ def main():
         elif schwartz_enabled:
             persona_instruction = schwartz_block
             persona_mode_current = schwartz_mode
+        persona_important = BIG5_IMPORTANT_NOTE if big5_enabled else ""
         sys_prompt_inline = sys_prompt
         if persona_instruction and persona_mode_current == "inline":
-            sys_prompt_inline = (sys_prompt + "\n\n" + persona_instruction).strip()
+            sys_prompt_inline = build_system_prompt_inline(
+                cat, triad, sdesc, persona_instruction, persona_important
+            )
         triad_hit = ("Choose ONE background style by product type:" in sys_prompt)
 
         if idx % PRINT_EVERY == 0:
@@ -1067,6 +1154,8 @@ def main():
         if persona_instruction and persona_mode_current:
             if persona_mode_current == "concat":
                 combined = (one_line.strip() + "\n\n" + persona_instruction).strip()
+                if persona_important:
+                    combined = (combined + "\n\n" + persona_important).strip()
                 one_line = combined or one_line
                 if mbti_enabled:
                     cnt_mbti_attached += 1

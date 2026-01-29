@@ -6,11 +6,12 @@
 - 本文聚焦：背景 prompt 的来源 + Big Five / Schwartz persona 的拼接方式。
 
 ## 1. 发送给 Ollama 的 system prompt 是怎么构成的
-### 1.1 Base + Tail（固定模板）
+### 1.1 Base / Task / Tail（固定模板）
 ```text
 You are an art director for product photography and image editing.
 
 INPUTS: one product PHOTO.
+
 TASK: Return EXACTLY FOUR English sentence that describes the environment/background AROUND the product, while keeping the product itself unchanged and fully visible. Avoid generic phrases like "on a clean white background".
 
 Use cinematic lighting, depth, and realistic shadows. Include 3-8 tasteful props only when appropriate, and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter. English only, ending with "4k".
@@ -29,8 +30,8 @@ Choose ONE background style by product type:
 ```
 
 ### 1.3 Persona 叠加方式（inline / concat）
-- inline：把 persona 指令拼到 system prompt 里，Ollama 直接看到 persona。
-- concat：Ollama 只看到 Base/Triad/Tail，模型生成的一行 prompt 之后再拼 persona 文本。
+- inline：persona 插入到 system prompt 中（位置在 TASK 之前）。
+- concat：Ollama 只看到 Base/Triad/Task/Tail，模型输出后再拼 persona 文本。
 
 ### 1.4 Ollama 请求形态（`create_categorical_prompts.py`）
 ```json
@@ -51,7 +52,7 @@ A premium studio scene with textured materials and controlled highlights, realis
 
 ## 2. Big Five persona prompt（两种模式都保留）
 - legacy 模式：沿用原始文本（默认）。参数：`--big5-persona-style legacy`
-- target 模式：新增 Target audience + Known personality 文本。参数：`--big5-persona-style target`
+- target 模式：新增 Target Audience Persona Instruction 文本。参数：`--big5-persona-style target`
 
 ### 2.1 Legacy 模式模板（`--big5-persona-style legacy`）
 Plan A: 
@@ -59,11 +60,14 @@ Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- {Trait} ({Level}): {big5_do}
-  Avoid: {big5_avoid}
+- {Trait} ({Level}): the picture tends to be {big5_do}
+  This picture does not tend to be: {big5_avoid}
+```
+
+(Important note - separate block)
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Plan B:
@@ -71,23 +75,24 @@ Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- {Trait} ({Level}): {big5_do}
-Avoid:
+- {Trait} ({Level}): the picture tends to be {big5_do}
+This picture does not tend to be:
 - {big5_avoid}
-Do not mention Big Five explicitly.
 ```
 
 ### 2.2 Target 模式模板（`--big5-persona-style target`）
 Plan A: 
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: {Trait} ({Level}) personality (Big Five).
-Known personality: {big5_do_without_as_a_picture}
-Avoid: {big5_avoid}
+[Target Audience Persona Instruction]
+Target audience Big Five: {Trait} ({Level}).
+{big5_do_as_audience}
+{big5_avoid_as_audience}
+```
+
+(Important note - separate block)
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Plan B:
@@ -95,10 +100,9 @@ Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: {Trait} ({Level}) personality (Big Five).
-  Known personality: {big5_do_without_as_a_picture}
-  Avoid: {big5_avoid}
-Do not mention Big Five explicitly.
+Target audience Big Five: {Trait} ({Level}).
+{big5_do_as_audience}
+{big5_avoid_as_audience}
 ```
 
 ### 2.3 Big Five 各类型的实际文本（Legacy + Target）
@@ -108,11 +112,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Openness (High): The image should feel imaginative, artistic, emotionally expressive, adventurous, intellectually curious, and open to new experiences.
-  Avoid: Avoid a closed, timid, conservative, or risk-averse mood; avoid a comfort-zone-only, low-imagination vibe.
+- Openness (High): the picture tends to be vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+  This picture does not tend to be: closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -120,22 +127,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Openness (High): The image should feel imaginative, artistic, emotionally expressive, adventurous, intellectually curious, and open to new experiences.
-Avoid:
-- Avoid a closed, timid, conservative, or risk-averse mood; avoid a comfort-zone-only, low-imagination vibe.
-Do not mention Big Five explicitly.
+- Openness (High): the picture tends to be vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+This picture does not tend to be:
+- closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Openness (High) personality (Big Five).
-Known personality: The image should feel imaginative, artistic, emotionally expressive, adventurous, intellectually curious, and open to new experiences.
-Avoid: Avoid a closed, timid, conservative, or risk-averse mood; avoid a comfort-zone-only, low-imagination vibe.
+[Target Audience Persona Instruction]
+Target audience Big Five: Openness (High).
+This audience tends to be: vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+This audience does not tend to be: closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -143,10 +151,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Openness (High) personality (Big Five).
-  Known personality: The image should feel imaginative, artistic, emotionally expressive, adventurous, intellectually curious, and open to new experiences.
-  Avoid: Avoid a closed, timid, conservative, or risk-averse mood; avoid a comfort-zone-only, low-imagination vibe.
-Do not mention Big Five explicitly.
+Target audience Big Five: Openness (High).
+This audience tends to be: vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+This audience does not tend to be: closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
 ```
 
 #### Openness / Low
@@ -155,11 +162,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Openness (Low): The image should feel calm, restrained, traditional, and comfort-zone oriented, with low emphasis on novelty or experimentation.
-  Avoid: Avoid an adventurous, highly imaginative, liberal, or highly expressive mood.
+- Openness (Low): the picture tends to be closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+  This picture does not tend to be: vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -167,22 +177,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Openness (Low): The image should feel calm, restrained, traditional, and comfort-zone oriented, with low emphasis on novelty or experimentation.
-Avoid:
-- Avoid an adventurous, highly imaginative, liberal, or highly expressive mood.
-Do not mention Big Five explicitly.
+- Openness (Low): the picture tends to be closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+This picture does not tend to be:
+- vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Openness (Low) personality (Big Five).
-Known personality: The image should feel calm, restrained, traditional, and comfort-zone oriented, with low emphasis on novelty or experimentation.
-Avoid: Avoid an adventurous, highly imaginative, liberal, or highly expressive mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Openness (Low).
+This audience tends to be: closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+This audience does not tend to be: vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -190,10 +201,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Openness (Low) personality (Big Five).
-  Known personality: The image should feel calm, restrained, traditional, and comfort-zone oriented, with low emphasis on novelty or experimentation.
-  Avoid: Avoid an adventurous, highly imaginative, liberal, or highly expressive mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Openness (Low).
+This audience tends to be: closed-off, low in imagination, little artistic interest, stoic, timid, less intellectually curious, conservative, risk-averse, comfort-zone oriented, avoids attention
+This audience does not tend to be: vivid imagination, artistic, emotionally expressive, adventurous, intellectually curious, liberal-minded, novelty-seeking, open to new experiences, self-expressive
 ```
 
 #### Conscientiousness / High
@@ -202,11 +212,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Conscientiousness (High): The image should feel organized, deliberate, disciplined, and achievement-oriented, with a sense of order and careful control.
-  Avoid: Avoid a careless, disorganized, reckless, or unplanned mood.
+- Conscientiousness (High): the picture tends to be self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+  This picture does not tend to be: self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -214,22 +227,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Conscientiousness (High): The image should feel organized, deliberate, disciplined, and achievement-oriented, with a sense of order and careful control.
-Avoid:
-- Avoid a careless, disorganized, reckless, or unplanned mood.
-Do not mention Big Five explicitly.
+- Conscientiousness (High): the picture tends to be self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+This picture does not tend to be:
+- self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Conscientiousness (High) personality (Big Five).
-Known personality: The image should feel organized, deliberate, disciplined, and achievement-oriented, with a sense of order and careful control.
-Avoid: Avoid a careless, disorganized, reckless, or unplanned mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Conscientiousness (High).
+This audience tends to be: self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+This audience does not tend to be: self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -237,10 +251,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Conscientiousness (High) personality (Big Five).
-  Known personality: The image should feel organized, deliberate, disciplined, and achievement-oriented, with a sense of order and careful control.
-  Avoid: Avoid a careless, disorganized, reckless, or unplanned mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Conscientiousness (High).
+This audience tends to be: self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+This audience does not tend to be: self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
 ```
 
 #### Conscientiousness / Low
@@ -249,11 +262,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Conscientiousness (Low): The image should feel casual, spontaneous, and unstructured, with low emphasis on discipline or long-term planning.
-  Avoid: Avoid a highly organized, dutiful, or perfectionistic mood.
+- Conscientiousness (Low): the picture tends to be self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+  This picture does not tend to be: self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -261,22 +277,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Conscientiousness (Low): The image should feel casual, spontaneous, and unstructured, with low emphasis on discipline or long-term planning.
-Avoid:
-- Avoid a highly organized, dutiful, or perfectionistic mood.
-Do not mention Big Five explicitly.
+- Conscientiousness (Low): the picture tends to be self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+This picture does not tend to be:
+- self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Conscientiousness (Low) personality (Big Five).
-Known personality: The image should feel casual, spontaneous, and unstructured, with low emphasis on discipline or long-term planning.
-Avoid: Avoid a highly organized, dutiful, or perfectionistic mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Conscientiousness (Low).
+This audience tends to be: self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+This audience does not tend to be: self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -284,10 +301,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Conscientiousness (Low) personality (Big Five).
-  Known personality: The image should feel casual, spontaneous, and unstructured, with low emphasis on discipline or long-term planning.
-  Avoid: Avoid a highly organized, dutiful, or perfectionistic mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Conscientiousness (Low).
+This audience tends to be: self-doubting, disorderly, careless, low ambition, low self-control, reckless, irresponsible, present-focused, disorganized, inattentive
+This audience does not tend to be: self-efficacious, orderly, dutiful, achievement-striving, self-disciplined, cautious, organized, methodical, responsible, future-conscious
 ```
 
 #### Extraversion / High
@@ -296,11 +312,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Extraversion (High): The image should feel energetic, sociable, lively, and optimistic, suggesting high activity and confidence.
-  Avoid: Avoid a withdrawn, quiet, solitary, or subdued mood.
+- Extraversion (High): the picture tends to be friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+  This picture does not tend to be: reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -308,22 +327,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Extraversion (High): The image should feel energetic, sociable, lively, and optimistic, suggesting high activity and confidence.
-Avoid:
-- Avoid a withdrawn, quiet, solitary, or subdued mood.
-Do not mention Big Five explicitly.
+- Extraversion (High): the picture tends to be friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+This picture does not tend to be:
+- reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Extraversion (High) personality (Big Five).
-Known personality: The image should feel energetic, sociable, lively, and optimistic, suggesting high activity and confidence.
-Avoid: Avoid a withdrawn, quiet, solitary, or subdued mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Extraversion (High).
+This audience tends to be: friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+This audience does not tend to be: reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -331,10 +351,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Extraversion (High) personality (Big Five).
-  Known personality: The image should feel energetic, sociable, lively, and optimistic, suggesting high activity and confidence.
-  Avoid: Avoid a withdrawn, quiet, solitary, or subdued mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Extraversion (High).
+This audience tends to be: friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+This audience does not tend to be: reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
 ```
 
 #### Extraversion / Low
@@ -343,11 +362,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Extraversion (Low): The image should feel calm, private, reserved, and low-stimulation, suggesting quiet confidence rather than attention-seeking.
-  Avoid: Avoid a loud, highly social, or constantly active mood.
+- Extraversion (Low): the picture tends to be reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+  This picture does not tend to be: friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -355,22 +377,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Extraversion (Low): The image should feel calm, private, reserved, and low-stimulation, suggesting quiet confidence rather than attention-seeking.
-Avoid:
-- Avoid a loud, highly social, or constantly active mood.
-Do not mention Big Five explicitly.
+- Extraversion (Low): the picture tends to be reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+This picture does not tend to be:
+- friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Extraversion (Low) personality (Big Five).
-Known personality: The image should feel calm, private, reserved, and low-stimulation, suggesting quiet confidence rather than attention-seeking.
-Avoid: Avoid a loud, highly social, or constantly active mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Extraversion (Low).
+This audience tends to be: reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+This audience does not tend to be: friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -378,10 +401,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Extraversion (Low) personality (Big Five).
-  Known personality: The image should feel calm, private, reserved, and low-stimulation, suggesting quiet confidence rather than attention-seeking.
-  Avoid: Avoid a loud, highly social, or constantly active mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Extraversion (Low).
+This audience tends to be: reserved, solitary, submissive, passive, calm, serious-minded, low-activity, avoids attention, unhurried, content alone
+This audience does not tend to be: friendly, gregarious, assertive, confident, high-energy, excitement-seeking, cheerful, optimistic, outgoing, socially engaged
 ```
 
 #### Agreeableness / High
@@ -390,11 +412,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Agreeableness (High): The image should feel warm, cooperative, gentle, and compassionate, emphasizing trust and harmony.
-  Avoid: Avoid a competitive, harsh, cynical, or self-centered mood.
+- Agreeableness (High): the picture tends to be trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+  This picture does not tend to be: distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -402,22 +427,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Agreeableness (High): The image should feel warm, cooperative, gentle, and compassionate, emphasizing trust and harmony.
-Avoid:
-- Avoid a competitive, harsh, cynical, or self-centered mood.
-Do not mention Big Five explicitly.
+- Agreeableness (High): the picture tends to be trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+This picture does not tend to be:
+- distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Agreeableness (High) personality (Big Five).
-Known personality: The image should feel warm, cooperative, gentle, and compassionate, emphasizing trust and harmony.
-Avoid: Avoid a competitive, harsh, cynical, or self-centered mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Agreeableness (High).
+This audience tends to be: trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+This audience does not tend to be: distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -425,10 +451,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Agreeableness (High) personality (Big Five).
-  Known personality: The image should feel warm, cooperative, gentle, and compassionate, emphasizing trust and harmony.
-  Avoid: Avoid a competitive, harsh, cynical, or self-centered mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Agreeableness (High).
+This audience tends to be: trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+This audience does not tend to be: distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
 ```
 
 #### Agreeableness / Low
@@ -437,11 +462,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Agreeableness (Low): The image should feel bold, competitive, and self-directed, with less emphasis on harmony or deference.
-  Avoid: Avoid a soft, overly accommodating, or highly altruistic mood.
+- Agreeableness (Low): the picture tends to be distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+  This picture does not tend to be: trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -449,22 +477,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Agreeableness (Low): The image should feel bold, competitive, and self-directed, with less emphasis on harmony or deference.
-Avoid:
-- Avoid a soft, overly accommodating, or highly altruistic mood.
-Do not mention Big Five explicitly.
+- Agreeableness (Low): the picture tends to be distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+This picture does not tend to be:
+- trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Agreeableness (Low) personality (Big Five).
-Known personality: The image should feel bold, competitive, and self-directed, with less emphasis on harmony or deference.
-Avoid: Avoid a soft, overly accommodating, or highly altruistic mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Agreeableness (Low).
+This audience tends to be: distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+This audience does not tend to be: trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -472,10 +501,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Agreeableness (Low) personality (Big Five).
-  Known personality: The image should feel bold, competitive, and self-directed, with less emphasis on harmony or deference.
-  Avoid: Avoid a soft, overly accommodating, or highly altruistic mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Agreeableness (Low).
+This audience tends to be: distrustful, immoral, selfish, competitive, arrogant, apathetic, self-serving, exploitative, insensitive, one-upmanship
+This audience does not tend to be: trusting, moral, altruistic, cooperative, modest, sympathetic, generous, humble, good listener, team-oriented, compassionate
 ```
 
 #### Neuroticism / High
@@ -484,11 +512,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Neuroticism (High): The image should feel tense, uneasy, and emotionally intense, with a sense of vulnerability or apprehension.
-  Avoid: Avoid a calm, steady, or highly relaxed mood.
+- Neuroticism (High): the picture tends to be anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+  This picture does not tend to be: calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -496,22 +527,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Neuroticism (High): The image should feel tense, uneasy, and emotionally intense, with a sense of vulnerability or apprehension.
-Avoid:
-- Avoid a calm, steady, or highly relaxed mood.
-Do not mention Big Five explicitly.
+- Neuroticism (High): the picture tends to be anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+This picture does not tend to be:
+- calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Neuroticism (High) personality (Big Five).
-Known personality: The image should feel tense, uneasy, and emotionally intense, with a sense of vulnerability or apprehension.
-Avoid: Avoid a calm, steady, or highly relaxed mood.
+[Target Audience Persona Instruction]
+Target audience Big Five: Neuroticism (High).
+This audience tends to be: anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+This audience does not tend to be: calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -519,10 +551,9 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Neuroticism (High) personality (Big Five).
-  Known personality: The image should feel tense, uneasy, and emotionally intense, with a sense of vulnerability or apprehension.
-  Avoid: Avoid a calm, steady, or highly relaxed mood.
-Do not mention Big Five explicitly.
+Target audience Big Five: Neuroticism (High).
+This audience tends to be: anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+This audience does not tend to be: calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable
 ```
 
 #### Neuroticism / Low
@@ -531,11 +562,14 @@ Legacy / Plan A:
 [Persona Instruction]
 Use the communication style of this Big Five profile. Reflect it in tone and descriptive emphasis only; keep product facts intact.
 Traits:
-- Neuroticism (Low): The image should feel calm, stable, and emotionally balanced, conveying security and resilience.
-  Avoid: Avoid anxious, volatile, or distressed moods.
+- Neuroticism (Low): the picture tends to be calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable, even-keeled
+  This picture does not tend to be: anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Legacy / Plan B:
@@ -543,22 +577,23 @@ Legacy / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Neuroticism (Low): The image should feel calm, stable, and emotionally balanced, conveying security and resilience.
-Avoid:
-- Avoid anxious, volatile, or distressed moods.
-Do not mention Big Five explicitly.
+- Neuroticism (Low): the picture tends to be calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable, even-keeled
+This picture does not tend to be:
+- anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
 ```
 
 Target / Plan A:
 ```text
-[Persona Instruction]
-This image targets the following Big Five audience. Reflect it in tone and descriptive emphasis only; keep product facts intact.
-Target audience: Neuroticism (Low) personality (Big Five).
-Known personality: The image should feel calm, stable, and emotionally balanced, conveying security and resilience.
-Avoid: Avoid anxious, volatile, or distressed moods.
+[Target Audience Persona Instruction]
+Target audience Big Five: Neuroticism (Low).
+This audience tends to be: calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable, even-keeled
+This audience does not tend to be: anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
+```
+
+Important (separate):
+```text
 Important:
 - This affects tone only; do not invent or alter product facts.
-- Do not mention the Big Five or psychology terms unless requested.
 ```
 
 Target / Plan B:
@@ -566,15 +601,14 @@ Target / Plan B:
 [Tone Hints]
 Blend these Big Five cues into tone and word choice; keep product facts unchanged.
 Focus on:
-- Target audience: Neuroticism (Low) personality (Big Five).
-  Known personality: The image should feel calm, stable, and emotionally balanced, conveying security and resilience.
-  Avoid: Avoid anxious, volatile, or distressed moods.
-Do not mention Big Five explicitly.
+Target audience Big Five: Neuroticism (Low).
+This audience tends to be: calm, content, self-assured, moderate, resilient, steady, emotionally stable, relaxed, even-keeled, unflappable, even-keeled
+This audience does not tend to be: anxious, on-edge, worry-prone, irritable, easily angered, depressed, self-conscious, overwhelmed, vulnerable, emotionally volatile
 ```
 
 ## 3. Schwartz Value persona prompt（两种模式都保留）
 - legacy 模式：原始 'You prioritize...' 文本（默认）。参数：`--schwartz-persona-style legacy`
-- target 模式：新增 Target audience + Known value orientation 文本。参数：`--schwartz-persona-style target`
+- target 模式：新增 Target audience + This audience tends to be 文本。参数：`--schwartz-persona-style target`
 
 ### 3.1 固定参考行（每个 Schwartz 值都会包含）
 ```text
@@ -605,7 +639,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of {value_type} above all other values, which signifies {schwartz_value_do}
+This picture tends to prioritize the value of {value_type} above all other values, which signifies {schwartz_value_do}
 ```
 
 ### 3.3 Target 模板（`--schwartz-persona-style target`）
@@ -623,7 +657,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize {value_type} (Schwartz value).
-Known value orientation: {schwartz_value_do}
+This audience tends to be: {schwartz_value_do}
 ```
 
 ### 3.4 各 Schwartz 值的实际文本（Legacy + Target）
@@ -642,7 +676,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Universalism above all other values, which signifies Promoting justice, equality, and environmental protection. Refers to understanding, appreciating, tolerating, and protecting the welfare of all people and nature. For example: social justice, broad-mindedness, world peace, wisdom, a world of beauty, unity with nature, environmental protection, fairness.
+This picture tends to prioritize the value of Universalism above all other values, which signifies Promoting justice, equality, and environmental protection. Refers to understanding, appreciating, tolerating, and protecting the welfare of all people and nature. For example: social justice, broad-mindedness, world peace, wisdom, a world of beauty, unity with nature, environmental protection, fairness.
 ```
 
 Target:
@@ -660,7 +694,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Universalism (Schwartz value).
-Known value orientation: Promoting justice, equality, and environmental protection. Refers to understanding, appreciating, tolerating, and protecting the welfare of all people and nature. For example: social justice, broad-mindedness, world peace, wisdom, a world of beauty, unity with nature, environmental protection, fairness.
+This audience tends to be: Promoting justice, equality, and environmental protection. Refers to understanding, appreciating, tolerating, and protecting the welfare of all people and nature. For example: social justice, broad-mindedness, world peace, wisdom, a world of beauty, unity with nature, environmental protection, fairness.
 ```
 
 #### Benevolence
@@ -678,7 +712,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Benevolence above all other values, which signifies Prioritizing close social relationships and the welfare of others.
+This picture tends to prioritize the value of Benevolence above all other values, which signifies Prioritizing close social relationships and the welfare of others.
 ```
 
 Target:
@@ -696,7 +730,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Benevolence (Schwartz value).
-Known value orientation: Prioritizing close social relationships and the welfare of others.
+This audience tends to be: Prioritizing close social relationships and the welfare of others.
 ```
 
 #### Power
@@ -714,7 +748,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Power above all other values, which signifies Seeking dominance, control, and prestige.  Refers to social status and prestige, control or dominance over people and resources.
+This picture tends to prioritize the value of Power above all other values, which signifies Seeking dominance, control, and prestige.  Refers to social status and prestige, control or dominance over people and resources.
 ```
 
 Target:
@@ -732,7 +766,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Power (Schwartz value).
-Known value orientation: Seeking dominance, control, and prestige.  Refers to social status and prestige, control or dominance over people and resources.
+This audience tends to be: Seeking dominance, control, and prestige.  Refers to social status and prestige, control or dominance over people and resources.
 ```
 
 #### Achievement
@@ -750,7 +784,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Achievement above all other values, which signifies Striving for personal success through competence.  Refers to personal success achieved through demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.
+This picture tends to prioritize the value of Achievement above all other values, which signifies Striving for personal success through competence.  Refers to personal success achieved through demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.
 ```
 
 Target:
@@ -768,7 +802,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Achievement (Schwartz value).
-Known value orientation: Striving for personal success through competence.  Refers to personal success achieved through demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.
+This audience tends to be: Striving for personal success through competence.  Refers to personal success achieved through demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.
 ```
 
 #### Tradition
@@ -786,7 +820,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Tradition above all other values, which signifies Respecting and preserving cultural and religious heritage.  Refers to respect, commitment, and acceptance of the customs and ideas provided by one's culture or religion. For example: accepting my portion in life, devotion, respect for tradition, humbleness, moderation.
+This picture tends to prioritize the value of Tradition above all other values, which signifies Respecting and preserving cultural and religious heritage.  Refers to respect, commitment, and acceptance of the customs and ideas provided by one's culture or religion. For example: accepting my portion in life, devotion, respect for tradition, humbleness, moderation.
 ```
 
 Target:
@@ -804,7 +838,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Tradition (Schwartz value).
-Known value orientation: Respecting and preserving cultural and religious heritage.  Refers to respect, commitment, and acceptance of the customs and ideas provided by one's culture or religion. For example: accepting my portion in life, devotion, respect for tradition, humbleness, moderation.
+This audience tends to be: Respecting and preserving cultural and religious heritage.  Refers to respect, commitment, and acceptance of the customs and ideas provided by one's culture or religion. For example: accepting my portion in life, devotion, respect for tradition, humbleness, moderation.
 ```
 
 #### Conformity
@@ -822,7 +856,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Conformity above all other values, which signifies Restricting actions that might disrupt social harmony.  Refers to the restraint of actions, inclinations, and impulses that may upset or harm others and violate social expectations or norms. For example: obedient, self-disciplined, polite, honoring parents and elders.
+This picture tends to prioritize the value of Conformity above all other values, which signifies Restricting actions that might disrupt social harmony.  Refers to the restraint of actions, inclinations, and impulses that may upset or harm others and violate social expectations or norms. For example: obedient, self-disciplined, polite, honoring parents and elders.
 ```
 
 Target:
@@ -840,7 +874,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Conformity (Schwartz value).
-Known value orientation: Restricting actions that might disrupt social harmony.  Refers to the restraint of actions, inclinations, and impulses that may upset or harm others and violate social expectations or norms. For example: obedient, self-disciplined, polite, honoring parents and elders.
+This audience tends to be: Restricting actions that might disrupt social harmony.  Refers to the restraint of actions, inclinations, and impulses that may upset or harm others and violate social expectations or norms. For example: obedient, self-disciplined, polite, honoring parents and elders.
 ```
 
 #### Security
@@ -858,7 +892,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Security above all other values, which signifies Seeking safety, stability, and social order.  Refers to the safety, harmony, and stability of society, relationships, and self. For example: family security, national security, social order, cleanliness, reciprocation of favors.
+This picture tends to prioritize the value of Security above all other values, which signifies Seeking safety, stability, and social order.  Refers to the safety, harmony, and stability of society, relationships, and self. For example: family security, national security, social order, cleanliness, reciprocation of favors.
 ```
 
 Target:
@@ -876,7 +910,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Security (Schwartz value).
-Known value orientation: Seeking safety, stability, and social order.  Refers to the safety, harmony, and stability of society, relationships, and self. For example: family security, national security, social order, cleanliness, reciprocation of favors.
+This audience tends to be: Seeking safety, stability, and social order.  Refers to the safety, harmony, and stability of society, relationships, and self. For example: family security, national security, social order, cleanliness, reciprocation of favors.
 ```
 
 #### Self-Direction
@@ -894,7 +928,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Self-Direction above all other values, which signifies Valuing autonomy in thought and decision-making.  Refers to independent thought and action-choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.
+This picture tends to prioritize the value of Self-Direction above all other values, which signifies Valuing autonomy in thought and decision-making.  Refers to independent thought and action-choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.
 ```
 
 Target:
@@ -912,7 +946,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Self-Direction (Schwartz value).
-Known value orientation: Valuing autonomy in thought and decision-making.  Refers to independent thought and action-choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.
+This audience tends to be: Valuing autonomy in thought and decision-making.  Refers to independent thought and action-choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.
 ```
 
 #### Stimulation
@@ -930,7 +964,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Stimulation above all other values, which signifies Seeking excitement, novelty, and challenges.  Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
+This picture tends to prioritize the value of Stimulation above all other values, which signifies Seeking excitement, novelty, and challenges.  Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 ```
 
 Target:
@@ -948,7 +982,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Stimulation (Schwartz value).
-Known value orientation: Seeking excitement, novelty, and challenges.  Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
+This audience tends to be: Seeking excitement, novelty, and challenges.  Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 ```
 
 #### Hedonism
@@ -966,7 +1000,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
-You prioritize the value of Hedonism above all other values, which signifies Seeking pleasure, enjoyment, and the pursuit of personal.  Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
+This picture tends to prioritize the value of Hedonism above all other values, which signifies Seeking pleasure, enjoyment, and the pursuit of personal.  Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 ```
 
 Target:
@@ -984,7 +1018,7 @@ Picture Value: Ten basic values of Schwartz's theory:
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 For this ad picture:
 Target audience: people who prioritize Hedonism (Schwartz value).
-Known value orientation: Seeking pleasure, enjoyment, and the pursuit of personal.  Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
+This audience tends to be: Seeking pleasure, enjoyment, and the pursuit of personal.  Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
 ```
 
 ## 4. 可复现性 / 随机数种子检查
