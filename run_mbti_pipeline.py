@@ -242,6 +242,8 @@ def process_mbti_type(mbti: str,
             "--mbti-profiles", args.mbti_profiles,
             "--mbti-type", mbti,
             "--mbti-mode", args.mbti_mode,
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -336,6 +338,10 @@ def main():
                         help="persona 拼接模式（create_categorical_prompts.py 对应参数）。")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="用于生成背景 prompt 的模型规格。")
+    parser.add_argument("--style-constraints", choices=["on", "off"], default="on",
+                        help="是否保留风格约束尾巴（默认 on）。")
+    parser.add_argument("--end-with-4k", choices=["on", "off"], default="on",
+                        help="是否要求 prompt 以 \"4k\" 结尾（默认 on）。")
     parser.add_argument("--disable-triad", dest="disable_triad", action="store_true",
                         default=True, help="禁用 triad（默认开启）。")
     parser.add_argument("--enable-triad", dest="disable_triad", action="store_false",

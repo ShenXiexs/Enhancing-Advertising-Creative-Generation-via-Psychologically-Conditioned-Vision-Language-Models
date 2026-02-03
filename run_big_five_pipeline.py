@@ -144,7 +144,8 @@ def ensure_create_prompts_supports_big5(python_exe: str) -> None:
             "无法执行 create_categorical_prompts.py 以检查参数支持，"
             f"请确认文件存在且可运行：{REPO_ROOT / 'create_categorical_prompts.py'}"
         )
-    required_flags = ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode")
+    required_flags = ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode",
+                      "--style-constraints", "--end-with-4k")
     if not all(flag in help_text for flag in required_flags):
         raise RuntimeError(
             "当前目录下的 create_categorical_prompts.py 版本过旧（仅支持 MBTI），"
@@ -335,6 +336,8 @@ def process_big5_profile(profile: dict,
             "--big5-types", profile["tokens"],
             "--big5-mode", args.big5_mode,
             "--big5-persona-style", args.big5_persona_style,
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -399,6 +402,10 @@ def main():
                         help="Big Five persona 文案模式：legacy=原始 As a picture；target=目标人群描述。")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="用于生成背景 prompt 的模型规格。")
+    parser.add_argument("--style-constraints", choices=["on", "off"], default="on",
+                        help="是否保留风格约束尾巴（默认 on）。")
+    parser.add_argument("--end-with-4k", choices=["on", "off"], default="on",
+                        help="是否要求 prompt 以 \"4k\" 结尾（默认 on）。")
     parser.add_argument("--disable-triad", dest="disable_triad", action="store_true",
                         default=True, help="禁用 triad（默认开启）。")
     parser.add_argument("--enable-triad", dest="disable_triad", action="store_false",

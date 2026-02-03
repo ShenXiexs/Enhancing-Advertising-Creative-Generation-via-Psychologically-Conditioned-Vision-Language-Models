@@ -220,6 +220,8 @@ def process_big5_profile(profile: dict, args, seed: int) -> dict:
             "--big5-types", profile["tokens"],
             "--big5-mode", args.persona_mode,
             "--big5-persona-style", args.big5_persona_style,
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -268,6 +270,8 @@ def process_schwartz_value(value_type: str, args, seed: int) -> dict:
             "--schwartz-type", value_type,
             "--schwartz-mode", args.persona_mode,
             "--schwartz-persona-style", args.schwartz_persona_style,
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -310,6 +314,8 @@ def process_no_persona(args, seed: int) -> dict:
             sys.executable, "create_categorical_prompts.py",
             "--model", args.prompt_model,
             "--persona-kind", "none",
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -349,6 +355,10 @@ def main():
                         help="Model size for Step1 title generation.")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="Model size for prompt generation.")
+    parser.add_argument("--style-constraints", choices=["on", "off"], default="on",
+                        help="Include style constraint tail in prompts (default: on).")
+    parser.add_argument("--end-with-4k", choices=["on", "off"], default="on",
+                        help="Require prompts to end with \"4k\" (default: on).")
     parser.add_argument("--seed", type=int, default=125,
                         help="Global random seed.")
     parser.add_argument("--persona-mode", choices=["concat", "inline"], default="inline",
@@ -409,7 +419,8 @@ def main():
 
     ensure_create_prompts_supports(
         sys.executable,
-        ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode", "--schwartz-type", "--schwartz-mode"),
+        ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode", "--schwartz-type", "--schwartz-mode",
+         "--style-constraints", "--end-with-4k"),
     )
 
     step1_path = Path(args.step1_csv)

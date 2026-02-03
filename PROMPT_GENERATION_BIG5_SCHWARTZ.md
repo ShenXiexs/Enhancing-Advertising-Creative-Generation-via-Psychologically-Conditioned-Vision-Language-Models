@@ -16,6 +16,7 @@ TASK: Return EXACTLY FOUR English sentence that describes the environment/backgr
 
 Use cinematic lighting, depth, and realistic shadows. Include 3-8 tasteful props only when appropriate, and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter. English only, ending with "4k".
 ```
+说明：Tail 由两部分组成：风格约束 + 4k 结尾。可用 `--style-constraints off` 关闭风格约束，用 `--end-with-4k off` 关闭 4k 结尾。
 
 ### 1.2 Triad 路由（按 super_category 选择风格）
 - super_category 来自 `step_one_to_super_category_map.csv`。
@@ -45,7 +46,7 @@ Choose ONE background style by product type:
   "options": {"num_predict": 160, "temperature": 0.5, "top_p": 0.9, "repeat_penalty": 1.1}
 }
 ```
-备注：如果 Ollama 不可用或图片失败，则回退到固定 prompt：
+备注：如果 Ollama 不可用或图片失败，则回退到固定 prompt（`--end-with-4k off` 时不会带 "4k"）：
 ```text
 A premium studio scene with textured materials and controlled highlights, realistic shadows, 4k
 ```
@@ -623,6 +624,12 @@ Picture Value: Ten basic values of Schwartz's theory:
 8. Self-Direction: Refers to independent thought and action - choosing, creating, exploring. For example: creativity, curiosity, freedom, independence, choosing own goals.
 9. Stimulation: Refers to excitement, novelty, and challenge in life. For example: a varied life, an exciting life, daring.
 10. Hedonism: Refers to pleasure or sensuous gratification for oneself. For example: pleasure, enjoying life.
+```
+
+(Important note - separate block)
+```text
+Important:
+- This affects tone only; do not invent or alter product facts.
 ```
 
 ### 3.2 Legacy 模板（`--schwartz-persona-style legacy`）

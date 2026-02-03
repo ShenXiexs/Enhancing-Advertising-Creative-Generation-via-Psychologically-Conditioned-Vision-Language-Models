@@ -86,16 +86,26 @@ TASK_LINE = (
     "while keeping the product itself unchanged and fully visible. Avoid generic phrases like \"on a clean white background\"."
 )
 
-TAIL = (
+TAIL_STYLE = (
     'Use cinematic lighting, depth, and realistic shadows. Include 3–8 tasteful props only when appropriate, '
-    'and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter. '
-    'English only, ending with "4k".'
+    'and describe at least two concrete scene elements. No people, no on-image text, no logos, no clutter.'
 )
+TAIL_4K = 'English only, ending with "4k".'
+
+
+def build_tail(style_constraints: bool, end_with_4k: bool) -> str:
+    parts = []
+    if style_constraints:
+        parts.append(TAIL_STYLE)
+    if end_with_4k:
+        parts.append(TAIL_4K)
+    return " ".join(parts).strip()
 
 BIG5_IMPORTANT_NOTE = (
     "Important:\n"
     "- This affects tone only; do not invent or alter product facts."
 )
+SCHWARTZ_IMPORTANT_NOTE = BIG5_IMPORTANT_NOTE
 
 # ======== Schwartz Value prompt ========
 SCHWARTZ_VALUE_REFERENCE_LINES = (
@@ -221,6 +231,18 @@ def parse_args():
         choices=["legacy", "target"],
         default="legacy",
         help="Schwartz persona wording style: legacy (You prioritize...) or target (Target audience...).",
+    )
+    parser.add_argument(
+        "--style-constraints",
+        choices=["on", "off"],
+        default="on",
+        help="Include style constraint tail (cinematic lighting/props/etc). Use off to omit.",
+    )
+    parser.add_argument(
+        "--end-with-4k",
+        choices=["on", "off"],
+        default="on",
+        help="Require prompts to end with \"4k\" (default: on).",
     )
     parser.add_argument(
         "--disable-triad",
@@ -861,7 +883,8 @@ def load_style_desc(style_path: str) -> dict:
     if not sc or not dc: raise ValueError("风格定义表缺列：background style / description")
     return {str(r[sc]).strip(): str(r[dc]).strip() for _,r in df.iterrows() if str(r[sc]).strip() and str(r[dc]).strip()}
 
-def build_system_prompt(category: str, triad_map: dict, style_desc_map: dict) -> str:
+def build_system_prompt(category: str, triad_map: dict, style_desc_map: dict,
+                        tail_text: str = "") -> str:
     styles = triad_map.get(category, []) or []
     items = []
     for s in styles:
@@ -871,11 +894,13 @@ def build_system_prompt(category: str, triad_map: dict, style_desc_map: dict) ->
     if items:
         parts.append("Choose ONE background style by product type:\n" + "\n".join(items))
     parts.append(TASK_LINE)
-    parts.append(TAIL)
+    if tail_text:
+        parts.append(tail_text)
     return "\n\n".join(parts).strip()
 
 def build_system_prompt_inline(category: str, triad_map: dict, style_desc_map: dict,
-                               persona_block: str, persona_important: str = "") -> str:
+                               persona_block: str, persona_important: str = "",
+                               tail_text: str = "") -> str:
     styles = triad_map.get(category, []) or []
     items = []
     for s in styles:
@@ -889,7 +914,8 @@ def build_system_prompt_inline(category: str, triad_map: dict, style_desc_map: d
     if persona_important:
         parts.append(persona_important.strip())
     parts.append(TASK_LINE)
-    parts.append(TAIL)
+    if tail_text:
+        parts.append(tail_text)
     return "\n\n".join(parts).strip()
 
 # ======== Progress & stats ========
@@ -965,6 +991,9 @@ def main():
 
     exp_tag = _sanitize_tag(args.exp_name)
     triad_enabled = not args.disable_triad
+    style_constraints_enabled = (args.style_constraints or "on").strip().lower() != "off"
+    end_with_4k_enabled = (args.end_with_4k or "on").strip().lower() != "off"
+    tail_text = build_tail(style_constraints_enabled, end_with_4k_enabled)
     if not exp_tag:
         if persona_kind == "mbti" and mbti_plan != "none":
             exp_tag = f"{mbti_plan.lower()}_{datetime.now():%m%d%H%M}"
@@ -985,7 +1014,8 @@ def main():
         f"PERSONA={persona_kind}, MBTI_PLAN={mbti_plan}, MBTI_TYPE={persona_mbti_type if persona_kind=='mbti' else 'n/a'}, MBTI_MODE={mbti_mode}, "
         f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, BIG5_STYLE={big5_style}, "
         f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, SCHWARTZ_STYLE={schwartz_style}, "
-        f"TRIAD_ENABLED={triad_enabled}, EXP_TAG={exp_tag or 'default'}"
+        f"TRIAD_ENABLED={triad_enabled}, STYLE_CONSTRAINTS={style_constraints_enabled}, END_WITH_4K={end_with_4k_enabled}, "
+        f"EXP_TAG={exp_tag or 'default'}"
     )
     os.makedirs(OUT_DIR, exist_ok=True)
 
@@ -1099,7 +1129,7 @@ def main():
         idx = i + 1
         url = str(r.get("image_url","")).strip()
         cat = str(r.get("super_category","其他"))
-        sys_prompt = build_system_prompt(cat, triad, sdesc)
+        sys_prompt = build_system_prompt(cat, triad, sdesc, tail_text=tail_text)
         persona_instruction = ""
         persona_mode_current = None
         if mbti_enabled:
@@ -1111,18 +1141,26 @@ def main():
         elif schwartz_enabled:
             persona_instruction = schwartz_block
             persona_mode_current = schwartz_mode
-        persona_important = BIG5_IMPORTANT_NOTE if big5_enabled else ""
+        if big5_enabled:
+            persona_important = BIG5_IMPORTANT_NOTE
+        elif schwartz_enabled:
+            persona_important = SCHWARTZ_IMPORTANT_NOTE
+        else:
+            persona_important = ""
         sys_prompt_inline = sys_prompt
         if persona_instruction and persona_mode_current == "inline":
             sys_prompt_inline = build_system_prompt_inline(
-                cat, triad, sdesc, persona_instruction, persona_important
+                cat, triad, sdesc, persona_instruction, persona_important,
+                tail_text=tail_text,
             )
         triad_hit = ("Choose ONE background style by product type:" in sys_prompt)
 
         if idx % PRINT_EVERY == 0:
             print(f"\n[{idx}/{total}] id={r.get('id')} | super_category='{cat}' | triad_hit={triad_hit} | { _fmt_eta(idx-1, total, t_start) }", flush=True)
 
-        one_line = "A premium studio scene with textured materials and controlled highlights, realistic shadows, 4k"
+        one_line = "A premium studio scene with textured materials and controlled highlights, realistic shadows"
+        if end_with_4k_enabled:
+            one_line += ", 4k"
         t0 = time.time()
 
         if USE_MODEL_PROMPT and url:

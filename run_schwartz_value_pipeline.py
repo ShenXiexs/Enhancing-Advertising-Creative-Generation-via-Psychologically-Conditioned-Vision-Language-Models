@@ -188,7 +188,8 @@ def ensure_create_prompts_supports_schwartz(python_exe: str) -> None:
             "无法执行 create_categorical_prompts.py 以检查参数支持，"
             f"请确认文件存在且可运行：{REPO_ROOT / 'create_categorical_prompts.py'}"
         )
-    required_flags = ("--persona-kind", "--schwartz-type", "--schwartz-profiles", "--schwartz-mode")
+    required_flags = ("--persona-kind", "--schwartz-type", "--schwartz-profiles", "--schwartz-mode",
+                      "--style-constraints", "--end-with-4k")
     if not all(flag in help_text for flag in required_flags):
         raise RuntimeError(
             "当前目录下的 create_categorical_prompts.py 版本过旧，"
@@ -330,6 +331,8 @@ def process_schwartz_value(value_type: str,
             "--schwartz-type", value_type,
             "--schwartz-mode", args.schwartz_mode,
             "--schwartz-persona-style", args.schwartz_persona_style,
+            "--style-constraints", args.style_constraints,
+            "--end-with-4k", args.end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -426,6 +429,10 @@ def main():
                         help="Global random seed.")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="Model size for prompt generation.")
+    parser.add_argument("--style-constraints", choices=["on", "off"], default="on",
+                        help="Include style constraint tail in prompts (default: on).")
+    parser.add_argument("--end-with-4k", choices=["on", "off"], default="on",
+                        help="Require prompts to end with \"4k\" (default: on).")
     parser.add_argument("--disable-triad", dest="disable_triad", action="store_true",
                         default=True, help="Disable triad routing (default on).")
     parser.add_argument("--enable-triad", dest="disable_triad", action="store_false",
