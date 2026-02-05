@@ -6,7 +6,7 @@ Usage (defaults are prefilled; override via args if needed):
     python scripts/rename_images_from_csv.py
     python scripts/rename_images_from_csv.py --dry-run
     python scripts/rename_images_from_csv.py \
-        --csv /path/to/白底商品信息类目_experiment.csv \
+        --csv /path/to/experiment.csv \
         --base /path/to/big_five_test1214 /path/to/mbti_test1216
 """
 

@@ -5,9 +5,10 @@ Scale the product image (800×800) to 500×500, crop 15px from top and bottom
 1280×720 template, and render copy. The right-side text is centered within the
 pink background box (X:679-1184) with auto font-size adjustment.
 Promotion copy is bold black; the title uses a darker pink-gray in bold.
-Price is shown as "¥XXX起", where the symbol and "起" are smaller and vertically
-aligned with the number within the flame icon area, in white.
-Adjust SMALL_OFFSET to tweak the vertical offset of the symbol and "起".
+Price is shown as "¥XXX" plus a small suffix character; the symbol and suffix
+are smaller and vertically aligned with the number within the flame icon area,
+in white. Adjust SMALL_OFFSET to tweak the vertical offset of the symbol and
+suffix.
 """
 
 import argparse

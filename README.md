@@ -1,34 +1,46 @@
 # yoyo_image_gen_mbti
 
-A set of experiment scripts for **background generation / style control** on e‑commerce product images. The pipeline builds background prompts from product categories (super category) and personas (MBTI / Big Five), calls ComfyUI for image editing/rendering, and outputs comparison images plus template-based final posters.
+Research scripts for **background generation / style control** on e-commerce product images. The pipeline builds background prompts from product categories and personas (MBTI / Big Five / Schwartz), calls ComfyUI for image editing, and outputs comparison pairs and template posters.
 
-This repository is mainly a **runnable pipeline of scripts**, and by default relies on two local services:
-- **Ollama**: generates short titles and background descriptions with `qwen2.5vl` (Step1/Step2)
-- **ComfyUI**: renders images using the workflow `promo_banner_v3_api.json` (Step2 render stage)
-
----
-
-## Pipeline Overview (from CSV to comparison images)
-
-1. **Step1 Titles**: `create_promo_titles.py`  
-   Reads product info and image URLs from `白底商品信息类目.csv`, generates short titles `promo_title_final`, saves white‑background/original images to `out_step1/`, and outputs `out_step1/step1_titles.xlsx`.
-2. **Step2 Prompts**: `create_categorical_prompts.py`  
-   Maps level‑one categories to `super_category` using `step_one_to_super_category_map.csv`. Optionally applies triad routing (`step_one_triad_prompts_22cats.csv` + `step_one_background_description.csv`) and appends MBTI/Big Five personas. Outputs `out_step1/step1_prompts_<exp>.xlsx`.
-3. **White‑BG Normalization**: `normalize_scale_and_canvas.py`  
-   Re‑downloads original images, extracts the product, centers on a fixed canvas (default `800x800`), writes back to the Excel `white_bg_image` column, and appends size suffixes to `qwen_image_filenames`.
-4. **ComfyUI Rendering**: `render_with_comfyui.py`  
-   Reads `white_bg_image` + `prompt`, calls the ComfyUI API, and saves outputs to `out_step2/<exp>/`.
-5. **Comparison Pairs**: `merge_pairs.py`  
-   Concatenates white‑background images with generated results side‑by‑side and adds labels (`super_category / ori_title / promo_title_final / prompt`) at the bottom. Outputs `out_step3/<exp>/{id}_pair.jpg`.
+This repo is a runnable script pipeline that relies on two local services by default:
+- **Ollama**: generates Step1 short titles and Step2 background prompts with `qwen2.5vl`
+- **ComfyUI**: renders images using `promo_banner_v3_api.json`
 
 ---
 
-## One‑click Pipeline (recommended)
+## Pipeline at a Glance
+
+1) **Step1 Titles** (`create_promo_titles.py`)
+   - Reads product CSV/XLSX (e.g., `白底商品信息类目.csv`)
+   - Generates `promo_title_final`
+   - Saves white-bg/original images to `out_step1/`
+   - Outputs `out_step1/step1_titles.xlsx`
+
+2) **Step2 Prompts** (`create_categorical_prompts.py`)
+   - Maps level-one categories to `super_category` using `step_one_to_super_category_map.csv`
+   - Optional triad routing: `step_one_triad_prompts_22cats.csv` + `step_one_background_description.csv`
+   - Optional persona injection: MBTI / Big Five / Schwartz
+   - Outputs `out_step1/step1_prompts_<exp>.xlsx`
+
+3) **White-BG Normalization** (`normalize_scale_and_canvas.py`)
+   - Re-downloads originals, centers product on fixed canvas (default `800x800`)
+   - Writes back `white_bg_image` and updates `qwen_image_filenames`
+
+4) **ComfyUI Rendering** (`render_with_comfyui.py`)
+   - Reads `white_bg_image` + `prompt`
+   - Calls ComfyUI API
+   - Outputs to `out_step2/<exp>/`
+
+5) **Comparison Pairs** (`merge_pairs.py`)
+   - Concats white-bg and generated images
+   - Adds labels (`super_category / ori_title / promo_title_final / prompt`)
+   - Outputs `out_step3/<exp>/{id}_pair.jpg`
+
+---
+
+## Quickstart (One-Click Pipelines)
 
 ### MBTI (16 types)
-Script: `run_mbti_pipeline.py`  
-Behavior: iterates over the MBTI list and generates prompts / renders / comparison pairs for each type.
-
 ```bash
 python run_mbti_pipeline.py \
   --use-experiment-csv \
@@ -36,22 +48,12 @@ python run_mbti_pipeline.py \
   --mbti-plan A \
   --mbti-mode concat \
   --per-category 10 \
+  --style-constraints on \
+  --end-with-4k on \
   --resume
 ```
 
-Common parameters:
-- `--categories`: comma/newline separated super categories (default: built‑in 14 categories)
-- `--per-category`: samples per category (`<=0` means all)
-- `--exp-prefix`: output experiment prefix (auto adds `_mbti` suffix)
-- `--resume`: skip steps if intermediate outputs already exist
-- `--skip-render / --skip-pairs`: do pre‑processing only or render only
-- `--skip-kill-ollama`: by default it runs `pkill -9 ollama` before rendering to free VRAM
-- `--use-experiment-csv`: Step1 reads `白底商品信息类目_experiment.csv` directly (use `--experiment-csv` to change path)
-- `--dry-run`: print commands without executing
-
-### Big Five (single‑dimension 10 groups / full combinations 32 groups)
-Script: `run_big_five_pipeline.py`
-
+### Big Five (10 single-dimension + 32 combos)
 ```bash
 python run_big_five_pipeline.py \
   --use-experiment-csv \
@@ -60,19 +62,61 @@ python run_big_five_pipeline.py \
   --big5-plan A \
   --big5-mode concat \
   --per-category 10 \
+  --style-constraints on \
+  --end-with-4k on \
   --resume
 ```
 
----
-
-## Run Step‑by‑Step (useful for debugging/customization)
-
-1) Step1: generate short titles and white‑background image paths
+### Schwartz Values
 ```bash
-python create_promo_titles.py --model 7b --csv-path "白底商品信息类目.csv" --out-dir out_step1
+python run_schwartz_value_pipeline.py \
+  --use-experiment-csv \
+  --prompt-model 32b \
+  --schwartz-persona-style target \
+  --style-constraints on \
+  --end-with-4k on \
+  --resume
 ```
 
-2) Step2: generate background prompts (optional MBTI / Big Five / triad)
+### Small benchmark (no persona + Big Five + Schwartz, 10 products)
+```bash
+python run_big5_schwartz_small_pipeline.py \
+  --prompt-model 32b \
+  --style-constraints on \
+  --end-with-4k on
+```
+
+### No-persona baseline
+```bash
+python run_no_persona_pipeline.py \
+  --use-experiment-csv \
+  --prompt-model 32b \
+  --style-constraints on \
+  --end-with-4k on
+```
+
+Common flags:
+- `--categories`: comma/newline separated super categories
+- `--per-category`: samples per category (`<=0` keeps all)
+- `--resume`: reuse existing outputs
+- `--skip-render / --skip-pairs`: stop before render or pair stage
+- `--skip-kill-ollama`: do not `pkill -9 ollama` before rendering
+- `--style-constraints on|off`: include style constraint tail
+- `--end-with-4k on|off`: require prompts to end with `4k`
+
+---
+
+## Step-by-Step (Manual)
+
+1) Step1 titles
+```bash
+python create_promo_titles.py \
+  --model 7b \
+  --csv-path "白底商品信息类目.csv" \
+  --out-dir out_step1
+```
+
+2) Step2 prompts (persona optional)
 ```bash
 python create_categorical_prompts.py \
   --model 32b \
@@ -80,15 +124,19 @@ python create_categorical_prompts.py \
   --mbti-plan A \
   --mbti-type ENFJ \
   --mbti-mode inline \
+  --style-constraints on \
+  --end-with-4k on \
   --exp-name planA32b_enfj
 ```
 
-3) White‑BG normalization (writes back into Excel)
+3) Normalize white background
 ```bash
-python normalize_scale_and_canvas.py --excel out_step1/step1_prompts_planA32b_enfj.xlsx --out-dir out_step1
+python normalize_scale_and_canvas.py \
+  --excel out_step1/step1_prompts_planA32b_enfj.xlsx \
+  --out-dir out_step1
 ```
 
-4) ComfyUI rendering (outputs to `out_step2/<exp>/`)
+4) Render via ComfyUI
 ```bash
 python render_with_comfyui.py \
   --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx \
@@ -96,7 +144,7 @@ python render_with_comfyui.py \
   --output-root out_step2
 ```
 
-5) Merge comparison pairs (outputs to `out_step3/<exp>/`)
+5) Merge comparison pairs
 ```bash
 python merge_pairs.py \
   --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx \
@@ -106,85 +154,84 @@ python merge_pairs.py \
 
 ---
 
-## Inputs & Config Files
+## Prompt Controls (Step2)
 
-Core input files (defaults are defined at the top of each script):
-- `白底商品信息类目.csv`: raw product table (CSV/XLSX)
-- `白底商品信息类目_experiment.csv`: filtered sample table (e.g. 140‑image subset for `--use-experiment-csv`)
-  - Common columns: `id`, `ori_title`, `brand` (or `creative_id_brand`), `image_url`, `level_one_category_name`
-  - Optional columns: `price`, `promotion` (used by `add_template_*.py`)
-- `step_one_to_super_category_map.csv`: category mapping
-  - Columns: `level_one_category_name` → `super_category`
-- `step_one_triad_prompts_22cats.csv`: triad routing table (optional)
-  - Columns: `Category`, `Style Priority 1/2/3`
-- `step_one_background_description.csv`: background style descriptions (used by triad)
-  - Columns: `background style`, `description`
-- `mbti_profiles.csv` / `big_five_profiles.csv`: persona definitions
-  - Used to merge persona text into Step1 outputs, or applied uniformly via `--mbti-type/--big5-types`
+`create_categorical_prompts.py` supports:
+- `--persona-kind`: `none | mbti | big5 | schwartz | auto`
+- Persona modes: `--mbti-mode/--big5-mode/--schwartz-mode` = `concat | inline`
+  - `concat`: persona text appended to final prompt after generation
+  - `inline`: persona text inserted into system prompt
+- Persona wording style:
+  - Big Five: `--big5-persona-style legacy|target`
+  - Schwartz: `--schwartz-persona-style legacy|target`
+- Triad routing: `--disable-triad` to skip category-driven style hints
+- Style tail controls:
+  - `--style-constraints on|off` (cinematic lighting / props / no people, etc.)
+  - `--end-with-4k on|off` (require final `4k` suffix)
+- Seed: `--seed` sets Python/NumPy/Torch seeds (Ollama output still stochastic)
+
+More details: `PROMPT_GENERATION_BIG5_SCHWARTZ.md`.
 
 ---
 
-## Output Directories
+## Inputs & Config Files
+
+Core inputs (defaults defined at top of scripts):
+- `白底商品信息类目.csv`: raw product table (CSV/XLSX)
+  - Required: `id`, `ori_title`, `brand` (or `creative_id_brand`), `image_url`, `level_one_category_name`
+  - Optional: `price`, `promotion` (used by `add_template_*.py`)
+- `白底商品信息类目_experiment.csv`: filtered sample table for quick runs
+- `step_one_to_super_category_map.csv`: level-one → super category mapping
+- `step_one_triad_prompts_22cats.csv`: triad routing table (`Category`, `Style Priority 1/2/3`)
+- `step_one_background_description.csv`: style descriptions (`background style`, `description`)
+- `mbti_profiles.csv` / `big_five_profiles.csv` / `schwartz_value_profiles.csv`: persona profiles
+
+---
+
+## Outputs
 
 - `out_step1/`
-  - `step1_titles.xlsx`: Step1 title results
-  - `step1_prompts_<exp>.xlsx`: Step2 prompts output (includes `prompt/super_category/qwen_image_filenames/white_bg_image` columns)
-  - `*_800x800.jpg`: normalized white‑background images
-- `out_step2/<exp>/`: ComfyUI render outputs (filenames usually come from `qwen_image_filenames`)
-- `out_step3/<exp>/`: comparison pairs `{id}_pair.jpg`
+  - `step1_titles.xlsx`
+  - `step1_prompts_<exp>.xlsx`
+  - `*_800x800.jpg` normalized white-bg images
+- `out_step2/<exp>/`: ComfyUI renders
+- `out_step3/<exp>/`: comparison pairs
 
-Helper scripts:
-- `rename_pairs_with_category.py`: rename `{id}_pair.jpg` to `{id}_{super_category}(_MBTI)_pair.jpg`
-- `add_template_16_9.py` / `add_template_3_2.py` / `add_template_39_40.py`: place renders into templates and write copy, output to `output_*`
+---
 
-Example:
-```bash
-python rename_pairs_with_category.py \
-  --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx \
-  --pairs-dir out_step3/planA32b_enfj \
-  --append-mbti
-```
+## Utilities
 
-```bash
-python add_template_16_9.py --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx --comfy-output out_step2/planA32b_enfj
-```
+- `rename_pairs_with_category.py`: rename `{id}_pair.jpg` → `{id}_{super_category}(_MBTI)_pair.jpg`
+- `add_template_16_9.py` / `add_template_3_2.py` / `add_template_39_40.py`: place renders into templates
+- `download_qwen_models.py`: sample downloader (paths are hardcoded; edit before use)
 
 ---
 
 ## Dependencies & Services
 
-### Python dependencies (main third‑party packages used)
-This repo does **not** include a `requirements.txt`. Based on imports, common dependencies include:
+Python packages commonly used (no `requirements.txt` included):
 - `pandas`, `openpyxl`
 - `Pillow`
 - `requests`, `urllib3`, `chardet`
-- `tqdm`
-- `numpy`
+- `tqdm`, `numpy`
 - `opencv-python` (required by `normalize_scale_and_canvas.py`)
 
-### Ollama (Step1/Step2)
-Default: `http://localhost:11434` (defined in `create_promo_titles.py` / `create_categorical_prompts.py`)  
-Pull/start models ahead of time (example):
+Ollama (Step1/Step2):
 ```bash
 ollama pull qwen2.5vl:7b
 ollama pull qwen2.5vl:32b
 ollama serve
 ```
 
-### ComfyUI (Rendering)
-Default: `http://localhost:8000` (defined in `render_with_comfyui.py`)  
-Ensure the workflow file `promo_banner_v3_api.json` is compatible with your ComfyUI setup/nodes.
-
-`render_with_comfyui.py` will:
-- call `/system_stats` to verify the service
-- parse ComfyUI launch args for `--input-directory`, then copy `white_bg_image` into the ComfyUI input root (LoadImage resolves by filename only)
-
-(Optional) `download_qwen_models.py` is a sample downloader for Qwen models into a ComfyUI install directory (paths are hardcoded; edit to match your ComfyUI location).
+ComfyUI (rendering):
+- Default API: `http://localhost:8000`
+- Workflow: `promo_banner_v3_api.json`
+- `render_with_comfyui.py` copies source images into ComfyUI input root; `LoadImage` resolves by filename
 
 ---
 
-## FAQ
+## Troubleshooting
 
-- **Render stage can’t find images**: ensure ComfyUI input directory is writable; `render_with_comfyui.py` copies source images into the input root and injects only basenames into `LoadImage`.
-- **Chinese text renders as tofu**: `merge_pairs.py` / `add_template_*.py` rely on system fonts. Update font paths in scripts to an available Chinese font on your machine (macOS example: `PingFang.ttc`).
-- **Pipeline interrupted and want to resume**: use `--resume` in `run_mbti_pipeline.py` / `run_big_five_pipeline.py`, or reuse existing `out_step1/*.xlsx` and `out_step2/<exp>/` manually.
+- **Render can’t find images**: ensure ComfyUI input dir is writable. The script copies source images there and injects only basenames.
+- **Chinese text renders as tofu**: update font paths in `merge_pairs.py` / `add_template_*.py` to a valid CJK font on your machine.
+- **Resume after interruption**: use `--resume` in pipeline scripts or reuse existing `out_step1/*.xlsx` and `out_step2/<exp>/` manually.

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Small experiment pipeline:
-- 10 products from 白底商品信息类目_experiment_small.csv
+- 10 products from the experiment-small CSV (see DEFAULT_STEP1_CSV)
 - No persona: 10 images
 - Big Five: 5 traits x (High/Low) = 10 profiles -> 100 images
 - Schwartz values: 10 values -> 100 images

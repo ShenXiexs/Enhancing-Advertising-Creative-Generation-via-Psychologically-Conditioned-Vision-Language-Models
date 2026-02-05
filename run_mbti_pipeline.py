@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-批量遍历 16 种 MBTI，并针对指定大类自动完成：
-1) 生成背景 prompt（可选禁用 triad）；
-2) 依据大类抽样固定数量的素材；
-3) 白底归一化；
-4) 调用 ComfyUI 渲染；
-5) 生成对比图。
+Batch pipeline for the 16 MBTI types:
+1) Generate background prompts (triad optional).
+2) Sample a fixed number per super category.
+3) Normalize white background.
+4) Render via ComfyUI.
+5) Build paired comparisons.
 
-使用前请先手动启动 Ollama（供步骤 1 & 2 使用）以及 ComfyUI（供渲染使用），
-脚本会在进入渲染阶段前自动 pkill -9 ollama 释放显存。
+Start Ollama (for steps 1 & 2) and ComfyUI (for rendering) before running.
+The script will pkill ollama before rendering to free VRAM.
 """
 from __future__ import annotations
 

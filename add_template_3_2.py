@@ -4,7 +4,7 @@
 - Canvas 960x640
 - Cover the whole canvas with the product image (under the template)
 - Overlay a 960x640 PNG template (with alpha)
-- Top-left: title + promo; bottom-right: price (¥ number 起), using 39-40 layout logic
+- Top-left: title + promo; bottom-right: price (with a small suffix), using 39-40 layout logic
 - Excel must include: id, promo_title_final, price, promotion
 """
 

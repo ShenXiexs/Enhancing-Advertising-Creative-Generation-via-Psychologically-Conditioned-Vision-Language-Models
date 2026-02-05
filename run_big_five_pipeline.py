@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-批量遍历 Big Five persona（单维高/低 10 组 + 全组合 32 组），自动完成：
-1) 生成背景 prompt；
-2) 按大类抽样；
-3) 白底归一化；
-4) 调用 ComfyUI 渲染；
-5) 生成对比图。
+Batch pipeline for Big Five personas (10 single-dimension profiles + 32 combos):
+1) Generate background prompts.
+2) Sample by super category.
+3) Normalize white background.
+4) Render via ComfyUI.
+5) Build paired comparisons.
 """
 from __future__ import annotations
 
