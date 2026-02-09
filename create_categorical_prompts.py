@@ -252,7 +252,7 @@ def parse_args():
     parser.add_argument(
         "--seed",
         type=int,
-        default=114,
+        default=2026,
         help="Set a deterministic seed for Python, NumPy, and Torch (<=0 to skip).",
     )
     return parser.parse_args()
@@ -402,11 +402,19 @@ def to_b64(img: Image.Image, max_w=MAX_SEND_WIDTH, quality=JPEG_QUALITY) -> str:
     buf = io.BytesIO(); img.save(buf,"JPEG",quality=quality, optimize=True, subsampling=0)
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
-def chat_once(model, b64_image, system_prompt, user_text="", host=OLLAMA_HOST, timeout=REQUEST_TIMEOUT):
+def chat_once(model, b64_image, system_prompt, user_text="", host=OLLAMA_HOST,
+              timeout=REQUEST_TIMEOUT, seed: int = 0, deterministic: bool = True):
+    options = {"num_predict": 160}
+    if deterministic:
+        options.update({"temperature": 0.0, "top_p": 1.0, "repeat_penalty": 1.0})
+    else:
+        options.update({"temperature": 0.5, "top_p": 0.9, "repeat_penalty": 1.1})
+    if seed and seed > 0:
+        options["seed"] = int(seed)
     payload = {"model": model, "messages":[
         {"role":"system","content":system_prompt},
         {"role":"user","content":user_text,"images":[b64_image]}
-    ], "stream": False, "options":{"num_predict":160,"temperature":0.5,"top_p":0.9,"repeat_penalty":1.1}}
+    ], "stream": False, "options": options}
     r = requests.post(f"{host}/api/chat", json=payload, timeout=timeout); r.raise_for_status()
     out = (r.json().get("message") or {}).get("content","").strip()
     if not out: raise ValueError("empty model output")
@@ -1169,7 +1177,8 @@ def main():
                 b64 = to_b64(im)
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print("  - Image: OK  | calling VLM(prompt) ...")
-                raw = chat_once(MODEL_PROMPT, b64, sys_prompt_inline, user_text="")
+                seed_i = args.seed + idx if args.seed and args.seed > 0 else 0
+                raw = chat_once(MODEL_PROMPT, b64, sys_prompt_inline, user_text="", seed=seed_i)
                 one_line = normalize_background_line(raw)
                 cnt_model_ok += 1
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:

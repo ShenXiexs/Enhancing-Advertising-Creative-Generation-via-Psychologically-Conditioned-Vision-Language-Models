@@ -173,6 +173,8 @@ def run_render(job: dict, args) -> None:
         "--exp-name", job["exp_tag"],
         "--output-root", args.render_root,
     ]
+    if job.get("seed") is not None:
+        render_cmd.extend(["--seed", str(job["seed"])])
     run_cmd(render_cmd, f"ComfyUI render ({job['label']})")
 
 
@@ -250,7 +252,13 @@ def process_big5_profile(profile: dict, args, seed: int,
             ]
             run_cmd(norm_cmd, f"normalize white background (Big5={profile['label']})")
 
-    return {"kind": "big5", "label": f"big5_{profile['label']}", "exp_tag": exp_tag, "subset": subset_path}
+    return {
+        "kind": "big5",
+        "label": f"big5_{profile['label']}",
+        "exp_tag": exp_tag,
+        "subset": subset_path,
+        "seed": seed,
+    }
 
 
 def process_schwartz_value(value_type: str, args, seed: int,
@@ -304,7 +312,13 @@ def process_schwartz_value(value_type: str, args, seed: int,
             ]
             run_cmd(norm_cmd, f"normalize white background (Schwartz={value_type})")
 
-    return {"kind": "schwartz", "label": f"schwartz_{value_type}", "exp_tag": exp_tag, "subset": subset_path}
+    return {
+        "kind": "schwartz",
+        "label": f"schwartz_{value_type}",
+        "exp_tag": exp_tag,
+        "subset": subset_path,
+        "seed": seed,
+    }
 
 
 def process_no_persona(args, seed: int,
@@ -352,7 +366,13 @@ def process_no_persona(args, seed: int,
             ]
             run_cmd(norm_cmd, "normalize white background (no persona)")
 
-    return {"kind": "none", "label": "nopersona", "exp_tag": exp_tag, "subset": subset_path}
+    return {
+        "kind": "none",
+        "label": "nopersona",
+        "exp_tag": exp_tag,
+        "subset": subset_path,
+        "seed": seed,
+    }
 
 
 def main():
@@ -374,7 +394,7 @@ def main():
     parser.add_argument("--style-variants", choices=["both", "style", "no-style", "custom"], default="both",
                         help="Style variants to run: both=style+no-style+4k, style=style only, "
                              "no-style=no-style+4k only, custom=use --style-constraints/--end-with-4k.")
-    parser.add_argument("--seed", type=int, default=125,
+    parser.add_argument("--seed", type=int, default=2026,
                         help="Global random seed.")
     parser.add_argument("--persona-mode", choices=["concat", "inline"], default="inline",
                         help="Persona mode for Big5/Schwartz (default: inline).")
@@ -398,8 +418,8 @@ def main():
                         help="Limit to first N Schwartz values (0 = all).")
     parser.add_argument("--schwartz-exp-prefix", default="schwartz_small",
                         help="Prefix for Schwartz outputs.")
-    parser.add_argument("--include-nopersona", action="store_true",
-                        help="Also run no-persona baseline outputs.")
+    parser.add_argument("--skip-nopersona", action="store_true",
+                        help="Skip no-persona baseline outputs.")
     parser.add_argument("--nopersona-exp-prefix", default="nopersona_small",
                         help="Prefix for no-persona outputs.")
     parser.add_argument("--prompts-dir", default="out_step1",
@@ -473,8 +493,8 @@ def main():
 
     jobs = []
     for v_idx, (tag, style_constraints, end_with_4k) in enumerate(variants):
-        base_seed = args.seed + v_idx * 10000
-        if args.include_nopersona:
+        base_seed = args.seed
+        if not args.skip_nopersona:
             jobs.append(process_no_persona(args, seed=base_seed,
                                            style_constraints=style_constraints,
                                            end_with_4k=end_with_4k,

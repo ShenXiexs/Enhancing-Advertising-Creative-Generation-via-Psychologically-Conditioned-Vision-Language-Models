@@ -15,7 +15,7 @@ OUT_JSONL       = os.path.join(OUT_DIR, "step1_titles.jsonl")
 FILENAME_FMT    = "{id}.jpg"   # Saves to out_step1/white_bg/{id}.jpg
 
 SAMPLE_NUM      = 10          # Set an int to sample; set None for full data
-RAND_SEED       = 125
+RAND_SEED       = 2026
 
 # -- VLM (titles only) --
 OLLAMA_HOST     = "http://localhost:11434"
@@ -26,6 +26,7 @@ MAX_SEND_WIDTH  = 1200
 JPEG_QUALITY    = 92
 REQUEST_TIMEOUT = 180
 DEBUG_PRINT     = True
+DETERMINISTIC   = True
 
 
 PRINT_EVERY     = 1          # Print progress every N rows (1 = every row)
@@ -96,7 +97,7 @@ def parse_args():
         "--rand-seed",
         type=int,
         default=RAND_SEED,
-        help="Random seed used when sampling rows (default: 125).",
+        help="Random seed used when sampling rows (default: 2026).",
     )
     return parser.parse_args()
 
@@ -144,12 +145,19 @@ def save_image_original(img: Image.Image, save_path: str, quality: int = 95):
     img.convert("RGB").save(save_path, "JPEG", quality=quality, optimize=True, subsampling=0)
 
 def vlm_chat_json(model: str, b64_image: str, system_prompt: str, user_text: str,
-                  num_predict=80, temperature=0.2):
+                  num_predict=80, temperature=0.2, seed: int = 0):
+    options = {"num_predict": num_predict}
+    if DETERMINISTIC:
+        options.update({"temperature": 0.0, "top_p": 1.0, "repeat_penalty": 1.0})
+    else:
+        options.update({"temperature": temperature, "top_p": 0.9, "repeat_penalty": 1.1})
+    if seed and seed > 0:
+        options["seed"] = int(seed)
     payload = {"model": model, "messages": [
         {"role":"system","content":system_prompt},
         {"role":"user","content":user_text,"images":[b64_image]},
     ], "stream": False, "format":"json",
-       "options":{"num_predict":num_predict,"temperature":temperature,"top_p":0.9,"repeat_penalty":1.1}}
+       "options": options}
     r = requests.post(f"{OLLAMA_HOST}/api/chat", json=payload, timeout=REQUEST_TIMEOUT)
     r.raise_for_status()
     raw = (r.json().get("message") or {}).get("content","") or ""
@@ -195,24 +203,26 @@ def build_failure_feedback(s: str, max_len: int) -> str:
         if visible_units(s) > max_len: reasons.append(f"等价长度超限(>{max_len})")
     return "；".join(reasons) or "未达成合规目标"
 
-def simplify_title_again_via_vlm(b64_image: str, cand: str, brand: str = "", max_len: int = MAX_FINAL_VISIBLE_LEN):
+def simplify_title_again_via_vlm(b64_image: str, cand: str, brand: str = "",
+                                 max_len: int = MAX_FINAL_VISIBLE_LEN, seed: int = 0):
     user = f"CANDIDATE: {cand}\nBRAND: {brand}"
     raw, obj = vlm_chat_json(MODEL_TITLE, b64_image, SYSTEM_PROMPT_FOR_SIMPLIFY_JSON,
-                             user, num_predict=60, temperature=0.2)
+                             user, num_predict=60, temperature=0.2, seed=seed)
     val = ""
     if isinstance(obj, dict):
         val = normalize_spaces(str(obj.get("promo_title","")).strip())
     return raw or "", val
 
 def expand_title_again_via_vlm(b64_image: str, cand: str, brand: str = "", ori_title: str = "",
-                               min_len: int = MIN_FINAL_VISIBLE_LEN, max_len: int = MAX_FINAL_VISIBLE_LEN):
+                               min_len: int = MIN_FINAL_VISIBLE_LEN, max_len: int = MAX_FINAL_VISIBLE_LEN,
+                               seed: int = 0):
     user = (
         f"CANDIDATE: {cand}\n"
         f"BRAND: {brand}\n"
         f"ORIGINAL_TITLE: {ori_title}"
     )
     raw, obj = vlm_chat_json(MODEL_TITLE, b64_image, SYSTEM_PROMPT_FOR_EXPAND_JSON,
-                             user, num_predict=80, temperature=0.2)
+                             user, num_predict=80, temperature=0.2, seed=seed)
     val = ""
     if isinstance(obj, dict):
         val = normalize_spaces(str(obj.get("promo_title","")).strip())
@@ -276,6 +286,7 @@ def main():
             print(f"\n[{idx}/{total}] id={pid} | title='{title[:30]}' | brand='{brand[:20]}' | { _fmt_eta(idx-1, total, t_start) }", flush=True)
 
         t0 = time.time()
+        seed_i = (RAND_SEED + idx) if (RAND_SEED and RAND_SEED > 0) else 0
         # Read image + save local white-background image
         b64_img = ""
         white_bg_path = ""  # New: local white_bg path to write into output
@@ -316,8 +327,10 @@ def main():
                 if DEBUG_PRINT and idx % PRINT_EVERY == 0:
                     print("  - VLM(title): calling ...")
                 text_payload = f"PRODUCT TEXT FIELDS (TITLE + BRAND ONLY)\n- Title: {title}\n- Brand: {brand}\n"
-                promo_title_json_val, obj = vlm_chat_json(MODEL_TITLE, b64_img, SYSTEM_PROMPT_FOR_TITLE_JSON,
-                                                          text_payload, num_predict=80, temperature=0.2)
+                promo_title_json_val, obj = vlm_chat_json(
+                    MODEL_TITLE, b64_img, SYSTEM_PROMPT_FOR_TITLE_JSON,
+                    text_payload, num_predict=80, temperature=0.2, seed=seed_i
+                )
                 if isinstance(obj, dict):
                     promo_title_candidate = normalize_spaces(str(obj.get("promo_title","")).strip())
 
@@ -327,7 +340,9 @@ def main():
                         units = visible_units(promo_title_candidate)
                         if units > MAX_FINAL_VISIBLE_LEN:
                             promo_title_retry_times += 1
-                            s_raw, s_val = simplify_title_again_via_vlm(b64_img, promo_title_candidate, brand, MAX_FINAL_VISIBLE_LEN)
+                            s_raw, s_val = simplify_title_again_via_vlm(
+                                b64_img, promo_title_candidate, brand, MAX_FINAL_VISIBLE_LEN, seed=seed_i
+                            )
                             if s_raw:
                                 optimization_notes.append("[SIMPLIFY] " + s_raw)
                             if s_val:
@@ -337,8 +352,10 @@ def main():
 
                         if units < MIN_FINAL_VISIBLE_LEN:
                             promo_title_retry_times += 1
-                            e_raw, e_val = expand_title_again_via_vlm(b64_img, promo_title_candidate, brand, title,
-                                                                      MIN_FINAL_VISIBLE_LEN, MAX_FINAL_VISIBLE_LEN)
+                            e_raw, e_val = expand_title_again_via_vlm(
+                                b64_img, promo_title_candidate, brand, title,
+                                MIN_FINAL_VISIBLE_LEN, MAX_FINAL_VISIBLE_LEN, seed=seed_i
+                            )
                             if e_raw:
                                 optimization_notes.append("[EXPAND] " + e_raw)
                             if e_val:

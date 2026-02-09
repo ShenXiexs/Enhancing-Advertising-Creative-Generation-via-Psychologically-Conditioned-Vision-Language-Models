@@ -330,7 +330,7 @@ def main():
                         help="每个大类抽样的数量，<=0 表示保留该大类全部。")
     parser.add_argument("--subset-suffix", default="",
                         help="抽样 Excel 额外后缀（默认自动生成，如 14cats_10）。")
-    parser.add_argument("--seed", type=int, default=125,
+    parser.add_argument("--seed", type=int, default=2026,
                         help="全局随机种子，影响 pandas.sample 以及 Step1/Step2。")
     parser.add_argument("--mbti-plan", choices=["A", "B"], default="A",
                         help="MBTI persona 使用的计划，默认 A。")

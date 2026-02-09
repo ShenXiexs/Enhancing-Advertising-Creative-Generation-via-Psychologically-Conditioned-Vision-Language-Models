@@ -425,7 +425,7 @@ def main():
                         help="Samples per category; <=0 keeps all.")
     parser.add_argument("--subset-suffix", default="",
                         help="Extra suffix for sampled Excel (e.g. 14cats_10).")
-    parser.add_argument("--seed", type=int, default=125,
+    parser.add_argument("--seed", type=int, default=2026,
                         help="Global random seed.")
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="Model size for prompt generation.")

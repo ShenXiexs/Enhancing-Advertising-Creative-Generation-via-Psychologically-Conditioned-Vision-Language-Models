@@ -67,6 +67,12 @@ def parse_args():
         default=SAVE_ROOT,
         help="Root directory for rendered images (default: out_step2). Subfolders per experiment are created automatically.",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="Deterministic seed for KSampler nodes (<=0 to skip).",
+    )
     return parser.parse_args()
 
 
@@ -141,7 +147,20 @@ def ensure_in_input(fp, input_dir):
             shutil.copy2(fp, dst)
     return dst
 
-def inject_params(wf, img_abs_path, prompt, neg, out_pref):
+def _apply_seed(wf, seed: int):
+    if not seed or seed <= 0:
+        return wf
+    wf2 = copy.deepcopy(wf)
+    for _, node in wf2.items():
+        ins = node.get("inputs", {}) or {}
+        for key in ("seed", "noise_seed", "seed_value"):
+            if key in ins:
+                ins[key] = int(seed)
+        node["inputs"] = ins
+    return wf2
+
+
+def inject_params(wf, img_abs_path, prompt, neg, out_pref, seed: int = 0):
     """Only write filenames for LoadImage/Load Image; keep other placeholders."""
     wf2 = copy.deepcopy(wf)
     for _, node in wf2.items():
@@ -170,7 +189,7 @@ def inject_params(wf, img_abs_path, prompt, neg, out_pref):
             if ins.get("text")   == "{{NEG}}": ins["text"]   = neg
 
         node["inputs"] = ins
-    return wf2
+    return _apply_seed(wf2, seed)
 
 
 # ---------------- Execution & polling ----------------
@@ -290,6 +309,8 @@ def main():
     print(f"[config] prompts_file = {excel_path}")
     print(f"[config] experiment   = {exp_tag}")
     print(f"[config] save_dir     = {SAVE_DIR}")
+    if args.seed and args.seed > 0:
+        print(f"[config] base_seed   = {args.seed}")
 
     sess  = make_session()
     stats = check_server(sess)
@@ -323,11 +344,12 @@ def main():
         out_pref     = OUT_PREFIX_FMT.format(id=pid)
 
         # Inject: only write basename for LoadImage/Load Image
+        seed_i = (args.seed + i - 1) if args.seed and args.seed > 0 else 0
         wf = (
             {"1": {"class_type": "LoadImage", "inputs": {"image": os.path.basename(img_in_input)}},
              "2": {"class_type": "SaveImage", "inputs": {"filename_prefix": out_pref, "images": ["1", 0]}}}
             if DRY_RUN_MINIMAL else
-            inject_params(wf_template, img_in_input, prompt, neg, out_pref)
+            inject_params(wf_template, img_in_input, prompt, neg, out_pref, seed=seed_i)
         )
 
         # === Only change: use qwen_image_filenames from Excel as save basename ===

@@ -15,7 +15,7 @@ OUT_JSONL = os.path.join(OUT_DIR, "step1_titles.jsonl")
 
 FILENAME_FMT = "{id}.jpg"  # Saves to out_step1/{id}.jpg
 SAMPLE_NUM = 20         # Set an int to sample; set None for full data
-RAND_SEED = 5
+RAND_SEED = 2026
 
 # Output retention policy
 # True  : keep all rows in final export (including is_over_length==True)
