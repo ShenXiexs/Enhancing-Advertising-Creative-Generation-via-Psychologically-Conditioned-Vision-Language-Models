@@ -31,6 +31,7 @@ NEG_DEFAULT      = (
 )
 
 COMFY_HOST       = "http://localhost:8000"
+COMFY_CACHE_FILE = os.path.join(os.getcwd(), ".comfyui_io_cache.json")
 CONNECT_TIMEOUT  = 5
 READ_TIMEOUT     = 180
 REQUEST_TIMEOUT  = 1200
@@ -73,6 +74,16 @@ def parse_args():
         default=0,
         help="Deterministic seed for KSampler nodes (<=0 to skip).",
     )
+    parser.add_argument(
+        "--skip-comfyui-check",
+        action="store_true",
+        help="Skip /system_stats check and reuse cached I/O dirs if available.",
+    )
+    parser.add_argument(
+        "--comfyui-input-dir",
+        default="",
+        help="Override ComfyUI input directory (required if skipping check without cache).",
+    )
     return parser.parse_args()
 
 
@@ -106,6 +117,27 @@ def check_server(sess):
     stats = r.json()
     print(f"[ok] ComfyUI API: {COMFY_HOST}")
     return stats
+
+def save_io_cache(base, input_dir, output_dir):
+    payload = {
+        "host": COMFY_HOST,
+        "base_dir": base,
+        "input_dir": input_dir,
+        "output_dir": output_dir,
+        "ts": time.time(),
+    }
+    try:
+        with open(COMFY_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=True, indent=2)
+    except OSError:
+        pass
+
+def load_io_cache():
+    try:
+        with open(COMFY_CACHE_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except OSError:
+        return None
 
 def parse_io_dirs(stats):
     args = stats.get("system", {}).get("argv", []) or []
@@ -313,8 +345,19 @@ def main():
         print(f"[config] base_seed   = {args.seed}")
 
     sess  = make_session()
-    stats = check_server(sess)
-    base, inp_dir, out_dir = parse_io_dirs(stats)
+    if args.skip_comfyui_check:
+        cached = load_io_cache() or {}
+        base = cached.get("base_dir")
+        inp_dir = args.comfyui_input_dir or cached.get("input_dir")
+        out_dir = cached.get("output_dir")
+        if not inp_dir:
+            raise RuntimeError(
+                "ComfyUI input dir missing; remove --skip-comfyui-check or provide --comfyui-input-dir."
+            )
+    else:
+        stats = check_server(sess)
+        base, inp_dir, out_dir = parse_io_dirs(stats)
+        save_io_cache(base, inp_dir, out_dir)
 
     df = read_prompts(excel_path)
     print(f"[info] {len(df)} records to process.")

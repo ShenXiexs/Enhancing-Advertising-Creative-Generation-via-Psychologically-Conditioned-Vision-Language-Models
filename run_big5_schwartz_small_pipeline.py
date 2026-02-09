@@ -173,9 +173,12 @@ def run_render(job: dict, args) -> None:
         "--exp-name", job["exp_tag"],
         "--output-root", args.render_root,
     ]
+    if getattr(args, "_comfy_checked", False) and not args.always_check_comfyui:
+        render_cmd.append("--skip-comfyui-check")
     if job.get("seed") is not None:
         render_cmd.extend(["--seed", str(job["seed"])])
     run_cmd(render_cmd, f"ComfyUI render ({job['label']})")
+    args._comfy_checked = True
 
 
 def run_pairs(job: dict, args) -> None:
@@ -434,6 +437,8 @@ def main():
                         help="Reuse existing prompts/normalized/render outputs.")
     parser.add_argument("--skip-kill-ollama", action="store_true",
                         help="Do not pkill ollama before rendering.")
+    parser.add_argument("--always-check-comfyui", action="store_true",
+                        help="Always check ComfyUI service before every render job.")
     parser.add_argument("--skip-prompts", action="store_true",
                         help="Skip prompt generation (requires existing Excel).")
     parser.add_argument("--skip-normalize", action="store_true",
@@ -451,6 +456,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true",
                         help="Print commands without executing.")
     args = parser.parse_args()
+    args._comfy_checked = False
 
     set_dry_run(args.dry_run)
 
