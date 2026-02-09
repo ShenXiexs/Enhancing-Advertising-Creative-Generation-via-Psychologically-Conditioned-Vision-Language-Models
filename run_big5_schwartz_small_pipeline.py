@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Small experiment pipeline:
+Small experiment pipeline (target-audience personas + style variants):
 - 10 products from the experiment-small CSV (see DEFAULT_STEP1_CSV)
-- No persona: 10 images
-- Big Five: 5 traits x (High/Low) = 10 profiles -> 100 images
-- Schwartz values: 10 values -> 100 images
+- Big Five: 5 traits x (High/Low) = 10 profiles
+- Schwartz values: 10 values
+- Style variants: with style constraints, and no-style + 4k
 """
 from __future__ import annotations
 
@@ -200,8 +200,12 @@ def build_big5_jobs() -> List[dict]:
     return jobs
 
 
-def process_big5_profile(profile: dict, args, seed: int) -> dict:
+def process_big5_profile(profile: dict, args, seed: int,
+                         style_constraints: str, end_with_4k: str,
+                         style_tag: str = "") -> dict:
     exp_tag = f"{args.big5_exp_prefix}_{profile['label']}"
+    if style_tag:
+        exp_tag = f"{exp_tag}_{style_tag}"
     prompts_path = Path(args.prompts_dir) / f"{PROMPT_PREFIX}_{exp_tag}.xlsx"
 
     if args.skip_prompts:
@@ -220,8 +224,8 @@ def process_big5_profile(profile: dict, args, seed: int) -> dict:
             "--big5-types", profile["tokens"],
             "--big5-mode", args.persona_mode,
             "--big5-persona-style", args.big5_persona_style,
-            "--style-constraints", args.style_constraints,
-            "--end-with-4k", args.end_with_4k,
+            "--style-constraints", style_constraints,
+            "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -249,10 +253,14 @@ def process_big5_profile(profile: dict, args, seed: int) -> dict:
     return {"kind": "big5", "label": f"big5_{profile['label']}", "exp_tag": exp_tag, "subset": subset_path}
 
 
-def process_schwartz_value(value_type: str, args, seed: int) -> dict:
+def process_schwartz_value(value_type: str, args, seed: int,
+                           style_constraints: str, end_with_4k: str,
+                           style_tag: str = "") -> dict:
     value_tag = re.sub(r"[^0-9A-Za-z_\-]+", "_", value_type.strip().lower())
     value_tag = re.sub(r"_+", "_", value_tag).strip("_") or "value"
     exp_tag = f"{args.schwartz_exp_prefix}_{value_tag}"
+    if style_tag:
+        exp_tag = f"{exp_tag}_{style_tag}"
     prompts_path = Path(args.prompts_dir) / f"{PROMPT_PREFIX}_{exp_tag}.xlsx"
 
     if args.skip_prompts:
@@ -270,8 +278,8 @@ def process_schwartz_value(value_type: str, args, seed: int) -> dict:
             "--schwartz-type", value_type,
             "--schwartz-mode", args.persona_mode,
             "--schwartz-persona-style", args.schwartz_persona_style,
-            "--style-constraints", args.style_constraints,
-            "--end-with-4k", args.end_with_4k,
+            "--style-constraints", style_constraints,
+            "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -299,8 +307,12 @@ def process_schwartz_value(value_type: str, args, seed: int) -> dict:
     return {"kind": "schwartz", "label": f"schwartz_{value_type}", "exp_tag": exp_tag, "subset": subset_path}
 
 
-def process_no_persona(args, seed: int) -> dict:
+def process_no_persona(args, seed: int,
+                       style_constraints: str, end_with_4k: str,
+                       style_tag: str = "") -> dict:
     exp_tag = args.nopersona_exp_prefix
+    if style_tag:
+        exp_tag = f"{exp_tag}_{style_tag}"
     prompts_path = Path(args.prompts_dir) / f"{PROMPT_PREFIX}_{exp_tag}.xlsx"
 
     if args.skip_prompts:
@@ -314,8 +326,8 @@ def process_no_persona(args, seed: int) -> dict:
             sys.executable, "create_categorical_prompts.py",
             "--model", args.prompt_model,
             "--persona-kind", "none",
-            "--style-constraints", args.style_constraints,
-            "--end-with-4k", args.end_with_4k,
+            "--style-constraints", style_constraints,
+            "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
@@ -345,7 +357,7 @@ def process_no_persona(args, seed: int) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Small pipeline: 10 products -> 210 images (no persona + Big Five + Schwartz)."
+        description="Small pipeline: target-audience Big Five + Schwartz with two style variants."
     )
     parser.add_argument("--step1-csv", default=DEFAULT_STEP1_CSV,
                         help="Step1 input CSV/XLSX (default: experiment_small).")
@@ -356,9 +368,12 @@ def main():
     parser.add_argument("--prompt-model", choices=["7b", "32b"], default="32b",
                         help="Model size for prompt generation.")
     parser.add_argument("--style-constraints", choices=["on", "off"], default="on",
-                        help="Include style constraint tail in prompts (default: on).")
+                        help="Style constraints for custom variant only (default: on).")
     parser.add_argument("--end-with-4k", choices=["on", "off"], default="on",
-                        help="Require prompts to end with \"4k\" (default: on).")
+                        help="4k suffix for custom variant only (default: on).")
+    parser.add_argument("--style-variants", choices=["both", "style", "no-style", "custom"], default="both",
+                        help="Style variants to run: both=style+no-style+4k, style=style only, "
+                             "no-style=no-style+4k only, custom=use --style-constraints/--end-with-4k.")
     parser.add_argument("--seed", type=int, default=125,
                         help="Global random seed.")
     parser.add_argument("--persona-mode", choices=["concat", "inline"], default="inline",
@@ -367,7 +382,7 @@ def main():
                         help="Disable background style descriptions (triad).")
     parser.add_argument("--big5-plan", choices=["A", "B"], default="A",
                         help="Big Five persona plan.")
-    parser.add_argument("--big5-persona-style", choices=["legacy", "target"], default="legacy",
+    parser.add_argument("--big5-persona-style", choices=["legacy", "target"], default="target",
                         help="Big Five persona wording: legacy=As a picture; target=Target audience.")
     parser.add_argument("--big5-profiles", default=DEFAULT_BIG5_PROFILES,
                         help="Big Five profiles CSV path.")
@@ -377,12 +392,14 @@ def main():
                         help="Schwartz profiles CSV path.")
     parser.add_argument("--schwartz-types", default="",
                         help="Comma/newline separated Schwartz value types; empty means all.")
-    parser.add_argument("--schwartz-persona-style", choices=["legacy", "target"], default="legacy",
+    parser.add_argument("--schwartz-persona-style", choices=["legacy", "target"], default="target",
                         help="Schwartz persona wording: legacy=You prioritize; target=Target audience.")
     parser.add_argument("--limit-schwartz", type=int, default=0,
                         help="Limit to first N Schwartz values (0 = all).")
     parser.add_argument("--schwartz-exp-prefix", default="schwartz_small",
                         help="Prefix for Schwartz outputs.")
+    parser.add_argument("--include-nopersona", action="store_true",
+                        help="Also run no-persona baseline outputs.")
     parser.add_argument("--nopersona-exp-prefix", default="nopersona_small",
                         help="Prefix for no-persona outputs.")
     parser.add_argument("--prompts-dir", default="out_step1",
@@ -438,16 +455,44 @@ def main():
     if args.limit_schwartz and args.limit_schwartz > 0:
         schwartz_values = schwartz_values[:args.limit_schwartz]
 
-    jobs = []
-    jobs.append(process_no_persona(args, seed=args.seed))
-    for idx, profile in enumerate(big5_jobs):
-        job = process_big5_profile(profile, args, seed=args.seed + idx * 101)
-        jobs.append(job)
+    if args.style_variants == "both":
+        variants = [
+            ("style", "on", "on"),
+            ("nostyle4k", "off", "on"),
+        ]
+    elif args.style_variants == "style":
+        variants = [("style", "on", "on")]
+    elif args.style_variants == "no-style":
+        variants = [("nostyle4k", "off", "on")]
+    else:
+        tag = (
+            f"custom_{'style' if args.style_constraints == 'on' else 'nostyle'}_"
+            f"{'4k' if args.end_with_4k == 'on' else 'no4k'}"
+        )
+        variants = [(tag, args.style_constraints, args.end_with_4k)]
 
-    offset = len(big5_jobs) + 1
-    for idx, value_type in enumerate(schwartz_values):
-        job = process_schwartz_value(value_type, args, seed=args.seed + (offset + idx) * 101)
-        jobs.append(job)
+    jobs = []
+    for v_idx, (tag, style_constraints, end_with_4k) in enumerate(variants):
+        base_seed = args.seed + v_idx * 10000
+        if args.include_nopersona:
+            jobs.append(process_no_persona(args, seed=base_seed,
+                                           style_constraints=style_constraints,
+                                           end_with_4k=end_with_4k,
+                                           style_tag=tag))
+        for idx, value_type in enumerate(schwartz_values):
+            job = process_schwartz_value(value_type, args, seed=base_seed + idx * 101,
+                                         style_constraints=style_constraints,
+                                         end_with_4k=end_with_4k,
+                                         style_tag=tag)
+            jobs.append(job)
+
+        offset = len(schwartz_values) + 1
+        for idx, profile in enumerate(big5_jobs):
+            job = process_big5_profile(profile, args, seed=base_seed + (offset + idx) * 101,
+                                       style_constraints=style_constraints,
+                                       end_with_4k=end_with_4k,
+                                       style_tag=tag)
+            jobs.append(job)
 
     if not jobs:
         print("[WARN] no jobs created, exit.")
