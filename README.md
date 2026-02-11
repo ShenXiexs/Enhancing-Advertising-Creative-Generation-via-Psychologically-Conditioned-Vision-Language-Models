@@ -82,6 +82,7 @@ python run_schwartz_value_pipeline.py \
 ```bash
 python run_big5_schwartz_small_pipeline.py \
   --prompt-model 32b \
+  --persona-mode both \
   --style-constraints on \
   --end-with-4k on
 ```
@@ -100,7 +101,8 @@ Common flags:
 - `--per-category`: samples per category (`<=0` keeps all)
 - `--resume`: reuse existing outputs
 - `--skip-render / --skip-pairs`: stop before render or pair stage
-- `--skip-kill-ollama`: do not `pkill -9 ollama` before rendering
+- Auto GPU release: pipeline runs `pkill -9 ollama` before ComfyUI rendering by default
+- `--skip-kill-ollama`: skip that `pkill -9 ollama` step
 - `--style-constraints on|off`: include style constraint tail
 - `--end-with-4k on|off`: require prompts to end with `4k`
 
@@ -159,7 +161,9 @@ python merge_pairs.py \
 `create_categorical_prompts.py` supports:
 - `--persona-kind`: `none | mbti | big5 | schwartz | auto`
 - Persona modes: `--mbti-mode/--big5-mode/--schwartz-mode` = `concat | inline`
-  - `concat`: persona text appended to final prompt after generation
+  - `concat`: final prompt is rewritten to `prompt: <Target Audience ...> <scene description>`
+    - For Big Five/Schwartz `target` style, audience text is prepended before scene text
+    - This keeps persona cues in the front of the actual text sent to ComfyUI
   - `inline`: persona text inserted into system prompt
 - Persona wording style:
   - Big Five: `--big5-persona-style legacy|target`

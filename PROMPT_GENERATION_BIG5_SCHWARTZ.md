@@ -1,5 +1,12 @@
 # Step1 背景 Prompt 生成逻辑（Big Five & Schwartz Value）
 
+## 0.1 Latest behavior (2026-02 update)
+- `concat` no longer appends persona text to the end.
+- For Big Five / Schwartz with `target` wording, `concat` now builds:
+  - `prompt: <Target audience sentence(s)> <scene description>`
+- This front-loads audience semantics so the effective text sent to ComfyUI starts with target-audience cues.
+- `inline` behavior stays the same: persona guidance is placed inside system prompt before generation.
+
 ## 0. 先澄清：Step1 vs Step2
 - Step1（`create_promo_titles.py`）生成短标题，输出 `out_step1/step1_titles.xlsx`。
 - 背景 prompt 实际在 `create_categorical_prompts.py` 生成，输出 `out_step1/step1_prompts_*.xlsx`（README 里叫 Step2 Prompt）。
@@ -32,7 +39,9 @@ Choose ONE background style by product type:
 
 ### 1.3 Persona 叠加方式（inline / concat）
 - inline：persona 插入到 system prompt 中（位置在 TASK 之前）。
-- concat：Ollama 只看到 Base/Triad/Task/Tail，模型输出后再拼 persona 文本。
+- concat：
+  - Big Five / Schwartz (`target`): `prompt: <Target audience ...> <scene description>`
+  - Other persona styles: keep compatibility path and still compose a final text prompt for rendering.
 
 ### 1.4 Ollama 请求形态（`create_categorical_prompts.py`）
 ```json

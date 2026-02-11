@@ -167,6 +167,8 @@ def pkill_ollama():
 
 
 def run_render(job: dict, args) -> None:
+    if not args.skip_kill_ollama:
+        pkill_ollama()
     render_cmd = [
         sys.executable, "render_with_comfyui.py",
         "--prompts-file", str(job["subset"]),
@@ -206,8 +208,9 @@ def build_big5_jobs() -> List[dict]:
 
 
 def process_big5_profile(profile: dict, args, seed: int,
+                         persona_mode: str,
                          style_constraints: str, end_with_4k: str,
-                         style_tag: str = "") -> dict:
+                         style_tag: str = "", disable_triad: bool = False) -> dict:
     exp_tag = f"{args.big5_exp_prefix}_{profile['label']}"
     if style_tag:
         exp_tag = f"{exp_tag}_{style_tag}"
@@ -227,14 +230,14 @@ def process_big5_profile(profile: dict, args, seed: int,
             "--big5-plan", args.big5_plan,
             "--big5-profiles", args.big5_profiles,
             "--big5-types", profile["tokens"],
-            "--big5-mode", args.persona_mode,
+            "--big5-mode", persona_mode,
             "--big5-persona-style", args.big5_persona_style,
             "--style-constraints", style_constraints,
             "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
-        if args.no_background:
+        if args.no_background or disable_triad:
             cmd.append("--disable-triad")
         run_cmd(cmd, f"generate prompts (Big5={profile['label']})")
 
@@ -257,7 +260,7 @@ def process_big5_profile(profile: dict, args, seed: int,
 
     return {
         "kind": "big5",
-        "label": f"big5_{profile['label']}",
+        "label": f"big5_{profile['label']}_{persona_mode}",
         "exp_tag": exp_tag,
         "subset": subset_path,
         "seed": seed,
@@ -265,8 +268,9 @@ def process_big5_profile(profile: dict, args, seed: int,
 
 
 def process_schwartz_value(value_type: str, args, seed: int,
+                           persona_mode: str,
                            style_constraints: str, end_with_4k: str,
-                           style_tag: str = "") -> dict:
+                           style_tag: str = "", disable_triad: bool = False) -> dict:
     value_tag = re.sub(r"[^0-9A-Za-z_\-]+", "_", value_type.strip().lower())
     value_tag = re.sub(r"_+", "_", value_tag).strip("_") or "value"
     exp_tag = f"{args.schwartz_exp_prefix}_{value_tag}"
@@ -287,14 +291,14 @@ def process_schwartz_value(value_type: str, args, seed: int,
             "--persona-kind", "schwartz",
             "--schwartz-profiles", args.schwartz_profiles,
             "--schwartz-type", value_type,
-            "--schwartz-mode", args.persona_mode,
+            "--schwartz-mode", persona_mode,
             "--schwartz-persona-style", args.schwartz_persona_style,
             "--style-constraints", style_constraints,
             "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
-        if args.no_background:
+        if args.no_background or disable_triad:
             cmd.append("--disable-triad")
         run_cmd(cmd, f"generate prompts (Schwartz={value_type})")
 
@@ -317,7 +321,7 @@ def process_schwartz_value(value_type: str, args, seed: int,
 
     return {
         "kind": "schwartz",
-        "label": f"schwartz_{value_type}",
+        "label": f"schwartz_{value_type}_{persona_mode}",
         "exp_tag": exp_tag,
         "subset": subset_path,
         "seed": seed,
@@ -326,7 +330,7 @@ def process_schwartz_value(value_type: str, args, seed: int,
 
 def process_no_persona(args, seed: int,
                        style_constraints: str, end_with_4k: str,
-                       style_tag: str = "") -> dict:
+                       style_tag: str = "", disable_triad: bool = False) -> dict:
     exp_tag = args.nopersona_exp_prefix
     if style_tag:
         exp_tag = f"{exp_tag}_{style_tag}"
@@ -348,7 +352,7 @@ def process_no_persona(args, seed: int,
             "--exp-name", exp_tag,
             "--seed", str(seed),
         ]
-        if args.no_background:
+        if args.no_background or disable_triad:
             cmd.append("--disable-triad")
         run_cmd(cmd, "generate prompts (no persona)")
 
@@ -396,11 +400,11 @@ def main():
                         help="4k suffix for custom variant only (default: on).")
     parser.add_argument("--style-variants", choices=["both", "style", "no-style", "custom"], default="both",
                         help="Style variants to run: both=style+no-style+4k, style=style only, "
-                             "no-style=no-style+4k only, custom=use --style-constraints/--end-with-4k.")
+                             "no-style=no-style+4k only (also disables triad), custom=use --style-constraints/--end-with-4k.")
     parser.add_argument("--seed", type=int, default=2026,
                         help="Global random seed.")
-    parser.add_argument("--persona-mode", choices=["concat", "inline"], default="inline",
-                        help="Persona mode for Big5/Schwartz (default: inline).")
+    parser.add_argument("--persona-mode", choices=["concat", "inline", "both"], default="inline",
+                        help="Persona mode for Big5/Schwartz: concat, inline, or both (default: inline).")
     parser.add_argument("--no-background", action="store_true",
                         help="Disable background style descriptions (triad).")
     parser.add_argument("--big5-plan", choices=["A", "B"], default="A",
@@ -483,49 +487,55 @@ def main():
 
     if args.style_variants == "both":
         variants = [
-            ("style", "on", "on"),
-            ("nostyle4k", "off", "on"),
+            ("style", "on", "on", False),
+            ("nostyle4k", "off", "on", True),
         ]
     elif args.style_variants == "style":
-        variants = [("style", "on", "on")]
+        variants = [("style", "on", "on", False)]
     elif args.style_variants == "no-style":
-        variants = [("nostyle4k", "off", "on")]
+        variants = [("nostyle4k", "off", "on", True)]
     else:
         tag = (
             f"custom_{'style' if args.style_constraints == 'on' else 'nostyle'}_"
             f"{'4k' if args.end_with_4k == 'on' else 'no4k'}"
         )
-        variants = [(tag, args.style_constraints, args.end_with_4k)]
+        variants = [(tag, args.style_constraints, args.end_with_4k, False)]
+
+    persona_modes = ["concat", "inline"] if args.persona_mode == "both" else [args.persona_mode]
 
     jobs = []
-    for v_idx, (tag, style_constraints, end_with_4k) in enumerate(variants):
+    for v_idx, (tag, style_constraints, end_with_4k, disable_triad) in enumerate(variants):
         base_seed = args.seed
         if not args.skip_nopersona:
             jobs.append(process_no_persona(args, seed=base_seed,
                                            style_constraints=style_constraints,
                                            end_with_4k=end_with_4k,
-                                           style_tag=tag))
-        for idx, value_type in enumerate(schwartz_values):
-            job = process_schwartz_value(value_type, args, seed=base_seed + idx * 101,
-                                         style_constraints=style_constraints,
-                                         end_with_4k=end_with_4k,
-                                         style_tag=tag)
-            jobs.append(job)
+                                           style_tag=tag,
+                                           disable_triad=disable_triad))
+        for mode in persona_modes:
+            mode_tag = tag if len(persona_modes) == 1 else f"{tag}_{mode}"
+            for idx, value_type in enumerate(schwartz_values):
+                job = process_schwartz_value(value_type, args, seed=base_seed + idx * 101,
+                                             persona_mode=mode,
+                                             style_constraints=style_constraints,
+                                             end_with_4k=end_with_4k,
+                                             style_tag=mode_tag,
+                                             disable_triad=disable_triad)
+                jobs.append(job)
 
-        offset = len(schwartz_values) + 1
-        for idx, profile in enumerate(big5_jobs):
-            job = process_big5_profile(profile, args, seed=base_seed + (offset + idx) * 101,
-                                       style_constraints=style_constraints,
-                                       end_with_4k=end_with_4k,
-                                       style_tag=tag)
-            jobs.append(job)
+            offset = len(schwartz_values) + 1
+            for idx, profile in enumerate(big5_jobs):
+                job = process_big5_profile(profile, args, seed=base_seed + (offset + idx) * 101,
+                                           persona_mode=mode,
+                                           style_constraints=style_constraints,
+                                           end_with_4k=end_with_4k,
+                                           style_tag=mode_tag,
+                                           disable_triad=disable_triad)
+                jobs.append(job)
 
     if not jobs:
         print("[WARN] no jobs created, exit.")
         return
-
-    if not args.skip_render and not args.skip_kill_ollama:
-        pkill_ollama()
 
     if args.skip_render:
         print("\n=== Render skipped (--skip-render) ===")

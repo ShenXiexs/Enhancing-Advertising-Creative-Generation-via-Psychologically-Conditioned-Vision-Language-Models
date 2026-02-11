@@ -790,6 +790,37 @@ def build_big5_block(rows, plan: str, style: str = "legacy") -> str:
     return "\n".join(lines)
 
 
+def build_big5_target_audience_lead(rows) -> str:
+    if not rows:
+        return ""
+    if len(rows) == 1:
+        r = rows[0]
+        trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+        level = _text_or_empty(r.get("big5_level")) or "Level"
+        desc = _ensure_sentence_end(_to_audience_text(_text_or_empty(r.get("big5_do"))))
+        avoid = _ensure_sentence_end(_to_audience_negative_text(_text_or_empty(r.get("big5_avoid"))))
+        parts = [f"The product is targeted to audience with Big Five: {trait} ({level})."]
+        if desc:
+            parts.append(desc)
+        if avoid:
+            parts.append(avoid)
+        return " ".join(parts).strip()
+
+    parts = ["The product is targeted to audience with these Big Five profiles."]
+    for r in rows:
+        trait = _text_or_empty(r.get("big5_trait")) or "Trait"
+        level = _text_or_empty(r.get("big5_level")) or "Level"
+        desc = _ensure_sentence_end(_to_audience_text(_text_or_empty(r.get("big5_do"))))
+        avoid = _ensure_sentence_end(_to_audience_negative_text(_text_or_empty(r.get("big5_avoid"))))
+        sentence = [f"Profile: {trait} ({level})."]
+        if desc:
+            sentence.append(desc)
+        if avoid:
+            sentence.append(avoid)
+        parts.append(" ".join(sentence).strip())
+    return " ".join(parts).strip()
+
+
 def big5_label_from_tokens(tokens) -> str:
     def level_code(level: str) -> str:
         return "H" if str(level).lower().startswith("h") or str(level).startswith("+") else "L"
@@ -866,6 +897,33 @@ def build_schwartz_block(row: pd.Series, style: str = "legacy") -> str:
             f"This audience tends to be: {value_do_clean}.",
         ])
     return "\n".join(lines)
+
+
+def build_schwartz_target_audience_lead(row: pd.Series) -> str:
+    value_type = _text_or_empty(row.get("schwartz_value_type"))
+    value_do = _text_or_empty(row.get("schwartz_value_do"))
+    if not value_type or not value_do:
+        return ""
+    value_do = _ensure_sentence_end(value_do).rstrip()
+    if value_do.endswith((".", "!", "?")):
+        value_do = value_do[:-1].rstrip()
+    return (
+        f"The product is targeted to audience who prioritize {value_type} (Schwartz value). "
+        f"This audience tends to be: {value_do}."
+    ).strip()
+
+
+def compose_concat_prompt(scene_prompt: str, audience_lead: str = "") -> str:
+    scene = re.sub(r"^\s*prompt\s*:\s*", "", (scene_prompt or "").strip(), flags=re.I)
+    lead = re.sub(r"\s+", " ", (audience_lead or "").strip())
+    if lead:
+        body = f"{lead} {scene}".strip()
+    else:
+        body = scene
+    body = re.sub(r"\s+", " ", body).strip()
+    if not body:
+        return "prompt:"
+    return f"prompt: {body}"
 
 # ======== Triad & style mapping ========
 def load_triad(triad_path: str) -> dict:
@@ -1155,6 +1213,12 @@ def main():
             persona_important = SCHWARTZ_IMPORTANT_NOTE
         else:
             persona_important = ""
+        persona_concat_lead = ""
+        if persona_mode_current == "concat":
+            if big5_enabled and big5_style == "target":
+                persona_concat_lead = build_big5_target_audience_lead(big5_rows)
+            elif schwartz_enabled and schwartz_style == "target":
+                persona_concat_lead = build_schwartz_target_audience_lead(schwartz_row)
         sys_prompt_inline = sys_prompt
         if persona_instruction and persona_mode_current == "inline":
             sys_prompt_inline = build_system_prompt_inline(
@@ -1200,10 +1264,13 @@ def main():
 
         if persona_instruction and persona_mode_current:
             if persona_mode_current == "concat":
-                combined = (one_line.strip() + "\n\n" + persona_instruction).strip()
-                if persona_important:
-                    combined = (combined + "\n\n" + persona_important).strip()
-                one_line = combined or one_line
+                if persona_concat_lead:
+                    one_line = compose_concat_prompt(one_line.strip(), persona_concat_lead)
+                else:
+                    combined = (one_line.strip() + "\n\n" + persona_instruction).strip()
+                    if persona_important:
+                        combined = (combined + "\n\n" + persona_important).strip()
+                    one_line = compose_concat_prompt(combined)
                 if mbti_enabled:
                     cnt_mbti_attached += 1
                 elif big5_enabled:

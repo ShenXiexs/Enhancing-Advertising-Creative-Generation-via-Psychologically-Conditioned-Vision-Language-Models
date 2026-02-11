@@ -82,6 +82,7 @@ python run_schwartz_value_pipeline.py \
 ```bash
 python run_big5_schwartz_small_pipeline.py \
   --prompt-model 32b \
+  --persona-mode both \
   --style-constraints on \
   --end-with-4k on
 ```
@@ -100,7 +101,8 @@ python run_no_persona_pipeline.py \
 - `--per-category`：每个大类抽样数（`<=0` 为全量）
 - `--resume`：复用已有中间产物
 - `--skip-render / --skip-pairs`：只跑前处理或只做渲染
-- `--skip-kill-ollama`：渲染前不 `pkill -9 ollama`
+- 默认会在 ComfyUI 渲染前执行 `pkill -9 ollama` 释放显存
+- `--skip-kill-ollama`：跳过该释放步骤
 - `--style-constraints on|off`：是否保留风格约束尾巴
 - `--end-with-4k on|off`：是否要求 prompt 以 `4k` 结尾
 
@@ -159,7 +161,8 @@ python merge_pairs.py \
 `create_categorical_prompts.py` 支持：
 - `--persona-kind`：`none | mbti | big5 | schwartz | auto`
 - Persona 拼接模式：`--mbti-mode/--big5-mode/--schwartz-mode` = `concat | inline`
-  - `concat`：模型输出后再拼 persona 文本
+  - `concat`：最终文本改写为 `prompt: <Target Audience...> <scene>`
+    - 对 Big Five / Schwartz 的 `target` 风格，target audience 会前置在场景描述之前
   - `inline`：persona 作为 system prompt 的一部分
 - Persona 文案风格：
   - Big Five：`--big5-persona-style legacy|target`
