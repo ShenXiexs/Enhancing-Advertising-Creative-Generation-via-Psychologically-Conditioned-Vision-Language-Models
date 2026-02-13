@@ -103,6 +103,9 @@ python run_no_persona_pipeline.py \
 - `--skip-render / --skip-pairs`：只跑前处理或只做渲染
 - 默认会在 ComfyUI 渲染前执行 `pkill -9 ollama` 释放显存
 - `--skip-kill-ollama`：跳过该释放步骤
+- `--render-observe-prompt`：在渲染时打印 prompt 可观测统计
+- `--render-save-debug-artifacts off|error|all`：保存渲染调试文件
+- `--render-debug-dir`：渲染调试文件目录（默认 `api_debug`）
 - `--style-constraints on|off`：是否保留风格约束尾巴
 - `--end-with-4k on|off`：是否要求 prompt 以 `4k` 结尾
 
@@ -143,7 +146,10 @@ python normalize_scale_and_canvas.py \
 python render_with_comfyui.py \
   --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx \
   --exp-name planA32b_enfj \
-  --output-root out_step2
+  --output-root out_step2 \
+  --observe-prompt \
+  --save-debug-artifacts all \
+  --debug-dir api_debug
 ```
 
 5) 合成对比图

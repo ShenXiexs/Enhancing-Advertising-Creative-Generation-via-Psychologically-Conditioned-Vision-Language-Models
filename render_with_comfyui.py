@@ -10,6 +10,7 @@ import copy
 import uuid
 import shutil
 import re
+import hashlib
 from datetime import datetime
 from urllib.parse import quote
 import pandas as pd
@@ -45,9 +46,7 @@ DRY_RUN_MINIMAL     = False
 SAVE_ROOT = os.path.join(os.getcwd(), "out_step2")
 SAVE_DIR = SAVE_ROOT
 
-# Debug output directory
-DEBUG_DIR = "api_debug"
-os.makedirs(DEBUG_DIR, exist_ok=True)
+DEBUG_DIR_DEFAULT = "api_debug"
 
 
 def parse_args():
@@ -84,6 +83,22 @@ def parse_args():
         default="",
         help="Override ComfyUI input directory (required if skipping check without cache).",
     )
+    parser.add_argument(
+        "--observe-prompt",
+        action="store_true",
+        help="Print prompt observability stats (length/hash/head/tail and workflow injection checks).",
+    )
+    parser.add_argument(
+        "--save-debug-artifacts",
+        choices=["off", "error", "all"],
+        default="error",
+        help="Save debug artifacts to --debug-dir: off, only on error, or all tasks.",
+    )
+    parser.add_argument(
+        "--debug-dir",
+        default=DEBUG_DIR_DEFAULT,
+        help="Directory for prompt/workflow/history debug files (default: api_debug).",
+    )
     return parser.parse_args()
 
 
@@ -94,6 +109,60 @@ def _sanitize_tag(tag: str) -> str:
     cleaned = re.sub(r"[^0-9A-Za-z_\-]+", "_", tag)
     cleaned = re.sub(r"_+", "_", cleaned).strip("_")
     return cleaned
+
+
+def _prompt_stats(text):
+    s = "" if text is None else str(text)
+    chars = len(s)
+    utf8_bytes = len(s.encode("utf-8"))
+    words = len(re.findall(r"\S+", s))
+    lines = s.count("\n") + (1 if s else 0)
+    sha1_12 = hashlib.sha1(s.encode("utf-8")).hexdigest()[:12]
+    approx_tokens = max(1, int(round(utf8_bytes / 3.8))) if s else 0
+    return {
+        "chars": chars,
+        "utf8_bytes": utf8_bytes,
+        "words": words,
+        "lines": lines,
+        "sha1_12": sha1_12,
+        "approx_tokens": approx_tokens,
+    }
+
+
+def _preview_head(text, n=180):
+    s = "" if text is None else str(text)
+    return s[:n].replace("\n", "\\n")
+
+
+def _preview_tail(text, n=180):
+    s = "" if text is None else str(text)
+    return s[-n:].replace("\n", "\\n")
+
+
+def _find_prompt_nodes(wf, prompt_text):
+    target = "" if prompt_text is None else str(prompt_text)
+    hits = []
+    for nid, node in (wf or {}).items():
+        if not isinstance(node, dict):
+            continue
+        c = node.get("class_type")
+        ins = node.get("inputs", {}) or {}
+        val = ins.get("value")
+        if c == "PrimitiveString" and isinstance(val, str) and val == target:
+            hits.append(str(nid))
+    return hits
+
+
+def _save_json(path, obj):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, indent=2)
+
+
+def _save_text(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("" if text is None else str(text))
 
 
 # ---------------- HTTP / basics ----------------
@@ -337,10 +406,20 @@ def main():
 
     global SAVE_DIR
     SAVE_DIR = final_save_dir
+    debug_root = os.path.join(os.path.abspath(args.debug_dir), exp_tag)
+    save_debug_mode = (args.save_debug_artifacts or "error").strip().lower()
+    if save_debug_mode not in ("off", "error", "all"):
+        save_debug_mode = "error"
+    if args.observe_prompt or save_debug_mode != "off":
+        os.makedirs(debug_root, exist_ok=True)
 
     print(f"[config] prompts_file = {excel_path}")
     print(f"[config] experiment   = {exp_tag}")
     print(f"[config] save_dir     = {SAVE_DIR}")
+    if args.observe_prompt:
+        print(f"[config] prompt_observe = on")
+    if save_debug_mode != "off":
+        print(f"[config] debug_dir    = {debug_root} (mode={save_debug_mode})")
     if args.seed and args.seed > 0:
         print(f"[config] base_seed   = {args.seed}")
 
@@ -372,6 +451,7 @@ def main():
         pid    = str(rec.get(ID_COL))
         fn     = rec.get(FILENAME_COL)
         prompt = rec.get(PROMPT_COL)
+        prompt_text = "" if prompt is None else str(prompt)
         neg    = NEG_DEFAULT
 
         print(f"\n[task {i}/{len(df)}] id={pid}")
@@ -392,12 +472,22 @@ def main():
             {"1": {"class_type": "LoadImage", "inputs": {"image": os.path.basename(img_in_input)}},
              "2": {"class_type": "SaveImage", "inputs": {"filename_prefix": out_pref, "images": ["1", 0]}}}
             if DRY_RUN_MINIMAL else
-            inject_params(wf_template, img_in_input, prompt, neg, out_pref, seed=seed_i)
+            inject_params(wf_template, img_in_input, prompt_text, neg, out_pref, seed=seed_i)
         )
 
         # === Only change: use qwen_image_filenames from Excel as save basename ===
         qwen_name = str(rec.get("qwen_image_filenames") or "").strip()
         prefer_basename = qwen_name
+        pstats = _prompt_stats(prompt_text)
+        wf_prompt_hits = [] if DRY_RUN_MINIMAL else _find_prompt_nodes(wf, prompt_text)
+        if args.observe_prompt:
+            print(
+                "  [observe] prompt_chars={chars} bytes={utf8_bytes} words={words} "
+                "lines={lines} approx_tokens={approx_tokens} sha1={sha1_12}".format(**pstats)
+            )
+            print(f"  [observe] prompt_head: {_preview_head(prompt_text)}")
+            print(f"  [observe] prompt_tail: {_preview_tail(prompt_text)}")
+            print(f"  [observe] wf_prompt_hits={len(wf_prompt_hits)} node_ids={wf_prompt_hits}")
 
         # Log key injected values
         print("  [debug] inputs going into workflow:")
@@ -406,8 +496,18 @@ def main():
         print(f"    used_name : {os.path.basename(img_in_input)}  # for LoadImage")
         print(f"    out_prefix: {out_pref}")
         print(f"    save_name : {prefer_basename}{{ext}}  # Used for out_step2 output names")
-        print(f"    prompt    : {str(prompt)[:160]}")
+        print(f"    prompt    : {prompt_text[:160]}")
         print(f"    neg       : {str(neg)[:160]}")
+        if save_debug_mode == "all":
+            base = os.path.join(debug_root, f"{pid}")
+            _save_text(base + "_prompt.txt", prompt_text)
+            _save_json(base + "_stats.json", {
+                "id": pid,
+                "seed": seed_i,
+                "prompt_stats": pstats,
+                "wf_prompt_hit_nodes": wf_prompt_hits,
+            })
+            _save_json(base + "_workflow.json", wf)
 
         try:
             print(" queueing...")
@@ -423,6 +523,8 @@ def main():
             status, dur, hist = wait_history(sess, job_id)
             if status == "ok":
                 durations.append(dur)
+                if save_debug_mode == "all":
+                    _save_json(os.path.join(debug_root, f"{pid}_history.json"), hist)
                 # Download outputs to ./out_step2, named by prefer_basename
                 saved_paths = save_outputs(sess, hist, SAVE_DIR, prefer_basename=prefer_basename)
                 if saved_paths:
@@ -436,18 +538,17 @@ def main():
                 print(f" error: status={status} ({dur:.1f}s)")
                 print_error_messages(hist)
                 # Save prompt/history for reproducibility
-                with open(os.path.join(DEBUG_DIR, f"{pid}_prompt.json"), "w", encoding="utf-8") as f:
-                    json.dump(wf, f, ensure_ascii=False, indent=2)
-                with open(os.path.join(DEBUG_DIR, f"{pid}_history.json"), "w", encoding="utf-8") as f:
-                    json.dump(hist, f, ensure_ascii=False, indent=2)
+                if save_debug_mode in ("error", "all"):
+                    _save_json(os.path.join(debug_root, f"{pid}_prompt.json"), wf)
+                    _save_json(os.path.join(debug_root, f"{pid}_history.json"), hist)
                 fail += 1
         except Exception as e:
             print(f" exception: {e}")
-            try:
-                with open(os.path.join(DEBUG_DIR, f"{pid}_prompt.json"), "w", encoding="utf-8") as f:
-                    json.dump(wf, f, ensure_ascii=False, indent=2)
-            except Exception:
-                pass
+            if save_debug_mode in ("error", "all"):
+                try:
+                    _save_json(os.path.join(debug_root, f"{pid}_prompt.json"), wf)
+                except Exception:
+                    pass
             fail += 1
 
     # Average duration

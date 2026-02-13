@@ -50,8 +50,4 @@ Target audience: people who prioritize Achievement (Schwartz value).
 
 This audience tends to be: Striving for personal success through competence. Refers to personal success achieved throug h demonstrating competence according to social standards. For example: successful, capable, ambitious, influential.
 
-
-
-现在是：
-
 prompt:  The product is targeted to audience who prioritize Achievement (Schwartz value). This audience tends to be: Striving for personal success through competence. Refers to personal success achieved throug h demonstrating competence according to social standards. For example: successful, capable, ambitious, influential. The product is showcased against a neutral-to-deep gradient backdrop, with a subtle, clean rim highlight accentu ating its edges. The low-gloss base manages specular reflections, keeping the lines of the product sharp and precise. A fain t, almost imperceptible grid pattern adds a touch of depth without distracting from the product. The scene is bathed in soft , directional lighting that creates realistic shadows, enhancing the product's form and texture. 4k

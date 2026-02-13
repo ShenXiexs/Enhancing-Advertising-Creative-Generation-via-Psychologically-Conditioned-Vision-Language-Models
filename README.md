@@ -103,6 +103,9 @@ Common flags:
 - `--skip-render / --skip-pairs`: stop before render or pair stage
 - Auto GPU release: pipeline runs `pkill -9 ollama` before ComfyUI rendering by default
 - `--skip-kill-ollama`: skip that `pkill -9 ollama` step
+- `--render-observe-prompt`: print prompt observability stats during rendering
+- `--render-save-debug-artifacts off|error|all`: save debug files for render requests
+- `--render-debug-dir`: debug artifact root (default: `api_debug`)
 - `--style-constraints on|off`: include style constraint tail
 - `--end-with-4k on|off`: require prompts to end with `4k`
 
@@ -143,7 +146,10 @@ python normalize_scale_and_canvas.py \
 python render_with_comfyui.py \
   --prompts-file out_step1/step1_prompts_planA32b_enfj.xlsx \
   --exp-name planA32b_enfj \
-  --output-root out_step2
+  --output-root out_step2 \
+  --observe-prompt \
+  --save-debug-artifacts all \
+  --debug-dir api_debug
 ```
 
 5) Merge comparison pairs

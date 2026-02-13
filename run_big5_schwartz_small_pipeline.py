@@ -177,6 +177,12 @@ def run_render(job: dict, args) -> None:
     ]
     if getattr(args, "_comfy_checked", False) and not args.always_check_comfyui:
         render_cmd.append("--skip-comfyui-check")
+    if args.render_observe_prompt:
+        render_cmd.append("--observe-prompt")
+    if args.render_save_debug_artifacts:
+        render_cmd.extend(["--save-debug-artifacts", args.render_save_debug_artifacts])
+    if args.render_debug_dir:
+        render_cmd.extend(["--debug-dir", args.render_debug_dir])
     if job.get("seed") is not None:
         render_cmd.extend(["--seed", str(job["seed"])])
     run_cmd(render_cmd, f"ComfyUI render ({job['label']})")
@@ -441,6 +447,12 @@ def main():
                         help="Reuse existing prompts/normalized/render outputs.")
     parser.add_argument("--skip-kill-ollama", action="store_true",
                         help="Do not pkill ollama before rendering.")
+    parser.add_argument("--render-observe-prompt", action="store_true",
+                        help="Enable prompt observability logs in render_with_comfyui.py.")
+    parser.add_argument("--render-save-debug-artifacts", choices=["off", "error", "all"], default="error",
+                        help="Save render debug artifacts: off/error/all (default: error).")
+    parser.add_argument("--render-debug-dir", default="api_debug",
+                        help="Debug artifact root directory for renderer.")
     parser.add_argument("--always-check-comfyui", action="store_true",
                         help="Always check ComfyUI service before every render job.")
     parser.add_argument("--skip-prompts", action="store_true",
