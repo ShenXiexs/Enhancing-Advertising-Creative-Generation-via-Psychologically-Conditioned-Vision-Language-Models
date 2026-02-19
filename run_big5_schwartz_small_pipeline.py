@@ -238,6 +238,7 @@ def process_big5_profile(profile: dict, args, seed: int,
             "--big5-types", profile["tokens"],
             "--big5-mode", persona_mode,
             "--big5-persona-style", args.big5_persona_style,
+            "--concat-persona-format", args.concat_persona_format,
             "--style-constraints", style_constraints,
             "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
@@ -299,6 +300,7 @@ def process_schwartz_value(value_type: str, args, seed: int,
             "--schwartz-type", value_type,
             "--schwartz-mode", persona_mode,
             "--schwartz-persona-style", args.schwartz_persona_style,
+            "--concat-persona-format", args.concat_persona_format,
             "--style-constraints", style_constraints,
             "--end-with-4k", end_with_4k,
             "--exp-name", exp_tag,
@@ -411,6 +413,9 @@ def main():
                         help="Global random seed.")
     parser.add_argument("--persona-mode", choices=["concat", "inline", "both"], default="inline",
                         help="Persona mode for Big5/Schwartz: concat, inline, or both (default: inline).")
+    parser.add_argument("--concat-persona-format", choices=["lead", "full"], default="full",
+                        help="When persona mode is concat: lead=short target-audience lead, "
+                             "full=prepend full persona block (default: full).")
     parser.add_argument("--no-background", action="store_true",
                         help="Disable background style descriptions (triad).")
     parser.add_argument("--big5-plan", choices=["A", "B"], default="A",
@@ -479,7 +484,7 @@ def main():
     ensure_create_prompts_supports(
         sys.executable,
         ("--persona-kind", "--big5-plan", "--big5-types", "--big5-mode", "--schwartz-type", "--schwartz-mode",
-         "--style-constraints", "--end-with-4k"),
+         "--style-constraints", "--end-with-4k", "--concat-persona-format"),
     )
 
     step1_path = Path(args.step1_csv)

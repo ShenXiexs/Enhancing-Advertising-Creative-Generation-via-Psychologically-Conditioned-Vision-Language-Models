@@ -233,6 +233,15 @@ def parse_args():
         help="Schwartz persona wording style: legacy (You prioritize...) or target (Target audience...).",
     )
     parser.add_argument(
+        "--concat-persona-format",
+        choices=["lead", "full"],
+        default="lead",
+        help=(
+            "When persona mode is concat: lead=prepend concise audience lead for Big5/Schwartz target style "
+            "(legacy behavior), full=prepend full persona instruction block."
+        ),
+    )
+    parser.add_argument(
         "--style-constraints",
         choices=["on", "off"],
         default="on",
@@ -1054,6 +1063,9 @@ def main():
         schwartz_type = ""
     schwartz_block = ""
     schwartz_label = ""
+    concat_persona_format = (args.concat_persona_format or "lead").strip().lower()
+    if concat_persona_format not in ("lead", "full"):
+        concat_persona_format = "lead"
 
     exp_tag = _sanitize_tag(args.exp_name)
     triad_enabled = not args.disable_triad
@@ -1080,6 +1092,7 @@ def main():
         f"PERSONA={persona_kind}, MBTI_PLAN={mbti_plan}, MBTI_TYPE={persona_mbti_type if persona_kind=='mbti' else 'n/a'}, MBTI_MODE={mbti_mode}, "
         f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, BIG5_STYLE={big5_style}, "
         f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, SCHWARTZ_STYLE={schwartz_style}, "
+        f"CONCAT_PERSONA_FORMAT={concat_persona_format}, "
         f"TRIAD_ENABLED={triad_enabled}, STYLE_CONSTRAINTS={style_constraints_enabled}, END_WITH_4K={end_with_4k_enabled}, "
         f"EXP_TAG={exp_tag or 'default'}"
     )
@@ -1264,13 +1277,14 @@ def main():
 
         if persona_instruction and persona_mode_current:
             if persona_mode_current == "concat":
-                if persona_concat_lead:
-                    one_line = compose_concat_prompt(one_line.strip(), persona_concat_lead)
+                full_persona_prefix = persona_instruction.strip()
+                if persona_important:
+                    full_persona_prefix = (full_persona_prefix + "\n\n" + persona_important).strip()
+                if concat_persona_format == "lead" and persona_concat_lead:
+                    persona_prefix = persona_concat_lead
                 else:
-                    combined = (one_line.strip() + "\n\n" + persona_instruction).strip()
-                    if persona_important:
-                        combined = (combined + "\n\n" + persona_important).strip()
-                    one_line = compose_concat_prompt(combined)
+                    persona_prefix = full_persona_prefix
+                one_line = compose_concat_prompt(one_line.strip(), persona_prefix)
                 if mbti_enabled:
                     cnt_mbti_attached += 1
                 elif big5_enabled:
