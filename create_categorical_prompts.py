@@ -128,6 +128,16 @@ def parse_args():
         description="Generate background prompts (Part2)."
     )
     parser.add_argument(
+        "--titles-file",
+        default=TITLES_XLSX,
+        help="Input Excel compatible with step1_titles.xlsx (default: out_step1/step1_titles.xlsx).",
+    )
+    parser.add_argument(
+        "--out-dir",
+        default=OUT_DIR,
+        help="Directory to save prompt Excel outputs (default: out_step1).",
+    )
+    parser.add_argument(
         "--persona-kind",
         choices=["auto", "mbti", "big5", "schwartz", "schwartz_value", "none"],
         default="auto",
@@ -240,6 +250,27 @@ def parse_args():
             "When persona mode is concat: lead=prepend concise audience lead for Big5/Schwartz target style "
             "(legacy behavior), full=prepend full persona instruction block."
         ),
+    )
+    parser.add_argument(
+        "--note-col",
+        default="",
+        help="Optional input column containing research notes or prompt hints.",
+    )
+    parser.add_argument(
+        "--note-mode",
+        choices=["soft", "hard", "off"],
+        default="soft",
+        help="How note-col should influence prompt generation (default: soft).",
+    )
+    parser.add_argument(
+        "--super-category-col",
+        default="",
+        help="Optional existing super-category column in the input file.",
+    )
+    parser.add_argument(
+        "--use-existing-super-category",
+        action="store_true",
+        help="Use an existing super-category column from --titles-file instead of remapping level-one category.",
     )
     parser.add_argument(
         "--style-constraints",
@@ -934,6 +965,25 @@ def compose_concat_prompt(scene_prompt: str, audience_lead: str = "") -> str:
         return "prompt:"
     return f"prompt: {body}"
 
+
+def build_note_guidance(note_text: str, mode: str = "soft") -> str:
+    note = _text_or_empty(note_text)
+    mode = (mode or "soft").strip().lower()
+    if not note or mode == "off":
+        return ""
+    if mode == "hard":
+        return (
+            "[Research Brief]\n"
+            f"Use this note as a strong scene constraint when feasible: {note}\n"
+            "Do not change product facts, category meaning, or the product appearance itself."
+        )
+    return (
+        "[Research Brief]\n"
+        f"Treat this note as a soft hint for scene/background direction: {note}\n"
+        "Use it only as supplementary guidance. Do not override the product category, persona logic, "
+        "product facts, or the requirement to keep the product unchanged and fully visible."
+    )
+
 # ======== Triad & style mapping ========
 def load_triad(triad_path: str) -> dict:
     df = read_any(triad_path)
@@ -1021,6 +1071,8 @@ def main():
     seed_everything(args.seed)
     global MODEL_PROMPT
     MODEL_PROMPT = f"qwen2.5vl:{args.model}"
+    titles_file = args.titles_file or TITLES_XLSX
+    out_dir = args.out_dir or OUT_DIR
     persona_kind = (args.persona_kind or "auto").strip().lower()
     if persona_kind == "schwartz_value":
         persona_kind = "schwartz"
@@ -1066,6 +1118,10 @@ def main():
     concat_persona_format = (args.concat_persona_format or "lead").strip().lower()
     if concat_persona_format not in ("lead", "full"):
         concat_persona_format = "lead"
+    note_col = (args.note_col or "").strip()
+    note_mode = (args.note_mode or "soft").strip().lower()
+    use_existing_super_category = bool(args.use_existing_super_category)
+    super_category_col = (args.super_category_col or "").strip()
 
     exp_tag = _sanitize_tag(args.exp_name)
     triad_enabled = not args.disable_triad
@@ -1082,7 +1138,7 @@ def main():
     out_name = DEFAULT_PROMPTS_NAME
     if exp_tag:
         out_name = f"step1_prompts_{exp_tag}.xlsx"
-    out_xlsx_path = os.path.join(OUT_DIR, out_name)
+    out_xlsx_path = os.path.join(out_dir, out_name)
 
     print("===> [START] Prompt generation (Part2)")
     persona_mbti_type = mbti_type_override or "mixed"
@@ -1093,16 +1149,29 @@ def main():
         f"BIG5_PLAN={big5_plan}, BIG5_TYPES={args.big5_types or 'n/a'}, BIG5_MODE={big5_mode}, BIG5_STYLE={big5_style}, "
         f"SCHWARTZ_TYPE={schwartz_type or 'n/a'}, SCHWARTZ_MODE={schwartz_mode}, SCHWARTZ_STYLE={schwartz_style}, "
         f"CONCAT_PERSONA_FORMAT={concat_persona_format}, "
+        f"TITLES_FILE={titles_file}, OUT_DIR={out_dir}, NOTE_COL={note_col or 'n/a'}, NOTE_MODE={note_mode}, "
+        f"USE_EXISTING_SUPER_CATEGORY={use_existing_super_category}, SUPER_CATEGORY_COL={super_category_col or 'auto'}, "
         f"TRIAD_ENABLED={triad_enabled}, STYLE_CONSTRAINTS={style_constraints_enabled}, END_WITH_4K={end_with_4k_enabled}, "
         f"EXP_TAG={exp_tag or 'default'}"
     )
-    os.makedirs(OUT_DIR, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
 
     # Load data
-    print(f"[Load] Titles from: {TITLES_XLSX}")
-    base   = read_any(TITLES_XLSX)  # From Part1
-    print(f"[Load] Map from: {MAP_CSV_PATH}")
-    map_df = read_any(MAP_CSV_PATH)
+    print(f"[Load] Titles from: {titles_file}")
+    base   = read_any(titles_file)  # From Part1 or research adapter
+    map_df = None
+    need_category_map = True
+    if use_existing_super_category:
+        existing_super_col = _resolve_col(base, super_category_col) if super_category_col else _find_col(
+            base, ["super_category", "super category", "super", "大类"]
+        )
+        if existing_super_col:
+            need_category_map = False
+    if need_category_map:
+        print(f"[Load] Map from: {MAP_CSV_PATH}")
+        map_df = read_any(MAP_CSV_PATH)
+    else:
+        print("[Info] Existing super category detected; skip category remapping table.")
     if triad_enabled:
         print(f"[Load] Triad from: {TRIAD_PROMPTS_PATH}")
         triad  = load_triad(TRIAD_PROMPTS_PATH)
@@ -1167,25 +1236,57 @@ def main():
     print(f"[Info] Rows to process: {total}")
 
     # Build category mapping
-    map_df.columns = [str(c).strip() for c in map_df.columns]
     base.columns = [str(c).strip() for c in base.columns]
-    map_src_col = _find_col(map_df, ["level_one_category_name", "level_one", "level1", "一级", "Column1", "orig"])
-    map_dst_col = _find_col(map_df, ["super_category", "super", "大类", "Column2", "target"])
-    if not map_src_col or not map_dst_col:
-        cols = list(map_df.columns)
-        if len(cols) >= 2:
-            map_src_col, map_dst_col = cols[0], cols[1]
-            print(
-                f"[WARN] 分类映射表列名不标准，使用前两列作为映射：{map_src_col}/{map_dst_col}",
-                flush=True,
-            )
-        else:
-            raise ValueError(f"step_one_to_super_category_map.csv 列不足，columns={cols}")
     base_level_one_col = _find_col(base, ["level_one_category_name", "level_one", "Category", "category", "一级类目"])
-    if not base_level_one_col:
-        raise ValueError(f"step1_titles 缺少一级类目列，columns={list(base.columns)}")
-    m = map_df.set_index(map_src_col)[map_dst_col].to_dict()
-    base["super_category"] = base[base_level_one_col].map(m).fillna("其他")
+    if use_existing_super_category:
+        existing_super_col = _resolve_col(base, super_category_col) if super_category_col else _find_col(
+            base, ["super_category", "super category", "super", "大类"]
+        )
+        if existing_super_col:
+            base["super_category"] = base[existing_super_col].astype(str).str.strip()
+            base["super_category"] = base["super_category"].replace({"": "其他", "nan": "其他"}).fillna("其他")
+            print(f"[Info] Using existing super category column: {existing_super_col}")
+        else:
+            print("[WARN] --use-existing-super-category set but no usable column found; fallback to category mapping.")
+            if map_df is None:
+                raise ValueError("需要 fallback 到分类映射，但 category map 未加载")
+            map_df.columns = [str(c).strip() for c in map_df.columns]
+            map_src_col = _find_col(map_df, ["level_one_category_name", "level_one", "level1", "一级", "Column1", "orig"])
+            map_dst_col = _find_col(map_df, ["super_category", "super", "大类", "Column2", "target"])
+            if not map_src_col or not map_dst_col:
+                cols = list(map_df.columns)
+                if len(cols) >= 2:
+                    map_src_col, map_dst_col = cols[0], cols[1]
+                    print(
+                        f"[WARN] 分类映射表列名不标准，使用前两列作为映射：{map_src_col}/{map_dst_col}",
+                        flush=True,
+                    )
+                else:
+                    raise ValueError(f"step_one_to_super_category_map.csv 列不足，columns={cols}")
+            m = map_df.set_index(map_src_col)[map_dst_col].to_dict()
+            if not base_level_one_col:
+                raise ValueError(f"step1_titles 缺少一级类目列，columns={list(base.columns)}")
+            base["super_category"] = base[base_level_one_col].map(m).fillna("其他")
+    else:
+        if map_df is None:
+            raise ValueError("category map 未加载，无法从一级类目映射 super_category")
+        map_df.columns = [str(c).strip() for c in map_df.columns]
+        map_src_col = _find_col(map_df, ["level_one_category_name", "level_one", "level1", "一级", "Column1", "orig"])
+        map_dst_col = _find_col(map_df, ["super_category", "super", "大类", "Column2", "target"])
+        if not map_src_col or not map_dst_col:
+            cols = list(map_df.columns)
+            if len(cols) >= 2:
+                map_src_col, map_dst_col = cols[0], cols[1]
+                print(
+                    f"[WARN] 分类映射表列名不标准，使用前两列作为映射：{map_src_col}/{map_dst_col}",
+                    flush=True,
+                )
+            else:
+                raise ValueError(f"step_one_to_super_category_map.csv 列不足，columns={cols}")
+        m = map_df.set_index(map_src_col)[map_dst_col].to_dict()
+        if not base_level_one_col:
+            raise ValueError(f"step1_titles 缺少一级类目列，columns={list(base.columns)}")
+        base["super_category"] = base[base_level_one_col].map(m).fillna("其他")
 
     # Model connectivity
     sess = make_http_session()
@@ -1232,12 +1333,15 @@ def main():
                 persona_concat_lead = build_big5_target_audience_lead(big5_rows)
             elif schwartz_enabled and schwartz_style == "target":
                 persona_concat_lead = build_schwartz_target_audience_lead(schwartz_row)
+        note_guidance = build_note_guidance(r.get(note_col, "")) if note_col else ""
         sys_prompt_inline = sys_prompt
         if persona_instruction and persona_mode_current == "inline":
             sys_prompt_inline = build_system_prompt_inline(
                 cat, triad, sdesc, persona_instruction, persona_important,
                 tail_text=tail_text,
             )
+        if note_guidance:
+            sys_prompt_inline = (sys_prompt_inline + "\n\n" + note_guidance).strip()
         triad_hit = ("Choose ONE background style by product type:" in sys_prompt)
 
         if idx % PRINT_EVERY == 0:

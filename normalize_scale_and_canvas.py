@@ -222,21 +222,44 @@ def parse_args():
         default=OUT_DIR,
         help="Directory to save normalized images (default: out_step1).",
     )
+    parser.add_argument(
+        "--image-col",
+        default="image_url",
+        help="Column containing either remote image URLs or local image paths (default: image_url).",
+    )
     return parser.parse_args()
+
+
+def _load_image_from_source(src: str, sess: requests.Session) -> Image.Image:
+    src = str(src or "").strip()
+    if not src:
+        raise ValueError("empty image source")
+    if src.startswith("//"):
+        src = "https:" + src
+    if src.startswith("http://") or src.startswith("https://"):
+        r = sess.get(src, timeout=10)
+        r.raise_for_status()
+        return Image.open(BytesIO(r.content))
+    return Image.open(src)
 
 
 def main():
     args = parse_args()
     excel_path = args.excel or EXCEL_PATH
     out_dir = args.out_dir or OUT_DIR
+    image_col = args.image_col or "image_url"
     os.makedirs(out_dir, exist_ok=True)
     df = read_excel_any(excel_path)
 
     # Create target columns if missing
     if "white_bg_image" not in df.columns:
         df["white_bg_image"] = ""
+    else:
+        df["white_bg_image"] = df["white_bg_image"].astype("object")
     if "qwen_image_filenames" not in df.columns:
         df["qwen_image_filenames"] = ""
+    else:
+        df["qwen_image_filenames"] = df["qwen_image_filenames"].astype("object")
 
     sess = make_http_session()
     durations = []
@@ -248,23 +271,18 @@ def main():
     for i, row in tqdm(df.iterrows(), total=len(df), desc="Step2"):
         t0 = time.time()
         pid = _normalize_id(row.get("id", i + 1), i + 1)
-        url = str(row.get("image_url", "")).strip()
+        image_src = str(row.get(image_col, "")).strip()
 
-        # Normalize URL
-        if url.startswith("//"):
-            url = "https:" + url
-        if not url:
+        if not image_src:
             if DEBUG_PRINT:
-                print(f"× 缺少 URL: id={pid}")
+                print(f"× 缺少图片源: id={pid} col={image_col}")
             continue
 
-        # Download
+        # Load from URL or local path
         try:
-            r = sess.get(url, timeout=10)
-            r.raise_for_status()
-            img = Image.open(BytesIO(r.content))
+            img = _load_image_from_source(image_src, sess)
         except Exception as e:
-            print(f"× 下载失败 id={pid}: {e}")
+            print(f"× 读取图片失败 id={pid}: {e}")
             continue
 
         # Cutout + place on canvas
